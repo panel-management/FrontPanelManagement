@@ -10,10 +10,6 @@ export default defineNuxtConfig({
             tailwindcss(),
         ],
     },
-    ui: {
-        fonts: false,
-        colorMode: false
-    },
     app: {
         head: {
             charset: "utf-8",
@@ -24,6 +20,26 @@ export default defineNuxtConfig({
                 lang: "fa",
                 translate: "no"
             },
+            link: [
+                {rel: "preconnect", href: "https://fonts.googleapis.com"},
+                {rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: ""},
+                {rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Vazirmatn:wght@500&display=swap"},
+            ]
+        },
+    },
+    ui: {
+        fonts: false,
+        colorMode: false,
+        theme: {
+            colors: [
+                'primary',
+                'secondary',
+                'tertiary',
+                'info',
+                'success',
+                'warning',
+                'error'
+            ]
         }
     },
 })
