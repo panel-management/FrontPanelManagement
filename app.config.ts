@@ -1,0 +1,71 @@
+export default defineAppConfig({
+    ui: {
+        colors: {
+            primary: 'teal',
+            neutral: 'slate',
+            info: 'blue',
+            success: 'green',
+            warning: 'yellow',
+            error: 'red',
+            secondary: 'gray',
+        },
+        navigationMenu: {
+            slots: {
+                root: '',
+                list: 'space-y-2',
+                label: '',
+                item: '',
+                link: '',
+                linkLeadingIcon: '',
+                linkLeadingAvatar: '',
+                linkLeadingAvatarSize: '',
+                linkTrailing: '',
+                linkTrailingBadge: '',
+                linkTrailingBadgeSize: '',
+                linkTrailingIcon: '',
+                linkLabel: '',
+                linkLabelExternalIcon: '',
+                childList: '',
+                childLabel: '',
+                childItem: '',
+                childLink: '',
+                childLinkWrapper: '',
+                childLinkIcon: '',
+                childLinkLabel: '',
+                childLinkLabelExternalIcon: '',
+                childLinkDescription: '',
+                separator: '',
+                viewportWrapper: '',
+                viewport: '',
+                content: '',
+                indicator: '',
+                arrow: ''
+            },
+            variants: {
+                active: {
+                    true: {
+                        link: 'bg-turquoise-500 !text-white !rounded-md !font-medium !text-base hover:!bg-black',
+                        linkLeadingIcon: '!text-white',
+                    },
+                    false: {
+                        link: 'text-black hover:bg-turquoise-500 hover:!text-white hover:rounded-md font-medium text-base',
+                        linkLeadingIcon: 'text-black group-hover:!text-white',
+                    }
+                },
+                disabled: {},
+                highlight: {
+                    true: ''
+                },
+                level: {
+                    true: ''
+                },
+                collapsed: {
+                    true: ''
+                }
+            },
+            compoundVariants: [],
+            defaultVariants: {
+            }
+        }
+    }
+})

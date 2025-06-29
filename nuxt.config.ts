@@ -3,8 +3,8 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
     compatibilityDate: '2025-05-15',
     devtools: {enabled: true},
-    css: ['~/assets/css/main.css'],
     modules: ['@nuxt/ui'],
+    css: ['~/assets/css/main.css'],
     vite: {
         plugins: [
             tailwindcss(),
@@ -29,17 +29,6 @@ export default defineNuxtConfig({
     },
     ui: {
         fonts: false,
-        colorMode: false,
-        theme: {
-            colors: [
-                'primary',
-                'secondary',
-                'tertiary',
-                'info',
-                'success',
-                'warning',
-                'error'
-            ]
-        }
+        colorMode: false
     },
 })

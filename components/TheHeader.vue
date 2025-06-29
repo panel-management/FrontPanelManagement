@@ -1,11 +1,12 @@
 <template>
   <div class="flex justify-between items-center-safe">
-    <UIcon name="material-symbols:menu-rounded" mode="svg" class="size-7 text-black"/>
+    <LazyTheSlider/>
     <div class="flex justify-center items-center-safe gap-5">
       <span class="text-lg">{{ useJDate(new Date()) }} ساعت {{ currentTime }}</span>
-      <UIcon name="ant-design:fullscreen-outlined" mode="svg" class="size-7 text-black cursor-pointer"
+      <UIcon name="ant-design:fullscreen-outlined" mode="svg" class="size-7 text-black cursor-pointer  max-sm:hidden"
              @click="toggleFullScreen"/>
-      <UDropdownMenu :items="items" :content="{ align: 'end', side: 'bottom', sideOffset: 8 }"
+      <UDropdownMenu v-model:open="isOpen" :items="dropDownMenu"
+                     :content="{ align: 'end', side: 'bottom', sideOffset: 8 }"
                      :ui="{ content: 'w-48' }">
         <UIcon name="material-symbols:account-circle-full" mode="svg" class="size-7 text-black cursor-pointer"/>
       </UDropdownMenu>
@@ -16,8 +17,9 @@
 import type {DropdownMenuItem} from '@nuxt/ui'
 import {useJDate} from "../composables/useJdate";
 
-const isFullScreen = ref(false);
-const currentTime = ref('');
+const isFullScreen: Ref<boolean> = ref(false);
+const currentTime: Ref<string> = ref('');
+const isOpen: Ref<boolean> = ref(false)
 let timerId = ref(null);
 
 const toggleFullScreen = () => {
@@ -44,7 +46,7 @@ onBeforeUnmount(() => {
 
 const updateTime = () => {
   const now = new Date();
-  const options = { hour: 'numeric', minute: 'numeric' };
+  const options = {hour: 'numeric', minute: 'numeric'};
   currentTime.value = now.toLocaleTimeString('fa-IR', options);
 };
 
@@ -57,7 +59,14 @@ onUnmounted(() => {
   clearInterval(timerId);
 });
 
-const items = ref<DropdownMenuItem[][]>([
+defineShortcuts({
+  o: () => isOpen.value = !isOpen.value,
+  p: () => navigateTo("/", {replace: true}),
+  f: () => navigateTo("/", {replace: true}),
+  'shift_q': () => navigateTo("/", {replace: true}),
+})
+
+const dropDownMenu = ref<DropdownMenuItem[][]>([
   [
     {
       label: 'احسان فولادی',
@@ -71,12 +80,14 @@ const items = ref<DropdownMenuItem[][]>([
     {
       label: 'پروفایل',
       icon: 'i-lucide-user',
-      kbds: ['p']
+      kbds: ['p'],
+      to: '/',
     },
     {
       label: 'تنظیمات',
       icon: 'i-lucide-cog',
-      kbds: ['f']
+      kbds: ['f'],
+      to: '/',
     },
   ],
   [
@@ -84,7 +95,8 @@ const items = ref<DropdownMenuItem[][]>([
       label: 'خروج',
       icon: 'i-lucide-log-out',
       color: "error",
-      kbds: ['shift', 'q']
+      kbds: ['shift', 'q'],
+      to: '/',
     }
   ]
 ]);
