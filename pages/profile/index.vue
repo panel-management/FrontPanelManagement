@@ -1,3 +1,3 @@
 <template>
-  <div class="text-5xl font-medium">profile page</div>
+  <div class="text-5xl font-medium">پروفایل</div>
 </template>

@@ -32,7 +32,7 @@ const items = ref<NavigationMenuItem[][]>([
     {
       label: 'مدیریت هنرجویان',
       icon: 'material-symbols:person-raised-hand-rounded',
-      to: '/profile',
+      to: '/management-students',
       onSelect: (e) => {
         isOpen.value = false
       }
@@ -40,7 +40,7 @@ const items = ref<NavigationMenuItem[][]>([
     {
       label: 'مدیریت مربیان',
       icon: 'ic:sharp-supervisor-account',
-      to: '/profile',
+      to: '/management-coaches',
       onSelect: (e) => {
         isOpen.value = false
       }
@@ -48,7 +48,7 @@ const items = ref<NavigationMenuItem[][]>([
     {
       label: 'حضور و غیاب',
       icon: 'streamline:interface-file-clipboard-check-checkmark-edit-task-edition-checklist-check-success-clipboard-form',
-      to: '/profile',
+      to: '/presence-absence',
       onSelect: (e) => {
         isOpen.value = false
       }
@@ -56,7 +56,7 @@ const items = ref<NavigationMenuItem[][]>([
     {
       label: 'مدیریت مالی',
       icon: 'file-icons:shopify',
-      to: '/profile',
+      to: '/management-financial',
       onSelect: (e) => {
         isOpen.value = false
       }
@@ -72,7 +72,7 @@ const items = ref<NavigationMenuItem[][]>([
     {
       label: 'پشتیبانی',
       icon: 'bi:patch-question-fll',
-      to: '/profile',
+      to: '/supports',
       onSelect: (e) => {
         isOpen.value = false
       }
@@ -80,7 +80,7 @@ const items = ref<NavigationMenuItem[][]>([
     {
       label: 'تنظیمات',
       icon: 'i-lucide-cog',
-      to: '/profile',
+      to: '/settings',
       onSelect: (e) => {
         isOpen.value = false
       }
