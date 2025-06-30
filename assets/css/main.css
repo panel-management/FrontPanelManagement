@@ -105,6 +105,7 @@ body {
 @theme {
     --color-black: #001c55;
     --background-color: #001c55;
+    --background-color-muted: #edeff1;
 
     --color-turquoise-50: #f1fcfa;
     --color-turquoise-100: #cff8f1;

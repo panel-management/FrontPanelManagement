@@ -61,8 +61,9 @@ onUnmounted(() => {
 
 defineShortcuts({
   o: () => isOpen.value = !isOpen.value,
-  p: () => navigateTo("/", {replace: true}),
-  f: () => navigateTo("/", {replace: true}),
+  p: () => navigateTo("/profile", {replace: true}),
+  f: () => navigateTo("/settings", {replace: true}),
+  s: () => navigateTo("/supports", {replace: true}),
   'shift_q': () => navigateTo("/", {replace: true}),
 })
 
@@ -81,14 +82,20 @@ const dropDownMenu = ref<DropdownMenuItem[][]>([
       label: 'پروفایل',
       icon: 'i-lucide-user',
       kbds: ['p'],
-      to: '/',
+      to: '/profile',
+    },
+    {
+      label: 'پشتیبانی',
+      icon: 'bi:patch-question-fll',
+      kbds: ['s'],
+      to: '/supports',
     },
     {
       label: 'تنظیمات',
       icon: 'i-lucide-cog',
       kbds: ['f'],
-      to: '/',
-    },
+      to: '/settings',
+    }
   ],
   [
     {

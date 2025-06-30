@@ -60,30 +60,6 @@ const items = ref<NavigationMenuItem[][]>([
       onSelect: (e) => {
         isOpen.value = false
       }
-    },
-    {
-      label: 'پروفایل',
-      icon: 'i-lucide-user',
-      to: '/profile',
-      onSelect: (e) => {
-        isOpen.value = false
-      }
-    },
-    {
-      label: 'پشتیبانی',
-      icon: 'bi:patch-question-fll',
-      to: '/supports',
-      onSelect: (e) => {
-        isOpen.value = false
-      }
-    },
-    {
-      label: 'تنظیمات',
-      icon: 'i-lucide-cog',
-      to: '/settings',
-      onSelect: (e) => {
-        isOpen.value = false
-      }
     }
   ]
 ])

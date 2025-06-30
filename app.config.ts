@@ -66,6 +66,11 @@ export default defineAppConfig({
             compoundVariants: [],
             defaultVariants: {
             }
+        },
+        drawer: {
+            slots: {
+                overlay: 'fixed inset-0 bg-primary/30 backdrop-blur'
+            }
         }
     }
 })

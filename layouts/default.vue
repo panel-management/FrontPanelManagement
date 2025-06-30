@@ -4,7 +4,7 @@
       <header class="w-full shadow-xs shadow-black p-4 px-5">
         <TheHeader/>
       </header>
-      <main class="p-4 w-full h-full">
+      <main class="p-[10px] w-full h-full flex justify-center items-center">
         <NuxtLoadingIndicator/>
         <NuxtRouteAnnouncer/>
         <NuxtPage/>
