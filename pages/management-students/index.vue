@@ -18,7 +18,7 @@
       </div>
       <LazyTableStudentsTable/>
     </div>
-    <LazyWidgetModalStudents v-model:open="isOpen"/>
+    <LazyWidgetModalStudentAdd v-model:open="isOpen"/>
   </section>
 </template>
 <script setup lang="ts">
