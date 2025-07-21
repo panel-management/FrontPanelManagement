@@ -3,11 +3,12 @@ export default defineAppConfig({
         colors: {
             primary: 'teal',
             neutral: 'slate',
-            info: 'blue',
+            tertiary: 'indigo',
+            info: 'sky',
+            secondary: 'blue',
             success: 'green',
             warning: 'yellow',
-            error: 'red',
-            secondary: 'gray',
+            error: 'red'
         },
         navigationMenu: {
             slots: {
@@ -64,8 +65,7 @@ export default defineAppConfig({
                 }
             },
             compoundVariants: [],
-            defaultVariants: {
-            }
+            defaultVariants: {}
         },
         drawer: {
             slots: {
