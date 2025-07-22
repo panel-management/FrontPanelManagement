@@ -4,8 +4,29 @@ import type {FormSubmitEvent} from "@nuxt/ui"
 import type {TabsItem} from '@nuxt/ui'
 
 const emit = defineEmits(['update:open']);
-const name = ref(['علی'])
 const isShow: Ref<boolean> = ref(true)
+const name = ref(['علی'])
+const itemsSelect = ref(['سفید', 'نارنجی', 'ابی', 'زرد', 'سبز', 'قهوه ای', 'مشکی'])
+
+const props = defineProps({
+  open: {
+    type: Boolean,
+    required: true
+  }
+});
+
+const localOpen = computed({
+  get: () => props.open,
+  set: (Val) => emit('update:open', Val)
+});
+
+function enableInputs(): void {
+  isShow.value = false
+}
+
+function disableInputs(): void {
+  isShow.value = true
+}
 
 const schema = v.object({
   fullName: v.pipe(
@@ -45,6 +66,10 @@ const schema = v.object({
       v.minLength(1, 'سن نمی‌تواند خالی باشد'),
       v.maxLength(2, 'سن باید حداکثر ۲ رقم باشد')
   ),
+  selectBelt: v.pipe(
+      v.string(),
+      v.trim(),
+  ),
   date: v.pipe(
       v.string(),
       v.trim(),
@@ -80,33 +105,14 @@ const state = reactive({
   phoneNumberEmergency: '09123456789',
   nationalCode: '0946108224',
   age: '24',
+  selectBelt: 'سفید',
   date: '1383/04/30',
   underSupervisionDoctor: false,
   diseaseRecords: false
 });
 
-const props = defineProps({
-  open: {
-    type: Boolean,
-    required: true
-  }
-});
-
-const localOpen = computed({
-  get: () => props.open,
-  set: (Val) => emit('update:open', Val)
-});
-
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   console.log(event.data)
-}
-
-function enableInputs(): void {
-  isShow.value = false
-}
-
-function disableInputs(): void {
-  isShow.value = true
 }
 </script>
 
@@ -188,26 +194,26 @@ function disableInputs(): void {
                     <USeparator label="اطلاعات شخصی"/>
                     <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
                       <BaseFormInput v-model="state.fullName" label="نام و نام خانوادگی" name="fullName" type="text"
-                                     placeholder="نام کامل هنرجو" required class="w-full" :disable="isShow"/>
+                                     placeholder="نام کامل هنرجو" :required="false" class="w-full" :disable="isShow"/>
                       <BaseFormInput v-model="state.nationalCode" label="کد ملی" name="nationalCode" type="text"
-                                     placeholder="کد ملی هنرجو" required class="w-full" :disable="isShow"/>
+                                     placeholder="کد ملی هنرجو" :required="false" class="w-full" :disable="isShow"/>
                     </div>
                     <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
                       <BaseFormInput v-model="state.date" label="تاریخ تولد" name="date" type="text"
-                                     placeholder="1380/10/20" required class="w-full" :disable="isShow"/>
+                                     placeholder="1380/10/20" :required="false" class="w-full" :disable="isShow"/>
                       <BaseFormInput v-model="state.age" label="سن" name="age" type="text"
-                                     placeholder="سن هنرجو" required class="w-full" :disable="isShow"/>
+                                     placeholder="سن هنرجو" :required="false" class="w-full" :disable="isShow"/>
                     </div>
                     <USeparator label="اطلاعات تماس"/>
                     <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
                       <BaseFormInput v-model="state.phoneNumber" label="شماره تلفن" name="phoneNumber" type="text"
-                                     placeholder="شماره تلفن هنرجو" required class="w-full" :disable="isShow"/>
+                                     placeholder="شماره تلفن هنرجو" :required="false" class="w-full" :disable="isShow"/>
                       <BaseFormInput v-model="state.phoneNumberEmergency" label="شماره تلفن اضطراری"
                                      name="phoneNumberEmergency" type="text" placeholder="شماره تلفن اضطراری هنرجو"
-                                     required class="w-full" :disable="isShow"/>
+                                     :required="false" class="w-full" :disable="isShow"/>
                     </div>
                     <div class="w-full pt-1">
-                      <BaseFormTextArea v-model="state.address" label="آدرس محل سکونت" name="address" required
+                      <BaseFormTextArea v-model="state.address" label="آدرس محل سکونت" name="address" :required="false"
                                         class="w-full" :disable="isShow"/>
                     </div>
                     <USeparator label="اطلاعات پزشکی"/>
@@ -217,6 +223,10 @@ function disableInputs(): void {
                                         label="آیا تحت نظر پزشک هستید؟" :disable="isShow"/>
                       <BaseFormCheckBox :required="false" v-model="state.diseaseRecords" name="diseaseRecords"
                                         label="سوابق بیماری یا آسیب‌دیدگی؟" :disable="isShow"/>
+                    </div>
+                    <USeparator/>
+                    <div class="w-full">
+                      <BaseFormSelect :required="false" v-model="state.selectBelt" :items="itemsSelect" name="selectBelt" label="انتخاب کمربند" :disable="isShow"/>
                     </div>
                     <div class="flex justify-end gap-2 pt-4">
                       <UButton :disabled="isShow" label="تغییرات" color="primary" type="submit"

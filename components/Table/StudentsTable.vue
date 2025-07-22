@@ -170,13 +170,13 @@ const columns: TableColumn<Payment>[] = [
     header: 'کمربند ها',
     cell: ({row}) => {
       const color = ({
-        'سفید': 'bg-black/10 backdrop-blur text-black' as const,
-        'نارنجی': 'bg-orange-500/25 text-orange-400' as const,
-        'ابی': 'bg-sky-500/25 text-sky-500' as const,
-        'زرد': 'bg-yellow-500/25 text-yellow-500' as const,
-        'سبز': 'bg-green-500/20 text-green-500' as const,
-        'قهوه ای': 'bg-stone-900/80 text-stone-400' as const,
-        'سیاه': 'bg-black/90 text-white' as const,
+        'سفید': 'belt-white border' as const,
+        'نارنجی': 'belt-orange' as const,
+        'ابی': 'belt-blue' as const,
+        'زرد': 'belt-yellow' as const,
+        'سبز': 'belt-green' as const,
+        'قهوه ای': 'belt-brown' as const,
+        'سیاه': 'belt-black' as const,
       })[row.getValue('belt') as string]
 
       return h("span", {class: `px-2  py-1 rounded-lg font-medium text-xs ${color}`}, row.getValue('belt'))
