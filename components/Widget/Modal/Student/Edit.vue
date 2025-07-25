@@ -85,8 +85,8 @@ type Schema = v.InferOutput<typeof schema>;
 
 const items = [
   {
-    label: 'اطلاعات پایه',
-    slot: 'data' as const
+    label: 'ویرایش اطلاعات',
+    slot: 'editData' as const
   },
   {
     label: 'تاریخچه کمربند',
@@ -187,7 +187,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         </div>
         <div class="bg-muted p-4 md:p-6 rounded-xl w-full flex items-center gap-5">
           <LazyBaseTabs :items="items" color="tertiary">
-            <template #data>
+            <template #editData>
               <div class="w-full h-full bg-white rounded-lg p-4">
                 <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
                   <div class="flex flex-col gap-5 w-full">
@@ -229,7 +229,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                       <BaseFormSelect :required="false" v-model="state.selectBelt" :items="itemsSelect" name="selectBelt" label="انتخاب کمربند" :disable="isShow"/>
                     </div>
                     <div class="flex justify-end gap-2 pt-4">
-                      <UButton :disabled="isShow" label="تغییرات" color="primary" type="submit"
+                      <UButton :disabled="isShow" label="اعمال تغییرات" color="primary" type="submit"
                                class="disabled:blur-[1px]"/>
                     </div>
                   </div>

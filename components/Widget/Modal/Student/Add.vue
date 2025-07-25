@@ -133,7 +133,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           </div>
           <div class="flex justify-between gap-2 pt-4">
             <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false"/>
-            <UButton label="ذخیره اطلاعات" color="primary" type="submit"/>
+            <UButton label="افزودن هنرجو" color="primary" type="submit"/>
           </div>
         </div>
       </UForm>

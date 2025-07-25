@@ -1,5 +1,5 @@
 <template>
-  <UFormField :label="label" :name="name">
+  <UFormField :label="label" :name="name" :required="required">
     <USelect v-model="model" :items="items" :required="required" :disabled="disable" class="w-full"
              :class="{ 'blur-[1px]': disable }"/>
   </UFormField>
