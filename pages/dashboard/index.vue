@@ -6,13 +6,13 @@
     </div>
     <div class="bg-white w-full p-2 rounded-lg max-lg:overflow-auto">
       <div class="max-md:w-[490%]">
-        <LazyCartsStackedLineChart/>
+        <LazyChartsStackedLineChart/>
       </div>
     </div>
     <div class="w-full h-full flex max-lg:flex-col gap-2">
       <div class="bg-white p-2 rounded-lg w-full h-full max-lg:overflow-auto">
         <div class="max-md:w-[200%]">
-          <LazyCartsPiePadAngle/>
+          <LazyChartsPiePadAngle/>
         </div>
       </div>
       <div class="bg-white p-4 rounded-lg flex flex-col gap-3 w-full h-full">
