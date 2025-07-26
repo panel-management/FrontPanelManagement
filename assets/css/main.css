@@ -120,43 +120,45 @@ body {
     --color-turquoise-950: #062c2d;
 }
 
-@layer components {
+@layer utilities {
     .btn-outline {
-        @apply outline-none px-2 py-4 w-full text-center rounded-lg transition-all duration-500 ease-in-out hover:scale-105
+        @apply outline-none px-2 py-4 w-full text-center rounded-lg transition-all duration-500 ease-in-out hover:scale-105;
     }
 
     .btn {
-        @apply border-2 border-turquoise-500 hover:bg-transparent bg-turquoise-500 text-white hover:text-black
+        @apply border-2 border-turquoise-500 hover:bg-transparent bg-turquoise-500 text-white hover:text-black;
     }
 
-    .belt-white{
-        @apply bg-white px-3! py-1! rounded-lg font-medium text-center transition-all duration-500 ease-in-out hover:scale-105 cursor-none select-none;
+    .belt-white {
+        @apply bg-white px-3 py-1 rounded-lg font-medium text-center transition-all duration-500 ease-in-out hover:scale-105 cursor-none select-none;
     }
 
-    .belt-orange{
-        @apply bg-orange-200 text-orange-400/80 px-3! py-1! rounded-lg font-medium text-center transition-all duration-500 ease-in-out hover:scale-105 cursor-none select-none;
+    .belt-orange {
+        @apply bg-orange-200 text-orange-400/80 px-3 py-1 rounded-lg font-medium text-center transition-all duration-500 ease-in-out hover:scale-105 cursor-none select-none;
     }
 
-    .belt-blue{
-        @apply bg-blue-200 text-blue-400/80 px-3! py-1! rounded-lg font-medium text-center transition-all duration-500 ease-in-out hover:scale-105 cursor-none select-none;
+    .belt-blue {
+        @apply bg-blue-200 text-blue-400/80 px-3 py-1 rounded-lg font-medium text-center transition-all duration-500 ease-in-out hover:scale-105 cursor-none select-none;
     }
 
-    .belt-yellow{
-        @apply bg-yellow-200 text-yellow-500/90 px-3! py-1! rounded-lg font-medium text-center transition-all duration-500 ease-in-out hover:scale-105 cursor-none select-none;
+    .belt-yellow {
+        @apply bg-yellow-200 text-yellow-500/90 px-3 py-1 rounded-lg font-medium text-center transition-all duration-500 ease-in-out hover:scale-105 cursor-none select-none;
     }
 
-    .belt-green{
-        @apply bg-green-200 text-green-400/80 px-3! py-1! rounded-lg font-medium text-center transition-all duration-500 ease-in-out hover:scale-105 cursor-none select-none;
+    .belt-green {
+        @apply bg-green-200 text-green-400/80 px-3 py-1 rounded-lg font-medium text-center transition-all duration-500 ease-in-out hover:scale-105 cursor-none select-none;
     }
 
-    .belt-brown{
-        @apply bg-stone-400 text-stone-600/80 px-3! py-1! rounded-lg font-medium text-center transition-all duration-500 ease-in-out hover:scale-105 cursor-none select-none;
+    .belt-brown {
+        @apply bg-stone-400 text-stone-600/80 px-3 py-1 rounded-lg font-medium text-center transition-all duration-500 ease-in-out hover:scale-105 cursor-none select-none;
     }
 
-    .belt-black{
-        @apply bg-black text-white px-3! py-1! rounded-lg font-medium text-center transition-all duration-500 ease-in-out hover:scale-105 cursor-none select-none;
+    .belt-black {
+        @apply bg-black text-white px-3 py-1 rounded-lg font-medium text-center transition-all duration-500 ease-in-out hover:scale-105 cursor-none select-none;
     }
+}
 
+@layer components {
     .no-scrollbar::-webkit-scrollbar {
         display: none;
     }
