@@ -28,7 +28,7 @@
               onSelect(e?: Event) {e?.preventDefault()}}))" label="وضعیت شهریه ها"/>
       </div>
     </div>
-    <UTable ref="table" :data="filteredData" :columns="columns" empty="هیچ اطلاعاتی برای نمایش وجود ندارد" sticky class="h-96 no-scrollbar">
+    <UTable ref="table" :data="filteredData" :columns="columns" empty="هیچ اطلاعاتی برای نمایش وجود ندارد" sticky class="h-96 lg:h-svh no-scrollbar">
       <template #expanded="{ row }">
         <pre>{{ row.original }}</pre>
       </template>
