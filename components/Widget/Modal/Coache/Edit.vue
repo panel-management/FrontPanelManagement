@@ -6,7 +6,7 @@ import type {TabsItem} from '@nuxt/ui'
 const emit = defineEmits(['update:open']);
 const isShow: Ref<boolean> = ref(true)
 const name = ref(['علی'])
-const itemsSelect = ref(['سفید', 'نارنجی', 'ابی', 'زرد', 'سبز', 'قهوه ای', 'مشکی'])
+const itemsSelect = ref(['کارته', 'بوکس', 'کیک بوکس', 'جودو', 'کشتی', 'کنگفو', 'تکواندو', 'موی تای', 'ام‌ام‌ای'])
 
 const props = defineProps({
   open: {
@@ -32,12 +32,13 @@ const schema = v.object({
   fullName: v.pipe(
       v.string(),
       v.trim(),
-      v.nonEmpty('نام و نام خانوادگی هنرجو الزامی است.')
+      v.nonEmpty('نام و نام خانوادگی مربی الزامی است.')
   ),
-  address: v.pipe(
+  nationalCode: v.pipe(
       v.string(),
       v.trim(),
-      v.nonEmpty('ادرس محل زندگی الزامی است.')
+      v.nonEmpty('کد ملی الزامی است.'),
+      v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید.')
   ),
   phoneNumber: v.pipe(
       v.string(),
@@ -46,51 +47,42 @@ const schema = v.object({
       v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد.'),
       v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد.')
   ),
-  phoneNumberEmergency: v.pipe(
+  history: v.pipe(
       v.string(),
       v.trim(),
-      v.nonEmpty('شماره تلفن اضطراری الزامی است.'),
-      v.minLength(11, 'شماره تلفن اضطراری باید حداقل ۱۱ رقم باشد.'),
-      v.maxLength(12, 'شماره تلفن اضطراری نباید بیشتر از ۱۲ رقم باشد.')
+      v.nonEmpty('سابقه تدریس الزامی است.'),
   ),
-  nationalCode: v.pipe(
+  certificates: v.pipe(
       v.string(),
       v.trim(),
-      v.nonEmpty('کد ملی الزامی است.'),
-      v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید.')
+      v.nonEmpty('مدرک و گواهینامه مربی الزامی است.'),
   ),
-  age: v.pipe(
+  address: v.pipe(
       v.string(),
       v.trim(),
-      v.nonEmpty('سن هنرجو الزامی است.'),
-      v.minLength(1, 'سن نمی‌تواند خالی باشد'),
-      v.maxLength(2, 'سن باید حداکثر ۲ رقم باشد')
+      v.nonEmpty('ادرس محل باشگاه الزامی است.')
   ),
-  selectBelt: v.pipe(
+  selectSport: v.pipe(
       v.string(),
       v.trim(),
   ),
-  date: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('تاریخ تولد هنرجو الزامی است.'),
-      v.regex(/^\d{4}\/\d{2}\/\d{2}$/, 'فرمت تاریخ شمسی صحیح نیست. مثال: 1380/07/30'),
-      v.custom((val: any) => !isNaN(new Date(val).getTime()), 'تاریخ وارد شده معتبر نیست.')
-  ),
-  underSupervisionDoctor: v.boolean(),
-  diseaseRecords: v.boolean()
+  image: v.pipe(
+      v.file(),
+      v.mimeType(['image/jpeg', 'image/png', 'image/jpg', 'image/webp'], 'لطف عکس را با این فرمت ها اپلود کنید. (jpeg, png, jpg, webp)'),
+      v.maxSize(1024 * 1024 * 2, 'عکس باید زیر ۲ مگابایت باشد.')
+  )
 })
 
 type Schema = v.InferOutput<typeof schema>;
 
 const items = [
   {
-    label: 'اطلاعات پایه',
-    slot: 'data' as const
+    label: 'ویرایش اطلاعات',
+    slot: 'editData' as const
   },
   {
-    label: 'تاریخچه کمربند',
-    slot: 'dateBelt' as const
+    label: 'هنرجویان',
+    slot: 'student' as const
   },
   {
     label: 'وضعیت مالی',
@@ -99,16 +91,14 @@ const items = [
 ] satisfies TabsItem[]
 
 const state = reactive({
-  fullName: 'علی احمدی',
+  fullName: 'محسن حیایی',
   address: 'گلبهار میدان پرند خیابان قدیر قدیر 10',
   phoneNumber: '09123456789',
-  phoneNumberEmergency: '09123456789',
-  nationalCode: '0946108224',
-  age: '24',
-  selectBelt: 'سفید',
-  date: '1383/04/30',
-  underSupervisionDoctor: false,
-  diseaseRecords: false
+  nationalCode: '09123456789',
+  history: '8 سال',
+  certificates: 'مدرک دان 4 فدراسیون کاراته',
+  selectSport: 'کارته',
+  image: undefined as File | undefined
 });
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
@@ -117,7 +107,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <UModal fullscreen v-model:open="localOpen" title="پروفایل هنرجو" description="اطلاعات کامل و تاریخچه هنرجو">
+  <UModal fullscreen v-model:open="localOpen" title="پروفایل مربی" description="اطلاعات کامل و تاریخچه مربی">
     <template #body>
       <div class="flex flex-col gap-5 md:gap-10 h-full w-full">
         <div class="bg-muted p-4 md:p-6 rounded-xl w-full flex flex-col lg:items-center gap-5">
@@ -128,9 +118,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
               </div>
               <div class="flex flex-col gap-2">
                 <span class="font-medium text-xl">علی احمدی</span>
-                <div class="flex gap-3">
-                  <UBadge color="info" variant="solid" label="کمربند ابی" class="font-medium"/>
-                  <UBadge color="neutral" variant="soft" label="کاراته" class="font-semibold"/>
+                <div class="flex flex-wrap gap-2 sm:gap-3">
+                  <UBadge color="secondary" variant="solid" label="مربی" class="font-medium"/>
+                  <UBadge color="neutral" variant="soft" label="کیک بوکسینگ" class="font-semibold"/>
+                  <UBadge color="primary" variant="soft" label="فعال" class="font-semibold"/>
                   <UBadge color="success" variant="soft" label="پرداخت شده" class="font-semibold"/>
                 </div>
               </div>
@@ -146,14 +137,14 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           </div>
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 w-full">
             <div class="flex items-center gap-1">
-              <UIcon name="iconoir:barcode" class="size-6 text-black"/>
-              <span class="font-medium text-base mt-1">کدملی:</span>
-              <span class="font-medium text-base mt-1">0921912348</span>
-            </div>
-            <div class="flex items-center gap-1">
               <UIcon name="ic:baseline-call" class="size-6 text-black"/>
               <span class="font-medium text-base mt-1">شماره تلفن:</span>
               <span class="font-medium text-base mt-1">09012345678</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <UIcon name="iconoir:barcode" class="size-6 text-black"/>
+              <span class="font-medium text-base mt-1">کدملی:</span>
+              <span class="font-medium text-base mt-1">0921912348</span>
             </div>
             <div class="flex items-center gap-1">
               <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black"/>
@@ -161,19 +152,24 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
               <span class="font-medium text-base mt-1">1403/02/15</span>
             </div>
             <div class="flex items-center gap-1">
-              <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black"/>
-              <span class="font-medium text-base mt-1">تاریخ تولد:</span>
-              <span class="font-medium text-base mt-1">1386/10/05</span>
+              <UIcon name="hugeicons:students" class="size-6 text-black"/>
+              <span class="font-medium text-base mt-1">هنرجو:</span>
+              <span class="font-medium text-base mt-1">52</span>
             </div>
             <div class="flex items-center gap-1">
-              <UIcon name="ic:round-person" class="size-6 text-black"/>
-              <span class="font-medium text-base mt-1">سن:</span>
-              <span class="font-medium text-base mt-1">22</span>
+              <UIcon name="ion:university" class="size-6 text-black"/>
+              <span class="font-medium text-base mt-1">سابقه:</span>
+              <span class="font-medium text-base mt-1">8 سال</span>
             </div>
             <div class="flex items-center gap-1">
-              <UIcon name="hugeicons:chart-line-data-01" class="size-6 text-black"/>
-              <span class="font-medium text-base mt-1">حضور:</span>
-              <span class="font-medium text-base mt-1">48%</span>
+              <UIcon name="solar:medal-ribbons-star-bold" class="size-6 text-black"/>
+              <span class="font-medium text-base mt-1">تخصص:</span>
+              <span class="font-medium text-base mt-1">کاراته</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <UIcon name="bxs:certification" class="size-6 text-black"/>
+              <span class="font-medium text-base mt-1">مدرک و گواهینامه ها:</span>
+              <span class="font-medium text-base mt-1">مدرک کارته دان 4</span>
             </div>
           </div>
           <div class="flex gap-3 min-md:hidden">
@@ -185,135 +181,193 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                      trailing-icon="material-symbols:close-rounded"/>
           </div>
         </div>
+        <div class="bg-muted p-4 md:p-6 rounded-xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 lg:items-center gap-5">
+          <div class="rounded-xl bg-white p-5 w-full flex flex-row-reverse md:flex-col items-center justify-between sm:justify-center gap-4">
+            <div class="bg-turquoise-100 size-12 flex items-center justify-center rounded-full">
+              <UIcon name="material-symbols:calendar-today-outline-rounded" class="size-6 text-turquoise-500"/>
+            </div>
+            <div class="flex flex-col md:items-center gap-1">
+              <span class="font-semibold text-xl">۸ سال</span>
+              <span class="font-medium">سابقه تدریس</span>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white p-5 w-full flex flex-row-reverse md:flex-col items-center justify-between sm:justify-center gap-4">
+            <div class="bg-orange-100 size-12 flex items-center justify-center rounded-full">
+              <UIcon name="mdi:medal-outline" class="size-6 text-orange-400"/>
+            </div>
+            <div class="flex flex-col md:items-center gap-1">
+              <span class="font-semibold text-xl">۱۲</span>
+              <span class="font-medium">ارتقای کمربند</span>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white p-5 w-full flex flex-row-reverse md:flex-col items-center justify-between sm:justify-center gap-4">
+            <div class="bg-turquoise-100 size-12 flex items-center justify-center rounded-full">
+              <UIcon name="mdi:chart-timeline-variant" class="size-6 text-turquoise-500"/>
+            </div>
+            <div class="flex flex-col md:items-center gap-1">
+              <span class="font-semibold text-xl">۸۷%</span>
+              <span class="font-medium">میانگین حضور کلاس</span>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white p-5 w-full flex flex-row-reverse md:flex-col items-center justify-between sm:justify-center gap-4">
+            <div class="bg-info-100 size-12 flex items-center justify-center rounded-full">
+              <UIcon name="ph:users-three-bold" class="size-6 text-info-500"/>
+            </div>
+            <div class="flex flex-col md:items-center gap-1">
+              <span class="font-semibold text-xl">25</span>
+              <span class="font-medium">هنرجو</span>
+            </div>
+          </div>
+        </div>
         <div class="bg-muted p-4 md:p-6 rounded-xl w-full flex items-center gap-5">
           <LazyBaseTabs :items="items" color="tertiary">
-            <template #data>
+            <template #editData>
               <div class="w-full h-full bg-white rounded-lg p-4">
                 <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
                   <div class="flex flex-col gap-5 w-full">
-                    <USeparator label="اطلاعات شخصی"/>
                     <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-                      <BaseFormInput v-model="state.fullName" label="نام و نام خانوادگی" name="fullName" type="text"
-                                     placeholder="نام کامل هنرجو" :required="false" class="w-full" :disable="isShow"/>
-                      <BaseFormInput v-model="state.nationalCode" label="کد ملی" name="nationalCode" type="text"
-                                     placeholder="کد ملی هنرجو" :required="false" class="w-full" :disable="isShow"/>
+                      <BaseFormInput :required="false" :disable="isShow" v-model="state.fullName" label="نام و نام خانوادگی" name="fullName" type="text" placeholder="نام کامل مربی" class="w-full"/>
+                      <BaseFormInput :required="false" :disable="isShow" v-model="state.nationalCode" label="کد ملی" name="nationalCode" type="text" placeholder="کد ملی مربی" class="w-full"/>
                     </div>
                     <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-                      <BaseFormInput v-model="state.date" label="تاریخ تولد" name="date" type="text"
-                                     placeholder="1380/10/20" :required="false" class="w-full" :disable="isShow"/>
-                      <BaseFormInput v-model="state.age" label="سن" name="age" type="text"
-                                     placeholder="سن هنرجو" :required="false" class="w-full" :disable="isShow"/>
-                    </div>
-                    <USeparator label="اطلاعات تماس"/>
-                    <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-                      <BaseFormInput v-model="state.phoneNumber" label="شماره تلفن" name="phoneNumber" type="text"
-                                     placeholder="شماره تلفن هنرجو" :required="false" class="w-full" :disable="isShow"/>
-                      <BaseFormInput v-model="state.phoneNumberEmergency" label="شماره تلفن اضطراری"
-                                     name="phoneNumberEmergency" type="text" placeholder="شماره تلفن اضطراری هنرجو"
-                                     :required="false" class="w-full" :disable="isShow"/>
+                      <BaseFormInput :required="false" :disable="isShow" v-model="state.phoneNumber" label="شماره تلفن" name="phoneNumber" type="text" placeholder="شماره تلفن مربی" class="w-full"/>
+                      <BaseFormInput :required="false" :disable="isShow" v-model="state.history" label="سابقه تدریس" name="history" type="text" placeholder="سابقه تدریس مربی" class="w-full"/>
                     </div>
                     <div class="w-full pt-1">
-                      <BaseFormTextArea v-model="state.address" label="آدرس محل سکونت" name="address" :required="false"
-                                        class="w-full" :disable="isShow"/>
+                      <BaseFormInput :required="false" :disable="isShow" v-model="state.certificates" label="مدرک و گواهینامه ها" name="certificates" type="text" placeholder="مدرک و گواهینامه ها مربیگری" class="w-full"/>
                     </div>
-                    <USeparator label="اطلاعات پزشکی"/>
-                    <div class="flex flex-col gap-4 w-full">
-                      <BaseFormCheckBox :required="false" v-model="state.underSupervisionDoctor"
-                                        name="underSupervisionDoctor"
-                                        label="آیا تحت نظر پزشک هستید؟" :disable="isShow"/>
-                      <BaseFormCheckBox :required="false" v-model="state.diseaseRecords" name="diseaseRecords"
-                                        label="سوابق بیماری یا آسیب‌دیدگی؟" :disable="isShow"/>
+                    <div class="w-full pt-1">
+                      <BaseFormTextArea :required="false" :disable="isShow" v-model="state.address" label="آدرس محل باشگاه" name="address" class="w-full"/>
                     </div>
-                    <USeparator/>
-                    <div class="w-full">
-                      <BaseFormSelect :required="false" v-model="state.selectBelt" :items="itemsSelect" name="selectBelt" label="انتخاب کمربند" :disable="isShow"/>
+                    <div class="w-full pt-1">
+                      <BaseFormSelect :required="false" :disable="isShow" v-model="state.selectSport" :items="itemsSelect" name="selectSport" label="انتخاب رشته ورزشی"/>
+                    </div>
+                    <div class="w-full pt-1">
+                      <BaseFormUploadFile :required="false" :disable="isShow" v-model="state.image" label="ارسال عکس گواهینامه" name="image" description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا 2MB" class="w-full"/>
                     </div>
                     <div class="flex justify-end gap-2 pt-4">
-                      <UButton :disabled="isShow" label="تغییرات" color="primary" type="submit"
-                               class="disabled:blur-[1px]"/>
+                      <UButton :disabled="isShow" label="اعمال تغییرات" color="primary" type="submit" class="disabled:blur-[1px]"/>
                     </div>
                   </div>
                 </UForm>
               </div>
             </template>
-            <template #dateBelt>
+            <template #student>
               <div class="flex flex-col gap-6 p-4 bg-white rounded-lg w-full h-full">
                 <div class="flex flex-col gap-2">
                   <div class="flex items-center gap-2">
-                    <UIcon name="solar:medal-ribbon-bold" class="size-6 text-black/70"/>
-                    <span class="font-medium text-2xl">تاریخچه ارتقاهای کمربند</span>
+                    <UIcon name="ph:users-three-bold" class="size-6 text-black/70"/>
+                    <span class="font-medium text-lg md:text-2xl">هنرجویان تحت نظر (4 نفر)</span>
                   </div>
-                  <p class="break-words font-medium text-base">روند پیشرفت و ارتقاهای هنرجو</p>
+                  <p class="break-words font-medium text-sm md:text-base">لیست هنرجویانی که تحت نظر این مربی هستند</p>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 w-full">
-                  <div class="flex items-center gap-4 bg-muted p-5 rounded-xl">
-                    <span class="belt-white text-lg">سفید</span>
-                    <div class="flex flex-col gap-1">
-                      <span class="font-semibold text-lg">کمربند سفید</span>
-                      <span class="font-medium text-sm flex items-center gap-1">
-                        <UIcon name="material-symbols:calendar-today-outline-rounded" class="size-4 text-black/70"/>
-                        1404/02/20
-                      </span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 w-full">
+                  <div class="w-full rounded-lg bg-muted p-4">
+                    <div class="flex flex-col items-center gap-3 w-full">
+                      <div class="rounded-full bg-white size-14 flex items-center justify-center text-lg font-bold">
+                        {{ name[0].slice(0, 1) }}
+                      </div>
+                      <div class="flex justify-between gap-4 w-full">
+                        <span class="font-medium text-lg">علی احمدی</span>
+                        <span class="belt-blue text-sm">کمربند ابی</span>
+                      </div>
+                      <div class="flex justify-between gap-4 w-full">
+                        <span class="font-medium">حضور 85%</span>
+                        <span class="font-medium">عضویت 1403/10/20</span>
+                      </div>
+                      <div class="flex justify-between items-center gap-4">
+                        <UBadge color="success" label="پرداخت شده"/>
+                      </div>
                     </div>
                   </div>
-                  <div class="flex items-center gap-4 bg-muted p-5 rounded-xl">
-                    <span class="belt-orange text-lg">نارنجی</span>
-                    <div class="flex flex-col gap-1">
-                      <span class="font-semibold text-lg">کمربند نارنجی</span>
-                      <span class="font-medium text-sm flex items-center gap-1">
-                        <UIcon name="material-symbols:calendar-today-outline-rounded" class="size-4 text-black/70"/>
-                        1404/04/20
-                      </span>
+                  <div class="w-full rounded-lg bg-muted p-4">
+                    <div class="flex flex-col items-center gap-3 w-full">
+                      <div class="rounded-full bg-white size-14 flex items-center justify-center text-lg font-bold">
+                        {{ name[0].slice(0, 1) }}
+                      </div>
+                      <div class="flex justify-between gap-4 w-full">
+                        <span class="font-medium text-lg">علی احمدی</span>
+                        <span class="belt-blue text-sm">کمربند ابی</span>
+                      </div>
+                      <div class="flex justify-between gap-4 w-full">
+                        <span class="font-medium">حضور 85%</span>
+                        <span class="font-medium">عضویت 1403/10/20</span>
+                      </div>
+                      <div class="flex justify-between items-center gap-4">
+                        <UBadge color="success" label="پرداخت شده"/>
+                      </div>
                     </div>
                   </div>
-                  <div class="flex items-center gap-4 bg-muted p-5 rounded-xl">
-                    <span class="belt-blue text-lg">ابی</span>
-                    <div class="flex flex-col gap-1">
-                      <span class="font-semibold text-lg">کمربند ابی</span>
-                      <span class="font-medium text-sm flex items-center gap-1">
-                        <UIcon name="material-symbols:calendar-today-outline-rounded" class="size-4 text-black/70"/>
-                        1404/06/20
-                      </span>
+                  <div class="w-full rounded-lg bg-muted p-4">
+                    <div class="flex flex-col items-center gap-3 w-full">
+                      <div class="rounded-full bg-white size-14 flex items-center justify-center text-lg font-bold">
+                        {{ name[0].slice(0, 1) }}
+                      </div>
+                      <div class="flex justify-between gap-4 w-full">
+                        <span class="font-medium text-lg">علی احمدی</span>
+                        <span class="belt-blue text-sm">کمربند ابی</span>
+                      </div>
+                      <div class="flex justify-between gap-4 w-full">
+                        <span class="font-medium">حضور 85%</span>
+                        <span class="font-medium">عضویت 1403/10/20</span>
+                      </div>
+                      <div class="flex justify-between items-center gap-4">
+                        <UBadge color="success" label="پرداخت شده"/>
+                      </div>
                     </div>
                   </div>
-                  <div class="flex items-center gap-4 bg-muted p-5 rounded-xl">
-                    <span class="belt-yellow text-lg">زرد</span>
-                    <div class="flex flex-col gap-1">
-                      <span class="font-semibold text-lg">کمربند زرد</span>
-                      <span class="font-medium text-sm flex items-center gap-1">
-                        <UIcon name="material-symbols:calendar-today-outline-rounded" class="size-4 text-black/70"/>
-                        1404/08/20
-                      </span>
+                  <div class="w-full rounded-lg bg-muted p-4">
+                    <div class="flex flex-col items-center gap-3 w-full">
+                      <div class="rounded-full bg-white size-14 flex items-center justify-center text-lg font-bold">
+                        {{ name[0].slice(0, 1) }}
+                      </div>
+                      <div class="flex justify-between gap-4 w-full">
+                        <span class="font-medium text-lg">علی احمدی</span>
+                        <span class="belt-blue text-sm">کمربند ابی</span>
+                      </div>
+                      <div class="flex justify-between gap-4 w-full">
+                        <span class="font-medium">حضور 85%</span>
+                        <span class="font-medium">عضویت 1403/10/20</span>
+                      </div>
+                      <div class="flex justify-between items-center gap-4">
+                        <UBadge color="success" label="پرداخت شده"/>
+                      </div>
                     </div>
                   </div>
-                  <div class="flex items-center gap-4 bg-muted p-5 rounded-xl">
-                    <span class="belt-green text-lg">سبز</span>
-                    <div class="flex flex-col gap-1">
-                      <span class="font-semibold text-lg">کمربند سبز</span>
-                      <span class="font-medium text-sm flex items-center gap-1">
-                        <UIcon name="material-symbols:calendar-today-outline-rounded" class="size-4 text-black/70"/>
-                        1404/10/20
-                      </span>
+                  <div class="w-full rounded-lg bg-muted p-4">
+                    <div class="flex flex-col items-center gap-3 w-full">
+                      <div class="rounded-full bg-white size-14 flex items-center justify-center text-lg font-bold">
+                        {{ name[0].slice(0, 1) }}
+                      </div>
+                      <div class="flex justify-between gap-4 w-full">
+                        <span class="font-medium text-lg">علی احمدی</span>
+                        <span class="belt-blue text-sm">کمربند ابی</span>
+                      </div>
+                      <div class="flex justify-between gap-4 w-full">
+                        <span class="font-medium">حضور 85%</span>
+                        <span class="font-medium">عضویت 1403/10/20</span>
+                      </div>
+                      <div class="flex justify-between items-center gap-4">
+                        <UBadge color="success" label="پرداخت شده"/>
+                      </div>
                     </div>
                   </div>
-                  <div class="flex items-center gap-4 bg-muted p-5 rounded-xl">
-                    <span class="belt-brown text-lg">قهوه ای</span>
-                    <div class="flex flex-col gap-1">
-                      <span class="font-semibold text-lg">کمربند قهوه ای</span>
-                      <span class="font-medium text-sm flex items-center gap-1">
-                        <UIcon name="material-symbols:calendar-today-outline-rounded" class="size-4 text-black/70"/>
-                        1404/12/20
-                      </span>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-4 bg-muted p-5 rounded-xl">
-                    <span class="belt-black text-lg">مشکی</span>
-                    <div class="flex flex-col gap-1">
-                      <span class="font-semibold text-lg">کمربند مشکی</span>
-                      <span class="font-medium text-sm flex items-center gap-1">
-                        <UIcon name="material-symbols:calendar-today-outline-rounded" class="size-4 text-black/70"/>
-                        1405/4/20
-                      </span>
+                  <div class="w-full rounded-lg bg-muted p-4">
+                    <div class="flex flex-col items-center gap-3 w-full">
+                      <div class="rounded-full bg-white size-14 flex items-center justify-center text-lg font-bold">
+                        {{ name[0].slice(0, 1) }}
+                      </div>
+                      <div class="flex justify-between gap-4 w-full">
+                        <span class="font-medium text-lg">علی احمدی</span>
+                        <span class="belt-blue text-sm">کمربند ابی</span>
+                      </div>
+                      <div class="flex justify-between gap-4 w-full">
+                        <span class="font-medium">حضور 85%</span>
+                        <span class="font-medium">عضویت 1403/10/20</span>
+                      </div>
+                      <div class="flex justify-between items-center gap-4">
+                        <UBadge color="success" label="پرداخت شده"/>
+                      </div>
                     </div>
                   </div>
                 </div>

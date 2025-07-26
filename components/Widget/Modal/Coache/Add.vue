@@ -16,18 +16,19 @@ const localOpen = computed({
   set: (Val) => emit('update:open', Val)
 });
 
-const itemsSelect = ref(['سفید', 'نارنجی', 'ابی', 'زرد', 'سبز', 'قهوه ای', 'مشکی'])
+const itemsSelect = ref(['کارته', 'بوکس', 'کیک بوکس', 'جودو', 'کشتی', 'کنگفو', 'تکواندو', 'موی تای', 'ام‌ام‌ای'])
 
 const schema = v.object({
   fullName: v.pipe(
       v.string(),
       v.trim(),
-      v.nonEmpty('نام و نام خانوادگی هنرجو الزامی است.')
+      v.nonEmpty('نام و نام خانوادگی مربی الزامی است.')
   ),
-  address: v.pipe(
+  nationalCode: v.pipe(
       v.string(),
       v.trim(),
-      v.nonEmpty('ادرس محل زندگی الزامی است.')
+      v.nonEmpty('کد ملی الزامی است.'),
+      v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید.')
   ),
   phoneNumber: v.pipe(
       v.string(),
@@ -36,39 +37,30 @@ const schema = v.object({
       v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد.'),
       v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد.')
   ),
-  phoneNumberEmergency: v.pipe(
+  history: v.pipe(
       v.string(),
       v.trim(),
-      v.nonEmpty('شماره تلفن اضطراری الزامی است.'),
-      v.minLength(11, 'شماره تلفن اضطراری باید حداقل ۱۱ رقم باشد.'),
-      v.maxLength(12, 'شماره تلفن اضطراری نباید بیشتر از ۱۲ رقم باشد.')
+      v.nonEmpty('سابقه تدریس الزامی است.'),
   ),
-  nationalCode: v.pipe(
+  certificates: v.pipe(
       v.string(),
       v.trim(),
-      v.nonEmpty('کد ملی الزامی است.'),
-      v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید.')
+      v.nonEmpty('مدرک و گواهینامه مربی الزامی است.'),
   ),
-  age: v.pipe(
+  address: v.pipe(
       v.string(),
       v.trim(),
-      v.nonEmpty('سن هنرجو الزامی است.'),
-      v.minLength(1, 'سن نمی‌تواند خالی باشد'),
-      v.maxLength(2, 'سن باید حداکثر ۲ رقم باشد')
+      v.nonEmpty('ادرس محل باشگاه الزامی است.')
   ),
-  selectBelt: v.pipe(
+  selectSport: v.pipe(
       v.string(),
       v.trim(),
   ),
-  date: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('تاریخ تولد هنرجو الزامی است.'),
-      v.regex(/^\d{4}\/\d{2}\/\d{2}$/, 'فرمت تاریخ شمسی صحیح نیست. مثال: 1380/07/30'),
-      v.custom((val: any) => !isNaN(new Date(val).getTime()), 'تاریخ وارد شده معتبر نیست.')
-  ),
-  underSupervisionDoctor: v.boolean(),
-  diseaseRecords: v.boolean()
+  image: v.pipe(
+      v.file(),
+      v.mimeType(['image/jpeg', 'image/png', 'image/jpg', 'image/webp'], 'لطف عکس را با این فرمت ها اپلود کنید. (jpeg, png, jpg, webp)'),
+      v.maxSize(1024 * 1024 * 2, 'عکس باید زیر ۲ مگابایت باشد.')
+  )
 })
 
 type Schema = v.InferOutput<typeof schema>;
@@ -77,13 +69,11 @@ const state = reactive({
   fullName: '',
   address: '',
   phoneNumber: '',
-  phoneNumberEmergency: '',
   nationalCode: '',
-  age: '',
-  date: '',
-  selectBelt: 'سفید',
-  underSupervisionDoctor: false,
-  diseaseRecords: false
+  history: '',
+  certificates: '',
+  selectSport: 'کارته',
+  image: undefined as File | undefined
 });
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
@@ -92,48 +82,40 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <UModal v-model:open="localOpen" title="ثبت هنرجوی جدید" description="اطلاعات هنرجو را تکمیل کنید"
+  <UModal v-model:open="localOpen" title="ثبت مربی جدید" description="اطلاعات مربی را تکمیل کنید"
           :ui="{ footer: 'justify-between' }">
     <template #body>
       <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
         <div class="flex flex-col gap-5 w-full">
-          <USeparator label="اطلاعات شخصی"/>
           <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
             <BaseFormInput v-model="state.fullName" label="نام و نام خانوادگی" name="fullName" type="text"
-                           placeholder="نام کامل هنرجو" required class="w-full"/>
+                           placeholder="نام کامل مربی" required class="w-full"/>
             <BaseFormInput v-model="state.nationalCode" label="کد ملی" name="nationalCode" type="text"
-                           placeholder="کد ملی هنرجو" required class="w-full"/>
+                           placeholder="کد ملی مربی" required class="w-full"/>
           </div>
-          <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-            <BaseFormInput v-model="state.date" label="تاریخ تولد" name="date" type="text"
-                           placeholder="1380/10/20" required class="w-full"/>
-            <BaseFormInput v-model="state.age" label="سن" name="age" type="text"
-                           placeholder="سن هنرجو" required class="w-full"/>
-          </div>
-          <USeparator label="اطلاعات تماس"/>
           <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
             <BaseFormInput v-model="state.phoneNumber" label="شماره تلفن" name="phoneNumber" type="text"
-                           placeholder="شماره تلفن هنرجو" required class="w-full"/>
-            <BaseFormInput v-model="state.phoneNumberEmergency" label="شماره تلفن اضطراری" name="phoneNumberEmergency"
-                           type="text" placeholder="شماره تلفن اضطراری هنرجو" required class="w-full"/>
+                           placeholder="شماره تلفن مربی" required class="w-full"/>
+            <BaseFormInput v-model="state.history" label="سابقه تدریس" name="history" type="text"
+                           placeholder="سابقه تدریس مربی" required class="w-full"/>
           </div>
           <div class="w-full pt-1">
-            <BaseFormTextArea v-model="state.address" label="آدرس محل سکونت" name="address" required class="w-full"/>
+            <BaseFormInput v-model="state.certificates" label="مدرک و گواهینامه ها" name="certificates" type="text"
+                           placeholder="مدرک و گواهینامه ها مربیگری" required class="w-full"/>
           </div>
-          <USeparator label="اطلاعات پزشکی"/>
-          <div class="flex flex-col gap-4 w-full">
-            <BaseFormCheckBox :required="false" v-model="state.underSupervisionDoctor" name="underSupervisionDoctor"
-                              label="آیا تحت نظر پزشک هستید؟"/>
-            <BaseFormCheckBox :required="false" v-model="state.diseaseRecords" name="diseaseRecords"
-                              label="سوابق بیماری یا آسیب‌دیدگی؟"/>
+          <div class="w-full pt-1">
+            <BaseFormTextArea v-model="state.address" label="آدرس محل باشگاه" name="address" required class="w-full"/>
           </div>
-          <USeparator/>
-          <div class="w-full">
-            <BaseFormSelect :required="false" v-model="state.selectBelt" :items="itemsSelect" name="selectBelt" label="انتخاب کمربند"/>
+          <div class="w-full pt-1">
+            <BaseFormSelect required v-model="state.selectSport" :items="itemsSelect" name="selectSport"
+                            label="انتخاب رشته ورزشی"/>
+          </div>
+          <div class="w-full pt-1">
+            <BaseFormUploadFile :required="false" v-model="state.image" label="ارسال عکس گواهینامه" name="image" description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا 2MB" class="w-full"/>
           </div>
           <div class="flex justify-between gap-2 pt-4">
             <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false"/>
-            <UButton label="ذخیره اطلاعات" color="primary" type="submit"/>
+            <UButton label="افزودن مربی" color="primary" type="submit"/>
           </div>
         </div>
       </UForm>
