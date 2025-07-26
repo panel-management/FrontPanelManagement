@@ -3,7 +3,7 @@
     <LazyTheSlider/>
     <div class="flex justify-center items-center-safe gap-5">
       <span class="text-lg">{{ useJDate(new Date()) }} ساعت {{ currentTime }}</span>
-      <UIcon name="ant-design:fullscreen-outlined" mode="svg" class="size-7 text-black cursor-pointer  max-sm:hidden"
+      <UIcon name="ant-design:fullscreen-outlined" mode="svg" class="size-7 text-black cursor-pointer  max-lg:hidden"
              @click="toggleFullScreen"/>
       <UDropdownMenu v-model:open="isOpen" :items="dropDownMenu"
                      :content="{ align: 'end', side: 'bottom', sideOffset: 8 }"
