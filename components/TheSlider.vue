@@ -60,6 +60,14 @@ const items = ref<NavigationMenuItem[][]>([
       onSelect: (e) => {
         isOpen.value = false
       }
+    },
+    {
+      label: 'امور مالی من',
+      icon: 'file-icons:shopify',
+      to: '/management-financial/my-financial',
+      onSelect: (e) => {
+        isOpen.value = false
+      }
     }
   ]
 ])
