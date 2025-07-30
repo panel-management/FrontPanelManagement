@@ -66,10 +66,12 @@ const schema = v.object({
       v.string(),
       v.trim(),
   ),
-  image: v.pipe(
-      v.file(),
-      v.mimeType(['image/jpeg', 'image/png', 'image/jpg', 'image/webp'], 'لطف عکس را با این فرمت ها اپلود کنید. (jpeg, png, jpg, webp)'),
-      v.maxSize(1024 * 1024 * 2, 'عکس باید زیر ۲ مگابایت باشد.')
+  image: v.optional(
+      v.pipe(
+          v.file(),
+          v.mimeType(['image/jpeg', 'image/png', 'image/jpg', 'image/webp'], 'لطف عکس را با این فرمت ها اپلود کنید. (jpeg, png, jpg, webp)'),
+          v.maxSize(1024 * 1024 * 2, 'عکس باید زیر ۲ مگابایت باشد.')
+      )
   )
 })
 
@@ -181,8 +183,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                      trailing-icon="material-symbols:close-rounded"/>
           </div>
         </div>
-        <div class="bg-muted p-4 md:p-6 rounded-xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 lg:items-center gap-5">
-          <div class="rounded-xl bg-white p-5 w-full flex flex-row-reverse md:flex-col items-center justify-between sm:justify-center gap-4">
+        <div
+            class="bg-muted p-4 md:p-6 rounded-xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 lg:items-center gap-5">
+          <div
+              class="rounded-xl bg-white p-5 w-full flex flex-row-reverse md:flex-col items-center justify-between sm:justify-center gap-4">
             <div class="bg-turquoise-100 size-12 flex items-center justify-center rounded-full">
               <UIcon name="material-symbols:calendar-today-outline-rounded" class="size-6 text-turquoise-500"/>
             </div>
@@ -191,7 +195,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
               <span class="font-medium">سابقه تدریس</span>
             </div>
           </div>
-          <div class="rounded-xl bg-white p-5 w-full flex flex-row-reverse md:flex-col items-center justify-between sm:justify-center gap-4">
+          <div
+              class="rounded-xl bg-white p-5 w-full flex flex-row-reverse md:flex-col items-center justify-between sm:justify-center gap-4">
             <div class="bg-orange-100 size-12 flex items-center justify-center rounded-full">
               <UIcon name="mdi:medal-outline" class="size-6 text-orange-400"/>
             </div>
@@ -200,7 +205,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
               <span class="font-medium">ارتقای کمربند</span>
             </div>
           </div>
-          <div class="rounded-xl bg-white p-5 w-full flex flex-row-reverse md:flex-col items-center justify-between sm:justify-center gap-4">
+          <div
+              class="rounded-xl bg-white p-5 w-full flex flex-row-reverse md:flex-col items-center justify-between sm:justify-center gap-4">
             <div class="bg-turquoise-100 size-12 flex items-center justify-center rounded-full">
               <UIcon name="mdi:chart-timeline-variant" class="size-6 text-turquoise-500"/>
             </div>
@@ -209,7 +215,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
               <span class="font-medium">میانگین حضور کلاس</span>
             </div>
           </div>
-          <div class="rounded-xl bg-white p-5 w-full flex flex-row-reverse md:flex-col items-center justify-between sm:justify-center gap-4">
+          <div
+              class="rounded-xl bg-white p-5 w-full flex flex-row-reverse md:flex-col items-center justify-between sm:justify-center gap-4">
             <div class="bg-info-100 size-12 flex items-center justify-center rounded-full">
               <UIcon name="ph:users-three-bold" class="size-6 text-info-500"/>
             </div>
@@ -226,27 +233,40 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                 <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
                   <div class="flex flex-col gap-5 w-full">
                     <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-                      <BaseFormInput :required="false" :disable="isShow" v-model="state.fullName" label="نام و نام خانوادگی" name="fullName" type="text" placeholder="نام کامل مربی" class="w-full"/>
-                      <BaseFormInput :required="false" :disable="isShow" v-model="state.nationalCode" label="کد ملی" name="nationalCode" type="text" placeholder="کد ملی مربی" class="w-full"/>
+                      <BaseFormInput :required="false" :disable="isShow" v-model="state.fullName"
+                                     label="نام و نام خانوادگی" name="fullName" type="text" placeholder="نام کامل مربی"
+                                     class="w-full"/>
+                      <BaseFormInput :required="false" :disable="isShow" v-model="state.nationalCode" label="کد ملی"
+                                     name="nationalCode" type="text" placeholder="کد ملی مربی" class="w-full"/>
                     </div>
                     <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-                      <BaseFormInput :required="false" :disable="isShow" v-model="state.phoneNumber" label="شماره تلفن" name="phoneNumber" type="text" placeholder="شماره تلفن مربی" class="w-full"/>
-                      <BaseFormInput :required="false" :disable="isShow" v-model="state.history" label="سابقه تدریس" name="history" type="text" placeholder="سابقه تدریس مربی" class="w-full"/>
+                      <BaseFormInput :required="false" :disable="isShow" v-model="state.phoneNumber" label="شماره تلفن"
+                                     name="phoneNumber" type="text" placeholder="شماره تلفن مربی" class="w-full"/>
+                      <BaseFormInput :required="false" :disable="isShow" v-model="state.history" label="سابقه تدریس"
+                                     name="history" type="text" placeholder="سابقه تدریس مربی" class="w-full"/>
                     </div>
                     <div class="w-full pt-1">
-                      <BaseFormInput :required="false" :disable="isShow" v-model="state.certificates" label="مدرک و گواهینامه ها" name="certificates" type="text" placeholder="مدرک و گواهینامه ها مربیگری" class="w-full"/>
+                      <BaseFormInput :required="false" :disable="isShow" v-model="state.certificates"
+                                     label="مدرک و گواهینامه ها" name="certificates" type="text"
+                                     placeholder="مدرک و گواهینامه ها مربیگری" class="w-full"/>
                     </div>
                     <div class="w-full pt-1">
-                      <BaseFormTextArea :required="false" :disable="isShow" v-model="state.address" label="آدرس محل باشگاه" name="address" class="w-full"/>
+                      <BaseFormTextArea :required="false" :disable="isShow" v-model="state.address"
+                                        label="آدرس محل باشگاه" name="address" class="w-full"/>
                     </div>
                     <div class="w-full pt-1">
-                      <BaseFormSelect :required="false" :disable="isShow" v-model="state.selectSport" :items="itemsSelect" name="selectSport" label="انتخاب رشته ورزشی"/>
+                      <BaseFormSelect :required="false" :disable="isShow" v-model="state.selectSport"
+                                      :items="itemsSelect" name="selectSport" label="انتخاب رشته ورزشی"/>
                     </div>
                     <div class="w-full pt-1">
-                      <BaseFormUploadFile :required="false" :disable="isShow" v-model="state.image" label="ارسال عکس گواهینامه" name="image" description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا 2MB" class="w-full"/>
+                      <BaseFormUploadFile :required="false" :disable="isShow" v-model="state.image"
+                                          label="ارسال عکس گواهینامه" name="image"
+                                          description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا 2MB"
+                                          class="w-full"/>
                     </div>
                     <div class="flex justify-end gap-2 pt-4">
-                      <UButton :disabled="isShow" label="اعمال تغییرات" color="primary" type="submit" class="disabled:blur-[1px]"/>
+                      <UButton :disabled="isShow" label="اعمال تغییرات" color="primary" type="submit"
+                               class="disabled:blur-[1px]"/>
                     </div>
                   </div>
                 </UForm>
