@@ -102,10 +102,4 @@ const isOpen: Ref<boolean> = ref(false);
 function openModal() {
   isOpen.value = !isOpen.value;
 }
-
-const isOpen2: Ref<boolean> = ref(false);
-
-function openModal2() {
-  isOpen2.value = !isOpen2.value;
-}
 </script>

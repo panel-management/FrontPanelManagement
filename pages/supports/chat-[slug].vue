@@ -1,5 +1,5 @@
 <template>
-  <div class="container h-full w-full rounded-sm p-4 bg-muted flex flex-col gap-4">
+  <div class="container h-dvh w-full rounded-sm p-4 bg-muted flex flex-col gap-4">
     <div class="flex justify-between">
       <div class="flex flex-col gap-2">
         <span class="text-2xl font-medium">مشکل در ثبت حضور و غیاب</span>
@@ -10,21 +10,23 @@
         <UBadge label="بالا" variant="solid" color="warning"/>
       </div>
     </div>
-    <div class="bg-white rounded-xl p-4 flex flex-col flex-1 gap-3 overflow-y-auto">
-      <div v-for="message in messages" :key="message.id" :class="message.sender === 'user' ? 'flex justify-end' : 'flex justify-start'">
-        <UCard :ui="{body}" class="w-[14rem] md:w-1/2 lg:w-1/3 xl:w-1/5">
-          <template #header>
+    <div class="bg-white h-full w-full rounded-xl p-4 flex flex-col gap-3 overflow-hidden">
+      <div ref="messageContainer" class="overflow-y-auto w-full h-full p-1 space-y-3">
+        <div v-for="message in messages" :key="message.id" :class="message.sender === 'user' ? 'flex justify-end' : 'flex justify-start'">
+          <UCard class="w-[14rem] md:w-1/2 lg:w-1/3 xl:w-1/4">
+            <template #header>
             <span class="font-medium text-sm">
               {{ message.sender === 'user' ? 'شما' : 'پشتیبانی' }}
             </span>
-          </template>
-          <div class="flex flex-col gap-3">
-            <p class="text-sm text-black text-pretty">{{ message.text }}</p>
-            <div class="text-xs text-muted text-end">{{ formatDate(message.createdAt) }}</div>
-          </div>
-        </UCard>
+            </template>
+            <div class="flex flex-col gap-3">
+              <p class="text-sm text-black text-pretty">{{ message.text }}</p>
+              <div class="text-xs text-muted text-end">{{ formatDate(message.createdAt) }}</div>
+            </div>
+          </UCard>
+        </div>
       </div>
-      <div class="flex justify-center items-center">
+      <div class="flex justify-center items-end">
         <div class="bg-white p-2 rounded shadow-xs shadow-black/30 w-full md:w-2/3 xl:w-1/2">
           <form @submit.prevent="sendMessage" class="flex items-center gap-2 w-full">
             <BaseFormInput v-model="newMessage" name="newMessage" type="text" placeholder="پیام خود را اینجا بنویسید" required class="w-full" />
@@ -43,7 +45,9 @@ const messages = ref([
 
 const newMessage = ref('')
 
-function sendMessage() {
+const messageContainer = ref<HTMLElement | null>(null)
+
+async function sendMessage() {
   if (!newMessage.value.trim()) return
 
   messages.value.push({
@@ -54,9 +58,15 @@ function sendMessage() {
   })
 
   newMessage.value = ''
+
+  await nextTick()
+
+  if (messageContainer.value) {
+    messageContainer.value.scrollTop = messageContainer.value.scrollHeight
+  }
 }
 
-function formatDate(date) {
+function formatDate(date: Date) {
   return new Intl.DateTimeFormat('fa-IR', {
     hour: '2-digit',
     minute: '2-digit'
