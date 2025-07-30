@@ -63,7 +63,8 @@ defineShortcuts({
   o: () => isOpen.value = !isOpen.value,
   p: () => navigateTo("/profile", {replace: true}),
   f: () => navigateTo("/settings", {replace: true}),
-  s: () => navigateTo("/supports", {replace: true}),
+  'alt_t': () => navigateTo("/supports", {replace: true}),
+  s: () => navigateTo("/supports/ticket", {replace: true}),
   'shift_q': () => navigateTo("/", {replace: true}),
 })
 
@@ -85,10 +86,16 @@ const dropDownMenu = ref<DropdownMenuItem[][]>([
       to: '/profile',
     },
     {
+      label: 'تیکت ها',
+      icon: 'bi:patch-question-fll',
+      kbds: ['t'],
+      to: '/supports',
+    },
+    {
       label: 'پشتیبانی',
       icon: 'bi:patch-question-fll',
-      kbds: ['s'],
-      to: '/supports',
+      kbds: ['alt', 's'],
+      to: '/supports/ticket',
     },
     {
       label: 'تنظیمات',
