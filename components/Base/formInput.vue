@@ -6,8 +6,8 @@
 <script setup lang="ts">
 const model = defineModel<string>()
 
-const {label, name, type, placeholder = '', required, disable = false} = defineProps<{
-  label: string,
+const {label='', name, type, placeholder = '', required, disable = false} = defineProps<{
+  label?: string,
   name: string,
   type: string,
   placeholder: string,
