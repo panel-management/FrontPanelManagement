@@ -80,10 +80,16 @@ const dropDownMenu = ref<DropdownMenuItem[][]>([
   ],
   [
     {
-      label: 'پروفایل',
+      label: 'پروفایل هنرجو',
       icon: 'i-lucide-user',
       kbds: ['p'],
-      to: '/profile',
+      to: '/profile/student',
+    },
+    {
+      label: 'پروفایل مربی',
+      icon: 'i-lucide-user',
+      kbds: ['p'],
+      to: '/profile/coaches',
     },
     {
       label: 'تیکت ها',
