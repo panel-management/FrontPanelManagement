@@ -10,7 +10,7 @@ const {label='', name, type, placeholder = '', required, disable = false} = defi
   label?: string,
   name: string,
   type: string,
-  placeholder: string,
+  placeholder?: string,
   required: boolean
   disable?: boolean
 }>()
