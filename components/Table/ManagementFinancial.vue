@@ -4,7 +4,7 @@
       <div class="flex max-sm:flex-col gap-3">
         <UButton icon="mdi-light:download" label="خروجی اکسل" size="xl" color="neutral" variant="solid"
                  class="max-md:w-fit"/>
-        <UButton icon="material-symbols:shopping-bag" @click="openModal" label="افزودن خرید تجهیزات" size="xl" color="neutral"
+        <UButton icon="material-symbols:shopping-bag" @click="modalStore.toggleModal('equipmentAdd')" label="افزودن خرید تجهیزات" size="xl" color="neutral"
                  variant="solid" class="max-md:w-fit"/>
       </div>
       <UInput :model-value="(table?.tableApi?.getColumn('fullName')?.getFilterValue() as string)"
@@ -94,7 +94,7 @@
       </template>
     </UTable>
   </div>
-  <LazyWidgetModalEquipmentAdd v-model:open="isOpen"/>
+  <LazyWidgetModalEquipmentAdd v-model:open="modalStore.modals.equipmentAdd"/>
 </template>
 <script setup lang="ts">
 import type {TableColumn} from "@nuxt/ui";
@@ -102,11 +102,7 @@ import type {TableColumn} from "@nuxt/ui";
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
 const table = useTemplateRef('table')
-const isOpen: Ref<boolean> = ref(false);
-
-function openModal() {
-  isOpen.value = !isOpen.value;
-}
+const modalStore = useModalStore()
 
 const selectedPaymentMethod = ref<string[]>([])
 const selectedTypeTransaction = ref<string[]>([])

@@ -34,7 +34,7 @@
       </template>
     </UTable>
   </div>
-  <LazyWidgetModalStudentEdit v-model:open="isOpen"/>
+  <LazyWidgetModalStudentEdit v-model:open="modalStore.modals.studentEdit"/>
 </template>
 <script setup lang="ts">
 import type {TableColumn} from '@nuxt/ui'
@@ -43,7 +43,7 @@ const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 const table = useTemplateRef('table')
-const isOpen: Ref<boolean> = ref(false)
+const modalStore = useModalStore()
 
 type Payment = {
   id: string
@@ -237,7 +237,7 @@ const columns: TableColumn<Payment>[] = [
         label: 'مشاهده پروفایل',
         icon: 'material-symbols:person',
         onSelect() {
-          isOpen.value = !isOpen.value
+          modalStore.toggleModal('studentEdit')
         }
       }, {
         label: 'حذف هنرجو',
