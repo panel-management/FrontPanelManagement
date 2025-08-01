@@ -13,7 +13,7 @@
       <template #attendanceRecord>
         <div class="w-full h-full p-4 bg-white flex flex-col gap-5 rounded-xl">
           <div class="flex flex-col gap-2">
-            <span class="text-2xl font-bold">ثبت حضور غیاب هنرجویان</span>
+            <span class="text-lg md:text-2xl font-bold">ثبت حضور غیاب هنرجویان</span>
             <p class="break-words font-medium text-sm">بر روی دکمه‌های وضعیت برای ثبت حضور کلیک کنید.</p>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-5 w-full h-full">
