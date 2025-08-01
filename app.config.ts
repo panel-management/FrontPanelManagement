@@ -71,6 +71,11 @@ export default defineAppConfig({
             slots: {
                 overlay: 'fixed inset-0 bg-primary/30 backdrop-blur'
             }
-        }
+        },
+        modal: {
+            slots: {
+                body: 'flex-1 overflow-y-auto sm:p-4',
+            }
+        },
     }
 })

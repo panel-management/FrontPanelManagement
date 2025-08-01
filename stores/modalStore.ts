@@ -7,6 +7,11 @@ export const useModalStore = defineStore("modal", () => {
         rankAdd: false,
         rankEdit: false,
         studentAdd: false,
+        studentEdit: false,
+        coachesAdd: false,
+        coachesEdit: false,
+        equipmentAdd: false,
+        supportAdd: false,
     })
 
     function toggleModal(name: string) {
