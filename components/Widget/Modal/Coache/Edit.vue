@@ -112,7 +112,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   <UModal fullscreen v-model:open="localOpen" title="پروفایل مربی" description="اطلاعات کامل و تاریخچه مربی">
     <template #body>
       <div class="flex flex-col gap-5 md:gap-10 h-full w-full">
-        <div class="bg-muted p-4 md:p-6 rounded-xl w-full flex flex-col lg:items-center gap-5">
+        <div class="bg-muted p-4 rounded-xl w-full flex flex-col lg:items-center gap-5">
           <div class="flex items-center justify-between w-full">
             <div class="flex gap-3">
               <div class="bg-black rounded-full size-16 flex justify-center items-center text-white">
@@ -183,8 +183,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                      trailing-icon="material-symbols:close-rounded"/>
           </div>
         </div>
-        <div
-            class="bg-muted p-4 md:p-6 rounded-xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 lg:items-center gap-5">
+        <div class="bg-muted p-4 rounded-xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 lg:items-center gap-5">
           <div
               class="rounded-xl bg-white p-5 w-full flex flex-row-reverse md:flex-col items-center justify-between sm:justify-center gap-4">
             <div class="bg-turquoise-100 size-12 flex items-center justify-center rounded-full">
@@ -226,7 +225,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             </div>
           </div>
         </div>
-        <div class="bg-muted p-4 md:p-6 rounded-xl w-full flex items-center gap-5">
+        <div class="bg-muted p-4 rounded-xl w-full flex items-center gap-5">
           <LazyBaseTabs :items="items" color="tertiary">
             <template #editData>
               <div class="w-full h-full bg-white rounded-lg p-4">
@@ -245,20 +244,20 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                       <BaseFormInput :required="false" :disable="isShow" v-model="state.history" label="سابقه تدریس"
                                      name="history" type="text" placeholder="سابقه تدریس مربی" class="w-full"/>
                     </div>
-                    <div class="w-full pt-1">
+                    <div class="w-full">
                       <BaseFormInput :required="false" :disable="isShow" v-model="state.certificates"
                                      label="مدرک و گواهینامه ها" name="certificates" type="text"
                                      placeholder="مدرک و گواهینامه ها مربیگری" class="w-full"/>
                     </div>
-                    <div class="w-full pt-1">
+                    <div class="w-full">
                       <BaseFormTextArea :required="false" :disable="isShow" v-model="state.address"
                                         label="آدرس محل باشگاه" name="address" class="w-full"/>
                     </div>
-                    <div class="w-full pt-1">
+                    <div class="w-full">
                       <BaseFormSelect :required="false" :disable="isShow" v-model="state.selectSport"
                                       :items="itemsSelect" name="selectSport" label="انتخاب رشته ورزشی"/>
                     </div>
-                    <div class="w-full pt-1">
+                    <div class="w-full">
                       <BaseFormUploadFile :required="false" :disable="isShow" v-model="state.image"
                                           label="ارسال عکس گواهینامه" name="image"
                                           description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا 2MB"
@@ -400,9 +399,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                     <UIcon name="solar:dollar-bold" class="size-6 text-black/70"/>
                     <span class="text-xl font-medium break-words">وضعیت فعلی شهریه</span>
                   </div>
-                  <div class="bg-muted flex max-lg:flex-col items-center justify-between gap-10 rounded-md w-full p-4">
+                  <div class="flex max-lg:flex-col items-center justify-between gap-10 w-full">
                     <div
-                        class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white rounded-lg">
+                        class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white shadow-lg rounded-lg">
                       <div class="bg-muted rounded-full size-12 flex justify-center items-center">
                         <UIcon name="clarity:success-standard-line" class="size-6 text-success"/>
                       </div>
@@ -410,7 +409,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                       <span class="text-sm">وضعیت فعلی</span>
                     </div>
                     <div
-                        class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white rounded-lg">
+                        class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white shadow-lg rounded-lg">
                       <div class="bg-muted rounded-full size-12 flex justify-center items-center">
                         <UIcon name="fluent:payment-32-filled" class="size-6 text-black"/>
                       </div>
@@ -418,7 +417,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                       <span class="text-sm">شهریه ماهانه (تومان)</span>
                     </div>
                     <div
-                        class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white rounded-lg">
+                        class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white shadow-lg rounded-lg">
                       <div class="bg-muted rounded-full size-12 flex justify-center items-center">
                         <UIcon name="material-symbols:calendar-today-rounded" class="size-6 text-teal-300"/>
                       </div>

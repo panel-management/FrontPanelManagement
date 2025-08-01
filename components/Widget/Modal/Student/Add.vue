@@ -59,6 +59,8 @@ const schema = v.object({
   selectBelt: v.pipe(
       v.string(),
       v.trim(),
+      v.minLength(1, 'لطفا یک از موارد کمربند انتخاب کنید.'),
+      v.custom((val: any) => itemsSelect.value.includes(val), 'کمربند انتخاب ‌شده معتبر نیست.')
   ),
   date: v.pipe(
       v.string(),
@@ -81,7 +83,7 @@ const state = reactive({
   nationalCode: '',
   age: '',
   date: '',
-  selectBelt: 'سفید',
+  selectBelt: '',
   underSupervisionDoctor: false,
   diseaseRecords: false
 });
@@ -117,7 +119,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             <BaseFormInput v-model="state.phoneNumberEmergency" label="شماره تلفن اضطراری" name="phoneNumberEmergency"
                            type="text" placeholder="شماره تلفن اضطراری هنرجو" required class="w-full"/>
           </div>
-          <div class="w-full pt-1">
+          <div class="w-full">
             <BaseFormTextArea v-model="state.address" label="آدرس محل سکونت" name="address" required class="w-full"/>
           </div>
           <USeparator label="اطلاعات پزشکی"/>
@@ -129,7 +131,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           </div>
           <USeparator/>
           <div class="w-full">
-            <BaseFormSelect :required="false" v-model="state.selectBelt" :items="itemsSelect" name="selectBelt" label="انتخاب کمربند"/>
+            <BaseFormSelect :required="true" v-model="state.selectBelt" :items="itemsSelect" name="selectBelt" placeholder="انتخاب کمربند" label="انتخاب کمربند"/>
           </div>
           <div class="flex justify-between gap-2 pt-4">
             <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false"/>

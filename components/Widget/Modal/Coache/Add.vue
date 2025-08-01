@@ -55,11 +55,15 @@ const schema = v.object({
   selectSport: v.pipe(
       v.string(),
       v.trim(),
+      v.minLength(1, 'لطفا یک از موارد رشته انتخاب کنید.'),
+      v.custom((val: any) => itemsSelect.value.includes(val), 'رشته انتخاب ‌شده معتبر نیست.')
   ),
-  image: v.pipe(
-      v.file(),
-      v.mimeType(['image/jpeg', 'image/png', 'image/jpg', 'image/webp'], 'لطف عکس را با این فرمت ها اپلود کنید. (jpeg, png, jpg, webp)'),
-      v.maxSize(1024 * 1024 * 2, 'عکس باید زیر ۲ مگابایت باشد.')
+  image: v.optional(
+      v.pipe(
+          v.file(),
+          v.mimeType(['image/jpeg', 'image/png', 'image/jpg', 'image/webp'], 'لطف عکس را با این فرمت ها اپلود کنید. (jpeg, png, jpg, webp)'),
+          v.maxSize(1024 * 1024 * 2, 'عکس باید زیر ۲ مگابایت باشد.')
+      )
   )
 })
 
@@ -72,7 +76,7 @@ const state = reactive({
   nationalCode: '',
   history: '',
   certificates: '',
-  selectSport: 'کارته',
+  selectSport: '',
   image: undefined as File | undefined
 });
 
@@ -99,19 +103,20 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             <BaseFormInput v-model="state.history" label="سابقه تدریس" name="history" type="text"
                            placeholder="سابقه تدریس مربی" required class="w-full"/>
           </div>
-          <div class="w-full pt-1">
+          <div class="w-full">
             <BaseFormInput v-model="state.certificates" label="مدرک و گواهینامه ها" name="certificates" type="text"
                            placeholder="مدرک و گواهینامه ها مربیگری" required class="w-full"/>
           </div>
-          <div class="w-full pt-1">
+          <div class="w-full">
             <BaseFormTextArea v-model="state.address" label="آدرس محل باشگاه" name="address" required class="w-full"/>
           </div>
-          <div class="w-full pt-1">
+          <div class="w-full">
             <BaseFormSelect required v-model="state.selectSport" :items="itemsSelect" name="selectSport"
-                            label="انتخاب رشته ورزشی"/>
+                            placeholder="رشته مورد نظر را انتخاب کنید" label="انتخاب رشته ورزشی"/>
           </div>
-          <div class="w-full pt-1">
-            <BaseFormUploadFile :required="false" v-model="state.image" label="ارسال عکس گواهینامه" name="image" description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا 2MB" class="w-full"/>
+          <div class="w-full">
+            <BaseFormUploadFile :required="false" v-model="state.image" label="ارسال عکس گواهینامه" name="image"
+                                description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا 2MB" class="w-full"/>
           </div>
           <div class="flex justify-between gap-2 pt-4">
             <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false"/>
