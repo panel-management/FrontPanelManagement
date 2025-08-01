@@ -126,7 +126,7 @@ body {
     }
 
     .btn {
-        @apply border-2 border-turquoise-500 hover:bg-transparent bg-turquoise-500 text-white hover:text-black;
+        @apply border-2 border-black hover:bg-transparent bg-black text-white hover:text-black;
     }
 
     .belt-white {
