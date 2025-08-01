@@ -6,7 +6,7 @@
         <span class="text-xs sm:text-sm font-medium">مشاهده و مدیریت اطلاعات مربیان باشگاه</span>
       </div>
       <div class="sm:p-2">
-        <UButton @click="openModal" trailing-icon="material-symbols:person-add" size="lg" color="primary" variant="subtle">
+        <UButton @click="modalStore.toggleModal('coachesAdd')" trailing-icon="material-symbols:person-add" size="lg" color="primary" variant="subtle">
           افزودن مربی جدید
         </UButton>
       </div>
@@ -18,13 +18,9 @@
       </div>
       <LazyTableCoacheTable/>
     </div>
-    <LazyWidgetModalCoacheAdd v-model:open="isOpen"/>
+    <LazyWidgetModalCoacheAdd v-model:open="modalStore.modals.coachesAdd"/>
   </section>
 </template>
 <script setup lang="ts">
-const isOpen: Ref<boolean> = ref(false);
-
-function openModal() {
-  isOpen.value = !isOpen.value;
-}
+const modalStore = useModalStore()
 </script>

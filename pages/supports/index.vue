@@ -4,7 +4,7 @@
       <h2 class="text-lg sm:text-3xl font-bold">سیستم پشتیبانی</h2>
       <span class="text-xs sm:text-sm font-medium">مدیریت تیکت‌ها و پشتیبانی کاربران</span>
     </div>
-    <div class="w-full h-full sm:p-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
       <div class="w-full h-full p-5 bg-white rounded-lg flex flex-col justify-center items-center gap-4">
         <div class="size-14 rounded-full bg-turquoise-100 flex justify-center items-center">
           <UIcon name="streamline:interface-validation-check-circle-checkmark-addition-circle-success-check-validation-add-form" class="size-6 text-turquoise-500" />
@@ -130,8 +130,7 @@
         </NuxtLink>
       </div>
     </div>
-    <USeparator/>
-    <div class="w-full flex justify-center items-center">
+    <div class="w-full flex bg-white p-4 rounded-lg justify-center items-center">
       <UPagination v-model:page="page" show-edges :sibling-count="1" :total="50"/>
     </div>
   </section>

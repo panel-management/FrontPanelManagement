@@ -4,7 +4,7 @@
       <h2 class="text-lg sm:text-3xl font-bold">صورتحساب‌ های شما</h2>
       <span class="text-xs sm:text-sm font-medium">مشاهده و پرداخت صورتحساب‌ های معوق و آینده</span>
     </div>
-    <div class="w-full h-full bg-white rounded-xl p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       <div class="bg-teal-50 rounded-lg p-4 w-full flex flex-col gap-4">
         <div class="w-full flex max-sm:flex-col-reverse gap-2 justify-between">
           <div>
