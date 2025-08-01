@@ -120,11 +120,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
               </div>
               <div class="flex flex-col gap-2">
                 <span class="font-medium text-xl">علی احمدی</span>
-                <div class="flex flex-wrap gap-2 sm:gap-3">
-                  <UBadge color="secondary" variant="solid" label="مربی" class="font-medium"/>
-                  <UBadge color="neutral" variant="soft" label="کیک بوکسینگ" class="font-semibold"/>
-                  <UBadge color="primary" variant="soft" label="فعال" class="font-semibold"/>
-                  <UBadge color="success" variant="soft" label="پرداخت شده" class="font-semibold"/>
+                <div class="flex gap-2 sm:gap-3">
+                  <div class="flex max-sm:flex-col gap-2 sm:gap-3">
+                    <UBadge color="secondary" variant="solid" label="مربی" class="font-medium w-fit"/>
+                    <UBadge color="neutral" variant="soft" label="کیک بوکسینگ" class="font-semibold w-fit"/>
+                  </div>
+                  <div class="flex max-sm:flex-col gap-2 sm:gap-3">
+                    <UBadge color="primary" variant="soft" label="فعال" class="font-semibold w-fit"/>
+                    <UBadge color="success" variant="soft" label="پرداخت شده" class="font-semibold w-fit"/>
+                  </div>
                 </div>
               </div>
             </div>

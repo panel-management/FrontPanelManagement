@@ -3,9 +3,9 @@
     <div class="w-full flex max-md:flex-col gap-3">
       <div class="flex max-sm:flex-col gap-3">
         <UButton icon="mdi-light:download" label="خروجی اکسل" size="xl" color="neutral" variant="solid"
-                 class="max-md:w-fit"/>
+                 class="flex- justify-center w-full md:w-fit"/>
         <UButton icon="material-symbols:shopping-bag" @click="modalStore.toggleModal('equipmentAdd')" label="افزودن خرید تجهیزات" size="xl" color="neutral"
-                 variant="solid" class="max-md:w-fit"/>
+                 variant="solid" class="flex- justify-center w-full md:w-fit"/>
       </div>
       <UInput :model-value="(table?.tableApi?.getColumn('fullName')?.getFilterValue() as string)"
               @update:model-value="table?.tableApi?.getColumn('fullName')?.setFilterValue($event)" type="search"
@@ -84,7 +84,7 @@
   </div>
   <div class="w-full h-full p-5 rounded-xl bg-white flex flex-col gap-5">
     <div class="flex flex-col gap-2">
-      <span class="text-2xl font-bold">همه تراکنش های مالی (5 مورد)</span>
+      <span class="text-lg md:text-2xl font-bold">همه تراکنش های مالی (5 مورد)</span>
       <p class="break-words font-medium text-sm">تمام تراکنش‌های مالی باشگاه</p>
     </div>
     <UTable ref="table" :data="filteredData" :columns="columns" empty="هیچ اطلاعاتی برای نمایش وجود ندارد"

@@ -1,7 +1,7 @@
 <template>
   <div class="w-full p-5 rounded-xl bg-white flex flex-col gap-3">
     <div class="w-full flex max-md:flex-col gap-3">
-      <UButton icon="mdi-light:download" label="خروجی اکسل" size="xl" color="neutral" variant="solid" class="max-md:w-fit"/>
+      <UButton icon="mdi-light:download" label="خروجی اکسل" size="xl" color="neutral" variant="solid" class="flex justify-center w-full md:w-fit"/>
       <UInput :model-value="(table?.tableApi?.getColumn('fullName')?.getFilterValue() as string)" @update:model-value="table?.tableApi?.getColumn('fullName')?.setFilterValue($event)" type="search" class="w-full" placeholder="جستجو بر اساس نام هنرجویان" size="xl" variant="outline" icon="i-lucide-search" color="primary"/>
     </div>
     <div class="flex max-md:flex-col gap-3 w-full h-full">
