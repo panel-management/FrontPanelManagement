@@ -2,7 +2,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
     compatibilityDate: '2025-05-15',
-    devtools: {enabled: true},
+    devtools: {enabled: process.env.APP_DEBUG?.toLocaleLowerCase() === 'true'},
     modules: ['@nuxt/ui', '@pinia/nuxt'],
     css: ['~/assets/css/main.css'],
     vite: {
@@ -19,13 +19,8 @@ export default defineNuxtConfig({
                 dir: "rtl",
                 lang: "fa",
                 translate: "no"
-            },
-            link: [
-                {rel: "preconnect", href: "https://fonts.googleapis.com"},
-                {rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: ""},
-                {rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Vazirmatn:wght@500&display=swap"},
-            ]
-        },
+            }
+        }
     },
     ui: {
         fonts: false,
@@ -42,4 +37,12 @@ export default defineNuxtConfig({
             ]
         }
     },
+    runtimeConfig: {
+        public: {
+            APP_NAME: process.env.APP_NAME,
+            APP_ENV: process.env.APP_ENV,
+            APP_URL: process.env.APP_URL ?? "http://localhost:3000",
+            API_URL: process.env.API_URL,
+        }
+    }
 })
