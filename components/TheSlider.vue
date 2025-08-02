@@ -3,7 +3,7 @@
     <UIcon name="material-symbols:menu-rounded" mode="svg" class="size-7 text-black cursor-pointer"/>
     <template #title>
       <div class="md:px-2 lg:px-5">
-        <span class="font-medium text-xl">logo title</span>
+        <span class="font-medium text-xl">پنل مدیریت باشگاه</span>
       </div>
     </template>
     <template #description></template>
