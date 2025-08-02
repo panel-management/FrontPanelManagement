@@ -18,9 +18,9 @@
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-5 w-full h-full">
             <div class="flex flex-col gap-4 bg-turquoise-50 rounded-lg p-4">
-              <div class="flex items-center gap-3">
+              <div class="flex max-sm:flex-col max-sm:justify-center items-center gap-3">
                 <div class="flex items-center justify-center size-14 rounded-full bg-muted">ع</div>
-                <div class="flex flex-col gap-1">
+                <div class="flex sm:flex-col gap-5 sm:gap-1">
                   <span class="text-sm font-semibold">علی احمدی</span>
                   <span class="belt-blue text-xs">کمربند ابی</span>
                 </div>
@@ -37,9 +37,9 @@
               </div>
             </div>
             <div class="flex flex-col gap-4 bg-turquoise-50 rounded-lg p-4">
-              <div class="flex items-center gap-3">
+              <div class="flex max-sm:flex-col max-sm:justify-center items-center gap-3">
                 <div class="flex items-center justify-center size-14 rounded-full bg-muted">ع</div>
-                <div class="flex flex-col gap-1">
+                <div class="flex sm:flex-col gap-5 sm:gap-1">
                   <span class="text-sm font-semibold">علی احمدی</span>
                   <span class="belt-blue text-xs">کمربند ابی</span>
                 </div>
@@ -56,9 +56,9 @@
               </div>
             </div>
             <div class="flex flex-col gap-4 bg-turquoise-50 rounded-lg p-4">
-              <div class="flex items-center gap-3">
+              <div class="flex max-sm:flex-col max-sm:justify-center items-center gap-3">
                 <div class="flex items-center justify-center size-14 rounded-full bg-muted">ع</div>
-                <div class="flex flex-col gap-1">
+                <div class="flex sm:flex-col gap-5 sm:gap-1">
                   <span class="text-sm font-semibold">علی احمدی</span>
                   <span class="belt-blue text-xs">کمربند ابی</span>
                 </div>
@@ -75,9 +75,9 @@
               </div>
             </div>
             <div class="flex flex-col gap-4 bg-turquoise-50 rounded-lg p-4">
-              <div class="flex items-center gap-3">
+              <div class="flex max-sm:flex-col max-sm:justify-center items-center gap-3">
                 <div class="flex items-center justify-center size-14 rounded-full bg-muted">ع</div>
-                <div class="flex flex-col gap-1">
+                <div class="flex sm:flex-col gap-5 sm:gap-1">
                   <span class="text-sm font-semibold">علی احمدی</span>
                   <span class="belt-blue text-xs">کمربند ابی</span>
                 </div>
@@ -94,9 +94,9 @@
               </div>
             </div>
             <div class="flex flex-col gap-4 bg-turquoise-50 rounded-lg p-4">
-              <div class="flex items-center gap-3">
+              <div class="flex max-sm:flex-col max-sm:justify-center items-center gap-3">
                 <div class="flex items-center justify-center size-14 rounded-full bg-muted">ع</div>
-                <div class="flex flex-col gap-1">
+                <div class="flex sm:flex-col gap-5 sm:gap-1">
                   <span class="text-sm font-semibold">علی احمدی</span>
                   <span class="belt-blue text-xs">کمربند ابی</span>
                 </div>
@@ -113,9 +113,9 @@
               </div>
             </div>
             <div class="flex flex-col gap-4 bg-turquoise-50 rounded-lg p-4">
-              <div class="flex items-center gap-3">
+              <div class="flex max-sm:flex-col max-sm:justify-center items-center gap-3">
                 <div class="flex items-center justify-center size-14 rounded-full bg-muted">ع</div>
-                <div class="flex flex-col gap-1">
+                <div class="flex sm:flex-col gap-5 sm:gap-1">
                   <span class="text-sm font-semibold">علی احمدی</span>
                   <span class="belt-blue text-xs">کمربند ابی</span>
                 </div>
@@ -132,9 +132,9 @@
               </div>
             </div>
             <div class="flex flex-col gap-4 bg-turquoise-50 rounded-lg p-4">
-              <div class="flex items-center gap-3">
+              <div class="flex max-sm:flex-col max-sm:justify-center items-center gap-3">
                 <div class="flex items-center justify-center size-14 rounded-full bg-muted">ع</div>
-                <div class="flex flex-col gap-1">
+                <div class="flex sm:flex-col gap-5 sm:gap-1">
                   <span class="text-sm font-semibold">علی احمدی</span>
                   <span class="belt-blue text-xs">کمربند ابی</span>
                 </div>
@@ -151,9 +151,47 @@
               </div>
             </div>
             <div class="flex flex-col gap-4 bg-turquoise-50 rounded-lg p-4">
-              <div class="flex items-center gap-3">
+              <div class="flex max-sm:flex-col max-sm:justify-center items-center gap-3">
                 <div class="flex items-center justify-center size-14 rounded-full bg-muted">ع</div>
-                <div class="flex flex-col gap-1">
+                <div class="flex sm:flex-col gap-5 sm:gap-1">
+                  <span class="text-sm font-semibold">علی احمدی</span>
+                  <span class="belt-blue text-xs">کمربند ابی</span>
+                </div>
+              </div>
+              <div class="flex flex-col gap-4 justify-between items-center w-full">
+                <div class="w-full flex justify-around">
+                  <UButton label="حاضر" icon="clarity:success-line" color="primary" variant="soft"/>
+                  <UButton label="غیبت" icon="material-symbols:close-rounded" color="error" variant="soft"/>
+                </div>
+                <div class="w-full flex justify-around">
+                  <UButton label="تاخیر" icon="material-symbols:alarm-on-rounded" color="warning" variant="soft"/>
+                  <UButton label="موجه" icon="mdi:file-document-multiple" color="secondary" variant="soft"/>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col gap-4 bg-turquoise-50 rounded-lg p-4">
+              <div class="flex max-sm:flex-col max-sm:justify-center items-center gap-3">
+                <div class="flex items-center justify-center size-14 rounded-full bg-muted">ع</div>
+                <div class="flex sm:flex-col gap-5 sm:gap-1">
+                  <span class="text-sm font-semibold">علی احمدی</span>
+                  <span class="belt-blue text-xs">کمربند ابی</span>
+                </div>
+              </div>
+              <div class="flex flex-col gap-4 justify-between items-center w-full">
+                <div class="w-full flex justify-around">
+                  <UButton label="حاضر" icon="clarity:success-line" color="primary" variant="soft"/>
+                  <UButton label="غیبت" icon="material-symbols:close-rounded" color="error" variant="soft"/>
+                </div>
+                <div class="w-full flex justify-around">
+                  <UButton label="تاخیر" icon="material-symbols:alarm-on-rounded" color="warning" variant="soft"/>
+                  <UButton label="موجه" icon="mdi:file-document-multiple" color="secondary" variant="soft"/>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col gap-4 bg-turquoise-50 rounded-lg p-4">
+              <div class="flex max-sm:flex-col max-sm:justify-center items-center gap-3">
+                <div class="flex items-center justify-center size-14 rounded-full bg-muted">ع</div>
+                <div class="flex sm:flex-col gap-5 sm:gap-1">
                   <span class="text-sm font-semibold">علی احمدی</span>
                   <span class="belt-blue text-xs">کمربند ابی</span>
                 </div>
@@ -172,7 +210,7 @@
           </div>
           <USeparator/>
           <div class="w-full flex justify-center items-center">
-            <UPagination v-model:page="page" show-edges :sibling-count="1" :total="100"/>
+            <UPagination v-model:page="page" show-edges :sibling-count="1" :total="50"/>
           </div>
         </div>
       </template>

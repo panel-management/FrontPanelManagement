@@ -5,15 +5,13 @@
       <WidgetCards v-for="item in itemsCard" :key="item.id" :data="item"/>
     </div>
     <div class="bg-white w-full p-2 rounded-lg max-lg:overflow-auto">
-      <div class="max-md:w-[490%]">
-        <LazyChartsStackedLineChart/>
+      <div class="max-md:w-[200%]">
+        <LazyChartsPresenceChart/>
       </div>
     </div>
     <div class="w-full h-full flex max-lg:flex-col gap-2">
       <div class="bg-white p-2 rounded-lg w-full h-full max-lg:overflow-auto">
-        <div class="max-md:w-[200%]">
-          <LazyChartsPiePadAngle/>
-        </div>
+        <LazyChartsPaymentChart/>
       </div>
       <div class="bg-white p-4 rounded-lg flex flex-col gap-3 w-full h-full">
         <div class="w-full flex items-center gap-3">
