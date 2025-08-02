@@ -1,7 +1,6 @@
 <template>
-  <canvas ref="canvasRef" class="w-full h-96"></canvas>
+  <canvas ref="canvasRef" class="w-full h-[35rem]"></canvas>
 </template>
-
 <script setup lang="ts">
 const {$chart} = useNuxtApp();
 const canvasRef = ref<HTMLCanvasElement | null>(null);
@@ -40,7 +39,7 @@ const data = {
 let chartInstance: any = null;
 
 onMounted(() => {
-  nextTick(()=>{
+  nextTick(() => {
     if (canvasRef.value) {
       chartInstance = new $chart(canvasRef.value, {
         type: 'bar',
@@ -49,10 +48,18 @@ onMounted(() => {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
+            legend: {
+              rtl: true
+            },
             title: {
               display: true,
               text: 'حضور هنرجو ها',
-            },
+              font: {
+                size: 20,
+                weight: 800,
+                family: 'Vazirmatn',
+              }
+            }
           },
         }
       });

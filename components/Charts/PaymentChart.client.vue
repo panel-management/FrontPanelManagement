@@ -1,71 +1,60 @@
 <template>
-  <div ref="chartRef" class="w-full" style="height: 600px; touch-action: none"></div>
+  <canvas ref="canvasRef" class="w-full h-[35rem]"></canvas>
 </template>
 
 <script setup lang="ts">
-const chartRef = ref<HTMLDivElement | null>(null)
-let chartInstance: ReturnType<typeof import('echarts/core').init> | null = null
-const {$echarts} = useNuxtApp()
+const {$chart} = useNuxtApp();
+const canvasRef = ref<HTMLCanvasElement | null>(null);
+const chartInstance = ref<any | null>(null);
 
-const initChartLine = () => {
-  if (!chartRef.value) return
-  chartInstance = $echarts.init(chartRef.value)
+const Utils = {
+  numbers: ({count, min, max}: { count: number; min: number; max: number }) =>
+      Array.from({length: count}, () => Math.floor(Math.random() * (max - min + 1)) + min),
+  CHART_COLORS: {
+    red: 'rgb(255, 99, 132)',
+    blue: 'rgb(54, 162, 235)',
+  },
+};
 
-  chartInstance.setOption({
-    title: {
-      text: 'Referer of a Website',
-      subtext: 'Fake Data',
-      left: 'center',
+const chartData = reactive({
+  labels: ['خرید لوازم ورزشی', 'شهریه'],
+  datasets: [
+    {
+      label: 'مبلغ',
+      data: Utils.numbers({count: 5, min: 0, max: 100}),
+      backgroundColor: Object.values(Utils.CHART_COLORS),
     },
-    tooltip: {
-      trigger: 'item'
-    },
+  ],
+});
+
+const chartOptions = {
+  responsive: true,
+  plugins: {
     legend: {
-      orient: 'vertical',
-      left: 'left'
+      position: 'top' as const,
+      rtl: true,
     },
-    series: [
-      {
-        name: 'Access From',
-        type: 'pie',
-        radius: '50%',
-        data: [
-          {value: 1048, name: 'Search Engine'},
-          {value: 735, name: 'Direct'},
-          {value: 580, name: 'Email'},
-          {value: 484, name: 'Union Ads'},
-          {value: 300, name: 'Video Ads'}
-        ],
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        }
+    title: {
+      display: true,
+      text: 'مبلغ ها',
+      font: {
+        size: 20,
+        weight: 800,
+        family: 'Vazirmatn',
       }
-    ]
-  })
-}
-
-const resizeChart = () => {
-  if (chartInstance) {
-    chartInstance.resize()
-  }
-}
+    },
+  },
+};
 
 onMounted(() => {
   nextTick(() => {
-    initChartLine()
-    window.addEventListener('resize', resizeChart)
+    if (canvasRef.value) {
+      chartInstance.value = new $chart(canvasRef.value, {
+        type: 'doughnut',
+        data: chartData,
+        options: chartOptions,
+      });
+    }
   })
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', resizeChart)
-  if (chartInstance) {
-    chartInstance.dispose()
-    chartInstance = null
-  }
-})
+});
 </script>
