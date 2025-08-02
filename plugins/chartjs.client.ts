@@ -1,8 +1,35 @@
-import {Chart, registerables} from 'chart.js';
+// plugins/chartjs.client.ts
+
+import {
+    Chart,
+    // Bar
+    BarController,
+    BarElement,
+    CategoryScale,
+    LinearScale,
+    // Doughnut
+    DoughnutController,
+    ArcElement,
+    Tooltip,
+    Legend,
+    Title
+} from 'chart.js';
 
 export default defineNuxtPlugin(() => {
-    // Register all chart types, controllers, elements, etc.
-    Chart.register(...registerables);
+    Chart.register(
+        // Bar
+        BarController,
+        BarElement,
+        CategoryScale,
+        LinearScale,
+        // Doughnut
+        DoughnutController,
+        ArcElement,
+        Tooltip,
+        Legend,
+        Title
+    );
+
     return {
         provide: {
             chart: Chart
