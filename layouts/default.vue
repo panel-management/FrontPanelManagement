@@ -1,5 +1,5 @@
 <template>
-  <UApp :locale="ar">
+  <UApp :locale="ar" :toaster="{position: 'top-right'}">
     <div class="w-full h-full flex flex-col justify-center items-center">
       <div class="container w-full h-full">
         <header class="w-full shadow-xs shadow-black p-4 px-5">
