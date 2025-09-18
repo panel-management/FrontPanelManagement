@@ -32,27 +32,32 @@ export function FetchApi<TData>(url: string, config: FetchConfig | undefined = {
             switch (e.response.status) {
                 case 400: {
                     CustomResponse.statusCode = 400
-                    CustomResponse.message = e.response._data?.message ?? 'اطلاعات نامتعبر است'
+                    let msg = e.response._data?.message ?? 'اطلاعات نامتعبر است'
+                    CustomResponse.message = Array.isArray(msg) ? msg.join('') : String(msg);
                     break;
                 }
                 case 401: {
                     CustomResponse.statusCode = 401
-                    CustomResponse.message = e.response._data?.message ?? 'دسترسی غیر مجاز'
+                    let msg = e.response._data?.message ?? 'دسترسی غیر مجاز'
+                    CustomResponse.message = Array.isArray(msg) ? msg.join('') : String(msg);
                     break;
                 }
                 case 403: {
                     CustomResponse.statusCode = 403
-                    CustomResponse.message = e.response._data?.message ?? 'دسترسی به منبع درخواست شده ممنوع است'
+                    let msg = e.response._data?.message ?? 'دسترسی به منبع درخواست شده ممنوع است'
+                    CustomResponse.message = Array.isArray(msg) ? msg.join('') : String(msg);
                     break;
                 }
                 case 404: {
                     CustomResponse.statusCode = 404
-                    CustomResponse.message = e.response._data?.message ?? 'اطلاعات یافت نشد'
+                    let msg = e.response._data?.message ?? 'اطلاعات یافت نشد'
+                    CustomResponse.message = Array.isArray(msg) ? msg.join('') : String(msg);
                     break;
                 }
                 case 406: {
                     CustomResponse.statusCode = 406
-                    CustomResponse.message = e.response._data?.message ?? 'درخواست قابل قبول نیست'
+                    let msg = e.response._data?.message ?? 'درخواست قابل قبول نیست'
+                    CustomResponse.message = Array.isArray(msg) ? msg.join('') : String(msg);
                     break;
                 }
             }

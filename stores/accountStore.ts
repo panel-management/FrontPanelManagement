@@ -5,7 +5,7 @@ export const useAccountStore = defineStore("account", () => {
 
     const cookie = useCookie<string | null>(tokenCookieName, {
         maxAge: 60 * 60 * 24 * 7, // ۷ روز
-        path: "/", // اگه بخوای کوکی تو همه صفحات در دسترس باشه
+        path: "/",
     });
 
     const getToken = computed(() => cookie.value);
