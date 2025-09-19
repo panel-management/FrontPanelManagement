@@ -1,10 +1,11 @@
 import {defineStore} from "pinia";
+import type {AuthData} from "~/models/auth/AuthData";
 
 export const useAccountStore = defineStore("account", () => {
     const tokenCookieName = "token";
 
     const cookie = useCookie<string | null>(tokenCookieName, {
-        maxAge: 60 * 60 * 24 * 7, // ۷ روز
+        maxAge: 60 * 60 * 24 * 7,
         path: "/",
     });
 
@@ -16,8 +17,8 @@ export const useAccountStore = defineStore("account", () => {
         cookie.value = null;
     };
 
-    const setAuthToken = (data: any) => {
-        cookie.value = data.token;
+    const setAuthToken = (data: AuthData) => {
+        cookie.value = data;
     };
 
     return {

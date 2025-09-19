@@ -5,10 +5,18 @@ import type {FetchError} from "~/models/FetchError";
 export function FetchApi<TData>(url: string, config: FetchConfig | undefined = {}): Promise<ApiResponse<TData>> {
     const runTime = useRuntimeConfig()
     const toastStore = useToastStore()
+    const accountStore = useAccountStore()
     const newConfig: FetchConfig = {
         baseURL: `${runTime.public.API_URL}/api/v1`,
         ...config,
         retry: 0
+    }
+    if (accountStore.isLogin){
+        if (!newConfig.headers) {
+            newConfig.headers = {};
+        }
+        //@ts-ignore
+        newConfig.headers["authorization"] = `Bearer ${accountStore.getToken!}`;
     }
     const showError = (data: ApiResponse<any>) => {
         if (process.client) {
