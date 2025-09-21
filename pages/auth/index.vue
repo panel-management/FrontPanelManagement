@@ -78,7 +78,8 @@ const step1Schema = v.object({
       v.trim(),
       v.nonEmpty('شماره تلفن الزامی است'),
       v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
-      v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد')
+      v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد'),
+      v.custom((value) => /^\d+$/.test(value), 'شماره تلفن فقط می‌تواند شامل اعداد باشد')
   ),
 })
 const step2Schema = v.object({
@@ -86,7 +87,7 @@ const step2Schema = v.object({
       v.array(v.number()),
       v.nonEmpty('کد تایید الزامی است'),
       v.minLength(6, 'کد باید ۶ رقم باشد'),
-      v.maxLength(6, 'کد نباید بیشتر از ۶ رقم باشد'),
+      v.maxLength(6, 'کد نباید بیشتر از ۶ رقم باشد')
   ),
 })
 const step3Schema = v.object({
@@ -99,7 +100,8 @@ const step3Schema = v.object({
       v.string(),
       v.trim(),
       v.nonEmpty('کد ملی الزامی است.'),
-      v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید.')
+      v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید.'),
+      v.custom((value) => /^\d+$/.test(value), 'کد ملی فقط می‌تواند شامل اعداد باشد')
   ),
   selectSport: v.pipe(
       v.string(),
@@ -181,7 +183,7 @@ async function onSubmitStep3(event: FormSubmitEvent<step3Schema>) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
       accountStore.setAuthToken(result.data)
       setTimeout(() => {
-        router.push('/dashboard')
+        router.push('/club-profile')
       }, 200)
     }
   } catch (e: any) {
@@ -207,7 +209,11 @@ async function getSportAll() {
 }
 
 onMounted(() => {
-  getSportAll()
+  watch(step, (value) => {
+    if (value === 3) {
+      getSportAll()
+    }
+  })
 })
 
 definePageMeta({
