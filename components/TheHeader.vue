@@ -16,10 +16,16 @@
 <script setup lang="ts">
 import type {DropdownMenuItem} from '@nuxt/ui'
 import {useJDate} from "../composables/useJdate";
+import {getDataAllUsersService} from "~/services/users.service";
+import type {DataUsers} from "~/models/users/dataUsers";
 
+const dropDownMenu = ref<DropdownMenuItem[][]>([])
 const isFullScreen: Ref<boolean> = ref(false);
 const currentTime: Ref<string> = ref('');
 const isOpen: Ref<boolean> = ref(false)
+const formData: Ref<DataUsers | null> = ref(null)
+const router = useRouter()
+const accountStore = useAccountStore()
 let timerId = ref(null);
 
 const toggleFullScreen = () => {
@@ -36,27 +42,38 @@ const updateFullScreenStatus = () => {
   isFullScreen.value = !!document.fullscreenElement;
 };
 
-onMounted(() => {
-  document.addEventListener('fullscreenchange', updateFullScreenStatus);
-});
-
-onBeforeUnmount(() => {
-  document.removeEventListener('fullscreenchange', updateFullScreenStatus);
-});
-
 const updateTime = () => {
   const now = new Date();
   const options = {hour: 'numeric', minute: 'numeric'};
   currentTime.value = now.toLocaleTimeString('fa-IR', options);
 };
 
+async function viewDataUser() {
+  try {
+    const result = await getDataAllUsersService()
+    if (result.statusCode === 200) {
+      formData.value = result.data as DataUsers
+    }
+  } catch (e: any) {
+    console.log(e)
+  }
+}
+
 onMounted(() => {
+  document.addEventListener('fullscreenchange', updateFullScreenStatus);
+
   updateTime();
   timerId = setInterval(updateTime, 1000);
+
+  viewDataUser()
 });
 
 onUnmounted(() => {
   clearInterval(timerId);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('fullscreenchange', updateFullScreenStatus);
 });
 
 defineShortcuts({
@@ -68,56 +85,63 @@ defineShortcuts({
   'shift_q': () => navigateTo("/", {replace: true}),
 })
 
-const dropDownMenu = ref<DropdownMenuItem[][]>([
-  [
-    {
-      label: 'احسان فولادی',
-      avatar: {
-        src: 'https://github.com/benjamincanac.png'
+watch(formData, (value) => {
+  dropDownMenu.value = [
+    [
+      {
+        label: value?.fullName,
+        avatar: {
+          src: 'https://github.com/benjamincanac.png'
+        },
+        type: 'label'
+      }
+    ],
+    [
+      {
+        label: 'پروفایل هنرجو',
+        icon: 'i-lucide-user',
+        kbds: ['p'],
+        to: '/profile/student',
       },
-      type: 'label'
-    }
-  ],
-  [
-    {
-      label: 'پروفایل هنرجو',
-      icon: 'i-lucide-user',
-      kbds: ['p'],
-      to: '/profile/student',
-    },
-    {
-      label: 'پروفایل مربی',
-      icon: 'i-lucide-user',
-      kbds: ['p'],
-      to: '/profile/coaches',
-    },
-    {
-      label: 'تیکت ها',
-      icon: 'bi:patch-question-fll',
-      kbds: ['t'],
-      to: '/supports',
-    },
-    {
-      label: 'پشتیبانی',
-      icon: 'bi:patch-question-fll',
-      kbds: ['alt', 's'],
-      to: '/supports/ticket',
-    },
-    {
-      label: 'تنظیمات',
-      icon: 'i-lucide-cog',
-      kbds: ['f'],
-      to: '/settings',
-    }
-  ],
-  [
-    {
-      label: 'خروج',
-      icon: 'i-lucide-log-out',
-      color: "error",
-      kbds: ['shift', 'q'],
-      to: '/',
-    }
+      {
+        label: 'پروفایل مربی',
+        icon: 'i-lucide-user',
+        kbds: ['p'],
+        to: '/profile/coaches',
+      },
+      {
+        label: 'تیکت ها',
+        icon: 'bi:patch-question-fll',
+        kbds: ['t'],
+        to: '/supports',
+      },
+      {
+        label: 'پشتیبانی',
+        icon: 'bi:patch-question-fll',
+        kbds: ['alt', 's'],
+        to: '/supports/ticket',
+      },
+      {
+        label: 'تنظیمات',
+        icon: 'i-lucide-cog',
+        kbds: ['f'],
+        to: '/settings',
+      }
+    ],
+    [
+      {
+        label: 'خروج',
+        icon: 'i-lucide-log-out',
+        color: "error",
+        kbds: ['shift', 'q'],
+        onSelect() {
+          accountStore.isLogout()
+          setTimeout(() => {
+            router.push('/auth')
+          }, 200)
+        }
+      }
+    ]
   ]
-]);
+})
 </script>

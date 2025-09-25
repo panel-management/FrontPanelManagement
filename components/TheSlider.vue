@@ -47,6 +47,14 @@ const items = ref<NavigationMenuItem[][]>([
       }
     },
     {
+      label: 'مدیریت اساتید',
+      icon: 'ic:sharp-supervisor-account',
+      to: '/management-master',
+      onSelect: (e) => {
+        isOpen.value = false
+      }
+    },
+    {
       label: 'حضور و غیاب',
       icon: 'streamline:interface-file-clipboard-check-checkmark-edit-task-edition-checklist-check-success-clipboard-form',
       to: '/presence-absence',
