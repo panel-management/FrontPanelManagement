@@ -1,0 +1,19 @@
+<template>
+  <section class="container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
+    <div class="w-full flex justify-between items-center">
+      <div class="flex flex-col gap-2 sm:p-2">
+        <h2 class="text-lg sm:text-3xl font-bold">مدیریت استاد ها</h2>
+        <span class="text-xs sm:text-sm font-medium">مشاهده و مدیریت اطلاعات استاد های باشگاه</span>
+      </div>
+    </div>
+    <div class="bg-white flex flex-col gap-3 p-3 rounded-lg">
+      <div class="flex flex-col gap-2">
+        <span class="text-2xl font-bold">لیست استاد ها (5 نفر)</span>
+        <p class="break-words font-medium text-sm">مشاهده کامل اطلاعات استاد ها و مدیریت آنها</p>
+      </div>
+      <LazyTableMasterTable/>
+    </div>
+  </section>
+</template>
+<script setup lang="ts">
+</script>
