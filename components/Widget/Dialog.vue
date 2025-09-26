@@ -1,5 +1,5 @@
 <template>
-  <UModal :title="props.title" :ui="{ footer: 'justify-between' }">
+  <UModal :title="props.title" description="" :ui="{ footer: 'justify-between' }">
     <template #footer>
       <UButton label="انصراف" color="neutral" variant="outline" @click="close"/>
       <UButton label="بله مطمئن هستم" color="error" variant="soft" @click="confirm"/>
