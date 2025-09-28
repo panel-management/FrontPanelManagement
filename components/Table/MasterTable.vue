@@ -2,60 +2,71 @@
   <div class="flex-1 divide-y divide-accented w-full">
     <div class="flex max-lg:flex-col items-center gap-3 overflow-x-auto py-2">
       <UInput :model-value="(table?.tableApi?.getColumn('fullName')?.getFilterValue() as string)"
-              @update:model-value="table?.tableApi?.getColumn('fullName')?.setFilterValue($event)" type="search"
-              class="w-full xl:w-1/3" placeholder="جستجو بر اساس نام استاد" size="xl" variant="outline"
-              icon="i-lucide-search" color="primary"/>
+        @update:model-value="table?.tableApi?.getColumn('fullName')?.setFilterValue($event)" type="search"
+        class="w-full xl:w-1/3" placeholder="جستجو بر اساس نام استاد" size="xl" variant="outline" icon="i-lucide-search"
+        color="primary" />
       <div class="w-full flex max-sm:flex-col gap-3">
-        <BaseDropdownMenu :items="table?.tableApi?.getAllColumns().filter(column => column.getCanHide()).map(column => ({ label: columnLabels[column.id] || column.id, type: 'checkbox' as const, checked: column.getIsVisible(),
-            onUpdateChecked(checked: boolean) {
-              table?.tableApi?.getColumn(column.id)?.toggleVisibility(!!checked)
-              },
-            onSelect(e?: Event) {
-              e?.preventDefault()
-            }}))" label="ستون ها"/>
-        <BaseDropdownMenu :content="{align: 'end', class: 'max-h-64 md:max-h-70'}" :items="itemsSelect.map(sport => ({ label: sport, type: 'checkbox' as const, checked: selectedStatusSport.includes(sport),
-            onUpdateChecked(checked: boolean) {
-              if (checked) {
-                selectedStatusSport.push(sport)
-              } else {
-                selectedStatusSport = selectedStatusSport.filter(b => b !== sport)
-              }},
-              onSelect(e?: Event) {e?.preventDefault()}}))" label="رشته ها"/>
-        <BaseDropdownMenu :items="statusAccountOptions.map(account => ({ label: activeLabels[account], type: 'checkbox' as const, checked: selectedStatusAccount.includes(account),
-            onUpdateChecked(checked: boolean) {
-              if (checked) {
-                selectedStatusAccount.push(account)
-              } else {
-                selectedStatusAccount = selectedStatusAccount.filter(b => b !== account)
-              }},
-              onSelect(e?: Event) {e?.preventDefault()}}))" label="وضعیت حساب"/>
-        <BaseDropdownMenu :items="statusPaymentOption.map(statusPayment => ({ label: paymentStatusLabels[statusPayment], type: 'checkbox' as const, checked: selectedStatusPayment.includes(statusPayment),
-            onUpdateChecked(checked: boolean) {
-              if (checked) {
-                selectedStatusPayment.push(statusPayment)
-              } else {
-                selectedStatusPayment = selectedStatusPayment.filter(b => b !== statusPayment)
-              }},
-              onSelect(e?: Event) {e?.preventDefault()}}))" label="وضعیت پلن ها"/>
+        <BaseDropdownMenu :items="table?.tableApi?.getAllColumns().filter(column => column.getCanHide()).map(column => ({
+          label: columnLabels[column.id] || column.id, type: 'checkbox' as const, checked: column.getIsVisible(),
+          onUpdateChecked(checked: boolean) {
+            table?.tableApi?.getColumn(column.id)?.toggleVisibility(!!checked)
+          },
+          onSelect(e?: Event) {
+            e?.preventDefault()
+          }
+        }))" label="ستون ها" />
+        <BaseDropdownMenu :content="{ align: 'end', class: 'max-h-64 md:max-h-70' }" :items="itemsSelect.map(sport => ({
+          label: sport, type: 'checkbox' as const, checked: selectedStatusSport.includes(sport),
+          onUpdateChecked(checked: boolean) {
+            if (checked) {
+              selectedStatusSport.push(sport)
+            } else {
+              selectedStatusSport = selectedStatusSport.filter(b => b !== sport)
+            }
+          },
+          onSelect(e?: Event) { e?.preventDefault() }
+        }))" label="رشته ها" />
+        <BaseDropdownMenu :items="statusAccountOptions.map(account => ({
+          label: activeLabels[account], type: 'checkbox' as const, checked: selectedStatusAccount.includes(account),
+          onUpdateChecked(checked: boolean) {
+            if (checked) {
+              selectedStatusAccount.push(account)
+            } else {
+              selectedStatusAccount = selectedStatusAccount.filter(b => b !== account)
+            }
+          },
+          onSelect(e?: Event) { e?.preventDefault() }
+        }))" label="وضعیت حساب" />
+        <BaseDropdownMenu :items="statusPaymentOption.map(statusPayment => ({
+          label: paymentStatusLabels[statusPayment], type: 'checkbox' as const, checked: selectedStatusPayment.includes(statusPayment),
+          onUpdateChecked(checked: boolean) {
+            if (checked) {
+              selectedStatusPayment.push(statusPayment)
+            } else {
+              selectedStatusPayment = selectedStatusPayment.filter(b => b !== statusPayment)
+            }
+          },
+          onSelect(e?: Event) { e?.preventDefault() }
+        }))" label="وضعیت پلن ها" />
       </div>
     </div>
     <UTable sticky :loading="isLoading" loading-color="neutral" ref="table" :data="filteredData" :columns="columns"
-            empty="هیچ اطلاعاتی برای نمایش وجود ندارد" class="h-96 lg:h-svh no-scrollbar">
+      empty="هیچ اطلاعاتی برای نمایش وجود ندارد" class="h-96 lg:h-svh no-scrollbar">
       <template #expanded="{ row }">
         <pre>{{ row.original }}</pre>
       </template>
     </UTable>
   </div>
-  <LazyWidgetModalCoacheEdit v-model:open="modalStore.modals.coachesEdit"/>
+  <LazyWidgetModalCoacheEdit v-model:open="modalStore.modals.coachesEdit" />
 </template>
 <script setup lang="ts">
-import type {TableColumn} from '@nuxt/ui'
-import {changeStatusMasterService, getAllMasterService} from "~/services/master.service";
-import type {MasterData} from "~/models/users/master/MasterData";
-import {Active} from "~/models/Active";
-import {PaymentStatus} from "~/models/PaymentStatus";
-import type {Sport} from "~/models/sportAndBelt/sport";
-import {getAllSportService} from "~/services/sportBelt.service";
+import type { TableColumn } from '@nuxt/ui'
+import { changeStatusMasterService, deleteMasterService, getAllMasterService } from "~/services/master.service";
+import type { MasterData } from "~/models/users/master/MasterData";
+import { Active } from "~/models/Active";
+import { PaymentStatus } from "~/models/PaymentStatus";
+import type { Sport } from "~/models/sportAndBelt/sport";
+import { getAllSportService } from "~/services/sportBelt.service";
 
 const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
@@ -85,7 +96,7 @@ const selectedStatusPayment = ref<PaymentStatus[]>([])
 const statusSportOptions: Ref<Sport[]> = ref([])
 const statusAccountOptions: Ref<Active[]> = ref([Active.ENABLE, Active.DISABLE])
 const statusPaymentOption: Ref<PaymentStatus[]> = ref(
-    [PaymentStatus.PENDING, PaymentStatus.CONFIRMED, PaymentStatus.REJECTED, PaymentStatus.NO_PAYMENT]
+  [PaymentStatus.PENDING, PaymentStatus.CONFIRMED, PaymentStatus.REJECTED, PaymentStatus.NO_PAYMENT]
 )
 // const statusAccountOptions = ref(['فعال', 'غیر فعال'])
 // const statusSportOptions = ref(['کارته', 'بوکس', 'کیک بوکس', 'جودو', 'کشتی', 'کنگفو', 'تکواندو', 'موی تای', 'ام‌ام‌ای'])
@@ -94,11 +105,11 @@ const statusPaymentOption: Ref<PaymentStatus[]> = ref(
 const filteredData = computed(() => {
   return formData.value.filter(row => {
     const statusAccountMatch =
-        selectedStatusAccount.value.length === 0 || selectedStatusAccount.value.includes(row.active)
+      selectedStatusAccount.value.length === 0 || selectedStatusAccount.value.includes(row.active)
     const statusPaymentMatch =
-        selectedStatusPayment.value.length === 0 || selectedStatusPayment.value.includes(row.paymentStatus)
+      selectedStatusPayment.value.length === 0 || selectedStatusPayment.value.includes(row.paymentStatus)
     const statusSportMatch =
-        selectedStatusSport.value.length === 0 || selectedStatusSport.value.includes(row.sport.name)
+      selectedStatusSport.value.length === 0 || selectedStatusSport.value.includes(row.sport.name)
     return statusAccountMatch && statusPaymentMatch && statusSportMatch
   })
 })
@@ -140,10 +151,24 @@ async function changeStatusUser(id: number, status: Active) {
       if (userIndex !== -1) {
         formData.value[userIndex].active = status
       }
-      console.log(result)
     }
   } catch (e: any) {
     console.log(e)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+async function deleteAccountUser(id: number) {
+  isLoading.value = true
+  try {
+    const result = await deleteMasterService(id)
+    if (result.statusCode === 200) {
+      toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
+      refreshData()
+    }
+  } catch (error: any) {
+    console.log(error);
   } finally {
     isLoading.value = false
   }
@@ -198,21 +223,21 @@ const columns: TableColumn<MasterData>[] = [
   {
     accessorKey: 'fullName',
     header: 'نام کامل',
-    cell: ({row}) => {
+    cell: ({ row }) => {
       return row.getValue('fullName')
     }
   },
   {
     accessorKey: 'phoneNumber',
     header: 'شماره تلفن',
-    cell: ({row}) => {
+    cell: ({ row }) => {
       return row.getValue('phoneNumber')
     }
   },
   {
     accessorKey: 'paymentStatus',
     header: 'وضعیت پلن',
-    cell: ({row}) => {
+    cell: ({ row }) => {
       const paymentStatus = row.getValue('paymentStatus')
       const color = ({
         'CONFIRMED': 'success' as const,
@@ -235,25 +260,25 @@ const columns: TableColumn<MasterData>[] = [
           text = 'پر داخت نشده'
           break;
       }
-      return h(UBadge, {class: 'capitalize', variant: 'subtle', color}, () => text)
+      return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => text)
     }
   },
   {
     accessorKey: 'active',
     header: 'وضعیت',
-    cell: ({row}) => {
+    cell: ({ row }) => {
       const activeValue = row.getValue('active')
       const color = ({
         'ENABLE': 'success' as const,
         'DISABLE': 'error' as const,
       })[activeValue as string]
       const statusText = activeValue === 'ENABLE' ? 'فعال' : 'غیر فعال'
-      return h(UBadge, {class: 'capitalize', variant: 'subtle', color}, () => statusText)
+      return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => statusText)
     }
   },
   {
     accessorKey: 'sport',
-    header: ({column}) => {
+    header: ({ column }) => {
       const isSorted = column.getIsSorted()
       return h(UButton, {
         color: 'neutral',
@@ -264,15 +289,15 @@ const columns: TableColumn<MasterData>[] = [
         onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
       })
     },
-    cell: ({row}) => h('div', {class: 'lowercase'}, row.getValue('sport')?.name)
+    cell: ({ row }) => h('div', { class: 'lowercase' }, row.getValue('sport')?.name)
   },
   {
     accessorKey: 'history',
     header: 'سابقه تدریس',
-    cell: ({row}) => {
+    cell: ({ row }) => {
       const history = row.getValue('history')
       if (history === null) {
-        return h('span', {class: 'font-medium'}, 'سابقه استاد وجود ندارد')
+        return h('span', { class: 'font-medium' }, 'سابقه استاد وجود ندارد')
       } else {
         return history
       }
@@ -281,19 +306,19 @@ const columns: TableColumn<MasterData>[] = [
   {
     accessorKey: 'students',
     header: 'هنرجویان',
-    cell: ({row}) => {
+    cell: ({ row }) => {
       const students = row.getValue('students')
       if (students.length <= 0) {
-        return h("span", {class: 'font-medium'}, 'هنرجو وجود ندارد')
+        return h("span", { class: 'font-medium' }, 'هنرجو وجود ندارد')
       } else {
-        return h("span", {class: 'font-medium'}, `${students.length} نفر`)
+        return h("span", { class: 'font-medium' }, `${students.length} نفر`)
       }
     }
   },
   {
     accessorKey: 'createdAt',
     header: 'تاریخ',
-    cell: ({row}) => {
+    cell: ({ row }) => {
       return new Date(row.getValue('createdAt')).toLocaleString('fa-IR', {
         day: 'numeric',
         month: 'short',
@@ -307,7 +332,7 @@ const columns: TableColumn<MasterData>[] = [
     id: 'actions',
     header: 'عملیات',
     enableHiding: false,
-    cell: ({row}) => {
+    cell: ({ row }) => {
       const items = [{
         type: 'label',
         label: 'عملیات'
@@ -331,12 +356,18 @@ const columns: TableColumn<MasterData>[] = [
           })
         }
       }, {
-        label: 'حذف هنرجو',
+        label: 'حذف استاد',
         icon: 'ic:sharp-delete',
-        color: 'error'
+        color: 'error',
+        onSelect() {
+          const userId = row.original.user_id
+          showConfirmDialog(`آیا میخواهید استاد ${row.original.fullName} را حذف کنید؟`, () => {
+            deleteAccountUser(userId)
+          })
+        }
       }]
 
-      return h('div', {class: 'text-right'}, h(UDropdownMenu, {
+      return h('div', { class: 'text-right' }, h(UDropdownMenu, {
         'content': {
           align: 'end'
         },

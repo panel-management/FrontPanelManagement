@@ -1,23 +1,22 @@
 <template>
   <div class="flex justify-between items-center-safe">
-    <LazyTheSlider/>
+    <LazyTheSlider />
     <div class="flex justify-center items-center-safe gap-5">
       <span class="text-lg">{{ useJDate(new Date()) }} ساعت {{ currentTime }}</span>
       <UIcon name="ant-design:fullscreen-outlined" mode="svg" class="size-7 text-black cursor-pointer  max-lg:hidden"
-             @click="toggleFullScreen"/>
+        @click="toggleFullScreen" />
       <UDropdownMenu v-model:open="isOpen" :items="dropDownMenu"
-                     :content="{ align: 'end', side: 'bottom', sideOffset: 8 }"
-                     :ui="{ content: 'w-48' }">
-        <UIcon name="material-symbols:account-circle-full" mode="svg" class="size-7 text-black cursor-pointer"/>
+        :content="{ align: 'end', side: 'bottom', sideOffset: 8 }" :ui="{ content: 'w-48' }">
+        <UIcon name="material-symbols:account-circle-full" mode="svg" class="size-7 text-black cursor-pointer" />
       </UDropdownMenu>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import type {DropdownMenuItem} from '@nuxt/ui'
-import {useJDate} from "../composables/useJdate";
-import {getDataAllUsersService} from "~/services/users.service";
-import type {DataUsers} from "~/models/users/dataUsers";
+import type { DropdownMenuItem } from '@nuxt/ui'
+import { useJDate } from "../composables/useJdate";
+import { getDataAllUsersService } from "~/services/users.service";
+import type { DataUsers } from "~/models/users/dataUsers";
 
 const dropDownMenu = ref<DropdownMenuItem[][]>([])
 const isFullScreen: Ref<boolean> = ref(false);
@@ -44,7 +43,7 @@ const updateFullScreenStatus = () => {
 
 const updateTime = () => {
   const now = new Date();
-  const options = {hour: 'numeric', minute: 'numeric'};
+  const options = { hour: 'numeric', minute: 'numeric' };
   currentTime.value = now.toLocaleTimeString('fa-IR', options);
 };
 
@@ -53,6 +52,8 @@ async function viewDataUser() {
     const result = await getDataAllUsersService()
     if (result.statusCode === 200) {
       formData.value = result.data as DataUsers
+    } else if (result.statusCode === 401) {
+      accountStore.isLogout();
     }
   } catch (e: any) {
     console.log(e)
@@ -78,11 +79,11 @@ onBeforeUnmount(() => {
 
 defineShortcuts({
   o: () => isOpen.value = !isOpen.value,
-  p: () => navigateTo("/profile", {replace: true}),
-  f: () => navigateTo("/settings", {replace: true}),
-  'alt_t': () => navigateTo("/supports", {replace: true}),
-  s: () => navigateTo("/supports/ticket", {replace: true}),
-  'shift_q': () => navigateTo("/", {replace: true}),
+  p: () => navigateTo("/profile", { replace: true }),
+  f: () => navigateTo("/settings", { replace: true }),
+  'alt_t': () => navigateTo("/supports", { replace: true }),
+  s: () => navigateTo("/supports/ticket", { replace: true }),
+  'shift_q': () => navigateTo("/", { replace: true }),
 })
 
 watch(formData, (value) => {

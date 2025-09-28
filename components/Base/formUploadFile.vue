@@ -1,6 +1,6 @@
 <template>
   <UFormField :label="label" :name="name" :required="required">
-    <UFileUpload v-model="model" color="neutral" highlight label="تصویر خود را در اینجا رها کنید." :description="description" class="w-full min-h-48" :class="{ 'blur-[1px]': disable }"/>
+    <UFileUpload v-model="model" color="neutral" highlight label="تصویر خود را در اینجا رها کنید." :description="description" :disabled="disable" class="w-full min-h-48" :class="{ 'blur-[1px]': disable }"/>
   </UFormField>
 </template>
 <script setup lang="ts">
