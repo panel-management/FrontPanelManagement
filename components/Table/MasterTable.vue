@@ -57,8 +57,8 @@
       </template>
     </UTable>
   </div>
-  <LazyWidgetModalCoacheEdit v-model:open="modalStore.modals.coachesEdit" />
-</template>
+    <LazyWidgetModalMasterEdit v-model:open="modalStore.modals.masterEdit"/>
+  </template>
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import { changeStatusMasterService, deleteMasterService, getAllMasterService } from "~/services/master.service";
@@ -83,6 +83,7 @@ const activeLabels: Record<Active, string> = {
   [Active.ENABLE]: 'فعال',
   [Active.DISABLE]: 'غیر فعال',
 }
+
 const paymentStatusLabels: Record<PaymentStatus, string> = {
   [PaymentStatus.PENDING]: 'در انتظار تایید',
   [PaymentStatus.CONFIRMED]: 'پرداخت شده',
@@ -165,17 +166,13 @@ async function deleteAccountUser(id: number) {
     const result = await deleteMasterService(id)
     if (result.statusCode === 200) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-      refreshData()
+      refreshNuxtData()
     }
   } catch (error: any) {
     console.log(error);
   } finally {
     isLoading.value = false
   }
-}
-
-async function refreshData() {
-  await getAllMasterData()
 }
 
 onMounted(() => {
@@ -299,7 +296,7 @@ const columns: TableColumn<MasterData>[] = [
       if (history === null) {
         return h('span', { class: 'font-medium' }, 'سابقه استاد وجود ندارد')
       } else {
-        return history
+        return `${history} سال`
       }
     }
   },
@@ -342,7 +339,8 @@ const columns: TableColumn<MasterData>[] = [
         label: 'مشاهده پروفایل',
         icon: 'material-symbols:person',
         onSelect() {
-          modalStore.toggleModal('coachesEdit')
+          const userId = row.original.user_id
+          modalStore.toggleModal('masterEdit', userId)
         }
       }, {
         label: 'تغییر وضعیت',
