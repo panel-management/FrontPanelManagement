@@ -46,8 +46,7 @@
         <div class="flex items-center gap-1">
           <UIcon name="ion:university" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">سابقه:</span>
-          <span class="font-medium text-base mt-1">{{ data.data.history ? `سال ${data.data.history}` : 'وجود ندارد'
-            }}</span>
+          <span class="font-medium text-base mt-1">{{ data.data.history ? `سال ${data.data.history}` : 'وجود ندارد'}}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="solar:medal-ribbons-star-bold" class="size-6 text-black" />

@@ -8,12 +8,33 @@
     </div>
     <div class="bg-white flex flex-col gap-3 p-3 rounded-lg">
       <div class="flex flex-col gap-2">
-        <span class="text-2xl font-bold">لیست استاد ها (5 نفر)</span>
+        <span class="text-2xl font-bold">لیست استاد ها ({{ formData.length }} نفر)</span>
         <p class="break-words font-medium text-sm">مشاهده کامل اطلاعات استاد ها و مدیریت آنها</p>
       </div>
-      <LazyTableMasterTable/>
+      <LazyTableMasterTable />
     </div>
   </section>
 </template>
 <script setup lang="ts">
+import type { MasterData } from '~/models/users/master/MasterData';
+import { getAllMasterService } from '~/services/master.service';
+
+const formData: Ref<MasterData[]> = ref([])
+
+async function getAllMasterData() {
+  try {
+    const result = await getAllMasterService()
+    if (result.statusCode === 200) {
+      formData.value = Array.isArray(result.data) ? result.data : [];
+    }
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+onMounted(() => {
+  nextTick(() => {
+    getAllMasterData()
+  })
+})
 </script>
