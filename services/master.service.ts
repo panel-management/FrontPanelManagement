@@ -44,6 +44,7 @@ export const updateProfileMasterJustAdminService = (id: number, master: UpdateMa
   data.append("birthDate", master.birthDate);
   data.append("history", master.history);
   data.append("certificates", master.certificates);
+  data.append("sportId", master.sportId.toString());
   if (master.imageFile) {
     data.append("imageFile", master.imageFile);
   }
