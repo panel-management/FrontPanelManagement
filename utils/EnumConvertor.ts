@@ -1,26 +1,12 @@
-import type {Active} from "~/models/Active";
-import type {PaymentStatus} from "~/models/PaymentStatus";
+import { TypePlan } from "~/models/plan/masterPlan/MasterPlanData";
 
-export const GetStatusAccountUsers = (position: Active) => {
-    switch (position) {
-        case 0:
-            return 'فعال'
-        case 1:
-            return 'غیر فعال'
-        default:
-            return "";
-    }
-}
-
-export const GetStatusPaymentUsers = (position: PaymentStatus) => {
-    switch (position) {
-        case 0:
-            return 'در انتظار پرداخت'
-        case 1:
-            return 'پرداخت شده'
-        case 2:
-            return 'پرداخت نشده'
-        default:
-            return "";
-    }
-}
+export const GetTypePlanMaster = (position: TypePlan) => {
+  switch (position) {
+    case TypePlan.PAID:
+      return "پولی";
+    case TypePlan.TRIAL:
+      return "رایگان";
+    default:
+      return "";
+  }
+};
