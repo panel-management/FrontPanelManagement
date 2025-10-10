@@ -183,7 +183,7 @@ async function onSubmitStep3(event: FormSubmitEvent<step3Schema>) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
       accountStore.setAuthToken(result.data)
       setTimeout(() => {
-        router.push('/club-profile')
+        router.push('/membership')
       }, 200)
     }
   } catch (e: any) {
