@@ -1,22 +1,23 @@
 <template>
   <UDrawer handle-only v-model:open="isOpen">
-    <UIcon name="material-symbols:menu-rounded" mode="svg" class="size-7 text-black cursor-pointer"/>
+    <UIcon name="material-symbols:menu-rounded" mode="svg" class="size-7 text-black cursor-pointer" />
     <template #title>
       <div class="md:px-2 lg:px-5 flex items-center gap-2">
-        <img class="size-10 rounded object-cover" src="/image/logo.png" alt="club logo" loading="lazy" draggable="false">
+        <img class="size-10 rounded object-cover" src="/image/logo.png" alt="club logo" loading="lazy"
+          draggable="false">
         <span class="font-medium text-2xl">پنل مدیریت باشگاه</span>
       </div>
     </template>
     <template #description></template>
     <template #body>
       <div class="md:p-2 lg:p-5">
-        <UNavigationMenu orientation="vertical" :items="items"/>
+        <UNavigationMenu orientation="vertical" :items="items" />
       </div>
     </template>
   </UDrawer>
 </template>
 <script setup lang="ts">
-import type {NavigationMenuItem} from '@nuxt/ui'
+import type { NavigationMenuItem } from '@nuxt/ui'
 
 const isOpen: Ref<boolean> = ref(false)
 
@@ -74,6 +75,14 @@ const items = ref<NavigationMenuItem[][]>([
       label: 'امور مالی من',
       icon: 'file-icons:shopify',
       to: '/management-financial/my-financial',
+      onSelect: (e) => {
+        isOpen.value = false
+      }
+    },
+    {
+      label: 'پلن ها',
+      icon: 'solar:planet-broken',
+      to: '/membership/plans',
       onSelect: (e) => {
         isOpen.value = false
       }
