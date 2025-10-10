@@ -6,6 +6,7 @@ export interface MasterPlanData {
   features: string[];
   type: string;
   durationInDays: number;
+  isActive: boolean;
   createdAt: string;
 }
 
