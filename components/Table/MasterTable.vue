@@ -340,7 +340,6 @@ const columns: TableColumn<MasterData>[] = [
         icon: 'material-symbols:person',
         onSelect() {
           const userId = row.original.user_id
-          console.log(userId);
           modalStore.toggleModal('masterEdit', userId)
         }
       }, {
