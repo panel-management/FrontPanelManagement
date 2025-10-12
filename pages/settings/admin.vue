@@ -126,7 +126,7 @@
             </div> -->
           </div>
         </div>
-        <LazyWidgetModalPaymentAdminAdd v-model:open="modalStore.modals.paymentAdminAdd" />
+        <LazyWidgetModalPaymentAdminAdd v-model:open="modalStore.modals.paymentAdminAdd" @success="handlerFetchPlanMaster"/>
         <LazyWidgetModalPaymentAdminEdit v-model:open="modalStore.modals.paymentAdminEdit" @success="handlerFetchPlanMaster" />
       </template>
     </LazyBaseTabs>

@@ -1,8 +1,7 @@
 <template>
   <section class="container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
-    <div
-        class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-between items-center-safe gap-5 md:gap-10">
-      <WidgetCards v-for="item in itemsCard" :key="item.id" :data="item"/>
+    <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-between items-center-safe gap-5 md:gap-10">
+      <Carts v-for="item in itemsCard" :key="item.id" :data="item"/>
     </div>
     <div class="bg-white w-full p-2 rounded-lg max-lg:overflow-auto">
       <div class="max-md:w-[200%]">
@@ -13,6 +12,11 @@
       <div class="bg-white p-2 rounded-lg w-full h-full max-lg:overflow-auto">
         <LazyChartsPaymentChart/>
       </div>
+      <div class="bg-white p-4 rounded-lg w-full h-full">
+        <LazyWidgetProgressBar/>
+      </div>
+    </div>
+    <div class="w-full h-full">
       <div class="bg-white p-4 rounded-lg flex flex-col gap-3 w-full h-full">
         <div class="w-full flex items-center gap-3">
           <div class="bg-rose-300/50 flex items-center justify-center rounded-full p-2">
