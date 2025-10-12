@@ -36,7 +36,7 @@
 </template>
 <script setup lang="ts">
 import type { MasterPlanData } from '~/models/plan/masterPlan/MasterPlanData';
-import { selectPlanYourSelfMaster } from '~/services/master.service';
+import { selectPlanYourSelfMasterService } from '~/services/master.service';
 import { getPlanMasterOrAdminService } from '~/services/masterPlan.service';
 
 const isLoading = reactive<Record<number, boolean>>({})
@@ -47,7 +47,7 @@ const router = useRouter()
 async function selectPlanMaster(id: number) {
   isLoading[id] = true
   try {
-    const result = await selectPlanYourSelfMaster(id);
+    const result = await selectPlanYourSelfMasterService(id);
     if (result.statusCode === 200) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
       setInterval(() => {

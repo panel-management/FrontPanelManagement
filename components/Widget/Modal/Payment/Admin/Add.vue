@@ -5,7 +5,7 @@ import { TypePlan, type MasterPlanData } from '~/models/plan/masterPlan/MasterPl
 import { createMasterPlanService } from '~/services/masterPlan.service';
 
 const isLoading: Ref<boolean> = ref(false)
-const emit = defineEmits(['update:open']);
+const emit = defineEmits(['update:open', 'success']);
 const toastStore = useToastStore()
 const itemsSelect = [
   { label: 'آزمایشی', value: TypePlan.TRIAL },
@@ -92,6 +92,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
       localOpen.value = false
       resetForm()
+      emit('success')
     }
   } catch (error: any) {
     console.log(error?.message || error);

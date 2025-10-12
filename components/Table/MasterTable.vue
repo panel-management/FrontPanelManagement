@@ -57,8 +57,8 @@
       </template>
     </UTable>
   </div>
-    <LazyWidgetModalMasterEdit v-model:open="modalStore.modals.masterEdit"/>
-  </template>
+  <LazyWidgetModalMasterEdit v-model:open="modalStore.modals.masterEdit" />
+</template>
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import { changeStatusMasterService, deleteMasterService, getAllMasterService } from "~/services/master.service";
@@ -123,8 +123,8 @@ async function getAllMasterData() {
       formData.value = Array.isArray(result.data) ? result.data : [];
       console.log(result.data)
     }
-  } catch (e) {
-    console.log(e)
+  } catch (error: any) {
+    console.log(error.message || error)
   } finally {
     isLoading.value = false
   }
@@ -137,8 +137,8 @@ async function getSportAll() {
       statusSportOptions.value = Array.isArray(result.data) ? result.data : [];
       itemsSelect.value = statusSportOptions.value.map(item => item.name)
     }
-  } catch (e: any) {
-    console.log(e)
+  } catch (error: any) {
+    console.log(error.message || error)
   }
 }
 
@@ -153,8 +153,8 @@ async function changeStatusUser(id: number, status: Active) {
         formData.value[userIndex].active = status
       }
     }
-  } catch (e: any) {
-    console.log(e)
+  } catch (error: any) {
+    console.log(error.message || error)
   } finally {
     isLoading.value = false
   }
@@ -169,7 +169,7 @@ async function deleteAccountUser(id: number) {
       refreshNuxtData()
     }
   } catch (error: any) {
-    console.log(error);
+    console.log(error.message || error);
   } finally {
     isLoading.value = false
   }
@@ -340,6 +340,7 @@ const columns: TableColumn<MasterData>[] = [
         icon: 'material-symbols:person',
         onSelect() {
           const userId = row.original.user_id
+          console.log(userId);
           modalStore.toggleModal('masterEdit', userId)
         }
       }, {

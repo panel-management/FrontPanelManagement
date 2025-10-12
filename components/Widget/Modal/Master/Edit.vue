@@ -11,18 +11,18 @@ import type { Sport } from '~/models/sportAndBelt/sport';
 const emit = defineEmits(['update:open']);
 const isShow: Ref<boolean> = ref(true)
 const isLoading: Ref<boolean> = ref(false)
-const modalSore = useModalStore()
+const modalStore = useModalStore()
 const toastStore = useToastStore()
 const formData = ref<MasterData | null>(null)
 const sportItems = ref<Sport[]>([])
 const itemsSelect = ref<{ label: string; value: string }[]>([])
 const dateRegex = /^\d{4}\/\d{2}\/\d{2}$/
 
-const userId = computed(() => modalSore.modals.masterEdit)
+const userId = computed(() => modalStore.modals.masterEdit)
 
 const props = defineProps({
   open: {
-    type: [Number, String, null],
+    type: [Boolean, Object, Number, String, null],
     default: null
   }
 })
@@ -56,9 +56,11 @@ async function loadMaster() {
   }
   try {
     const res = await getMasterByIdForAdminService(userId.value)
-    formData.value = res.data as MasterData
-  } catch (err: any) {
-    console.error('Error loadMaster:', err)
+    if (res.statusCode === 200) {
+      formData.value = res.data as MasterData
+    }
+  } catch (error: any) {
+    console.log(error.message || error)
     formData.value = null
   }
 }
@@ -280,7 +282,9 @@ function disableInputs() {
             <div class="flex items-center gap-1">
               <UIcon name="ion:university" class="size-6 text-black" />
               <span class="font-medium text-base mt-1">سابقه:</span>
-              <span class="font-medium text-base mt-1">{{ formData.history ? `${formData.history} سال ` : 'وجود ندارد'}}</span>
+              <span class="font-medium text-base mt-1">
+                {{ formData.history ? `${formData.history} سال ` : 'وجود ندارد' }}
+              </span>
             </div>
             <div class="flex items-center gap-1">
               <UIcon name="solar:medal-ribbons-star-bold" class="size-6 text-black" />
@@ -295,7 +299,9 @@ function disableInputs() {
             <div class="flex items-center gap-1">
               <UIcon name="solar:planet-2-bold" class="size-6 text-black" />
               <span class="font-medium text-base mt-1">پلن انتخاب شده:</span>
-              <span class="font-medium text-base mt-1">{{ formData.masterPlanId ?? 'پلن وجود ندارد' }}</span>
+              <span class="font-medium text-base mt-1">
+                {{ formData.masterPlan ? formData.masterPlan.name : 'پلن وجود ندارد' }}
+              </span>
             </div>
           </div>
           <div class="flex gap-3 min-md:hidden">
@@ -366,8 +372,8 @@ function disableInputs() {
                           label="ارسال عکس گواهینامه" name="image"
                           description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا MB 1" class="w-full" />
                       </ClientOnly>
-                      <img v-if="state.imageUrl" class="object-cover md:w-2/3 pt-10" :src="state.imageUrl" :alt="state.fullName"
-                        draggable="false" loading="lazy">
+                      <img v-if="state.imageUrl" class="object-cover md:w-2/3 pt-10" :src="state.imageUrl"
+                        :alt="state.fullName" draggable="false" loading="lazy">
                     </div>
                     <div class="flex justify-end gap-2 pt-4">
                       <UButton v-if="!isShow" :loading="isLoading" label="اعمال تغییرات" color="primary" type="submit"
@@ -382,7 +388,8 @@ function disableInputs() {
                 <div class="flex flex-col gap-2">
                   <div class="flex items-center gap-2">
                     <UIcon name="ph:users-three-bold" class="size-6 text-black/70" />
-                    <span class="font-medium text-lg md:text-2xl">هنرجویان تحت نظر ({{ formData.students.length }} نفر)</span>
+                    <span class="font-medium text-lg md:text-2xl">هنرجویان تحت نظر ({{ formData.students.length }}
+                      نفر)</span>
                   </div>
                   <p class="break-words font-medium text-sm md:text-base">لیست هنرجویانی که تحت نظر این مربی هستند</p>
                 </div>
