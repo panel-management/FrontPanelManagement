@@ -5,6 +5,24 @@ export const getAllMasterService = () => {
   return FetchApi("/master");
 };
 
+// get Status Plan Master
+export const getStatusPlanService = () => {
+  return FetchApi("/master/my-plan/status");
+};
+
+// get history subscriptions master
+export const getHistorySubscriptionsMasterService = () => {
+  return FetchApi("/financials/subscriptions/history");
+};
+
+// select plan just your self master
+export const selectPlanYourSelfMasterService = (planId: number) => {
+  return FetchApi("/master/my-plan", {
+    method: "PUT",
+    body: { planId },
+  });
+};
+
 // get master by id just admin
 export const getMasterByIdForAdminService = (id: number) => {
   return FetchApi(`/master/${id}`);
@@ -35,7 +53,10 @@ export const updateProfileMasterService = (master: UpdateMasterData) => {
 };
 
 // update profile master just yourself admin
-export const updateProfileMasterJustAdminService = (id: number, master: UpdateMasterData)=>{
+export const updateProfileMasterJustAdminService = (
+  id: number,
+  master: UpdateMasterData
+) => {
   let data = new FormData();
   data.append("fullName", master.fullName);
   data.append("phoneNumber", master.phoneNumber);
@@ -50,9 +71,9 @@ export const updateProfileMasterJustAdminService = (id: number, master: UpdateMa
   }
   return FetchApi<UpdateMasterData>(`/master/update/${id}`, {
     method: "PUT",
-    body: data
-  })
-}
+    body: data,
+  });
+};
 
 // change status account master just admin
 export const changeStatusMasterService = (id: number, active: string) => {
