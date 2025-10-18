@@ -1,0 +1,124 @@
+<template>
+  <section class="flex items-center justify-center w-full h-full p-4">
+    <div class="w-full h-full pt-5 pb-3 px-7 flex justify-center items-center">
+      <UForm :schema="schema" :state="state" @submit.prevent="onSubmit"
+        class="w-full lg:w-4/5 h-full flex flex-col items-center justify-center gap-5">
+        <div class="flex flex-col gap-5 w-full">
+          <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
+            <BaseFormInput required v-model="state.bankName" label="نام بانک" name="bankName" type="text"
+              class="w-full" />
+            <BaseFormInput required v-model="displayAmountComputed" label="مبلغ واریز" name="amount" type="text"
+              class="w-full" />
+          </div>
+          <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
+            <BaseDatePicker required v-model="state.paymentDate" label="تاریخ پرداخت" name="paymentDate"
+              class="w-full" />
+            <BaseFormInput required v-model="state.payerFullName" label="نام نام خانوادگی پرداخت کننده"
+              name="payerFullName" type="text" class="w-full" />
+          </div>
+          <div class="w-full flex flex-col gap-5">
+            <BaseFormInput required v-model="state.trackingNumber" label="شماره پیگیری" name="trackingNumber"
+              type="text" class="w-full" />
+            <BaseFormUploadFile required v-model="state.imageFile" label="ارسال  فیش واریزی" name="imageFile"
+              description="اپلود عکس با فرمت (jepg, png, jpg) و حداکثر تا MB 1" class="w-full" />
+          </div>
+          <div class="flex justify-end gap-2 pt-4">
+            <UButton :loading="isLoading" type="submit" color="neutral"
+              class="btn btn-outline flex justify-center text-base" label="ثبت فیش" />
+          </div>
+        </div>
+      </UForm>
+    </div>
+  </section>
+</template>
+<script lang="ts" setup>
+import * as v from "valibot";
+import type { FormSubmitEvent } from "@nuxt/ui";
+import { createSubscriptionsMasterService } from "~/services/payment.service";
+
+const isLoading: Ref<boolean> = ref(false);
+const displayAmount = ref('')
+const dateRegex = /^\d{4}\/\d{2}\/\d{2}$/
+const { jalaliToGregorian } = useDateConverter()
+const toastStore = useToastStore()
+const router = useRouter()
+
+const schema = v.object({
+  bankName: v.pipe(
+    v.string(),
+    v.trim(),
+    v.nonEmpty('نام بانک الزامی است')
+  ),
+  trackingNumber: v.pipe(
+    v.string(),
+    v.trim(),
+    v.nonEmpty('شماره پیگیری الزامی است'),
+    v.custom((value) => /^\d+$/.test(value), 'شماره پیگیری فقد می تواند شامل عدد باشد')
+  ),
+  paymentDate: v.pipe(
+    v.string(),
+    v.trim(),
+    v.nonEmpty('تاریخ پرداخت الزامی است'),
+    v.custom((value) => dateRegex.test(value), 'فرمت تاریخ باید 1404/05/20 باشد')
+  ),
+  payerFullName: v.pipe(
+    v.string(),
+    v.trim(),
+    v.nonEmpty('نام و نام خانوادگی پرداخت کننده الزامی است')
+  ),
+  amount: v.pipe(
+    v.string(),
+    v.trim(),
+    v.nonEmpty('مبلغ واریز الزامی است'),
+    v.custom((value) => /^\d+$/.test(value), 'مبلغ واریز فقد می تواند شامل عدد باشد')
+  ),
+  imageFile: v.pipe(
+    v.file('فیش واریز الزامی است'),
+    v.mimeType(['image/jpeg', 'image/png', 'image/jpg'], 'لطف عکس را با این فرمت ها اپلود کنید. (jpeg, png, jpg)'),
+    v.maxSize(1024 * 1024 * 1, 'عکس باید زیر 1 مگابایت باشد.')
+  )
+})
+
+type Schema = v.InferOutput<typeof schema>;
+
+const state = reactive({
+  payerFullName: '',
+  bankName: '',
+  paymentDate: '',
+  trackingNumber: '',
+  amount: '',
+  imageFile: '',
+});
+
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+  isLoading.value = true
+  try {
+    const payload = {
+      ...event.data,
+      paymentDate: jalaliToGregorian(event.data.paymentDate)
+    }
+    const result = await createSubscriptionsMasterService(payload)
+    if (result.statusCode === 201) {
+      toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
+      setInterval(() => {
+        router.push('/dashboard')
+      }, 200);
+    }
+  } catch (error: any) {
+    console.log(error.message || error);
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const displayAmountComputed = computed({
+  get() {
+    return displayAmount.value
+  },
+  set(val: string) {
+    const numeric = val.replace(/[^\d]/g, '')
+    displayAmount.value = numeric ? Number(numeric).toLocaleString('en-US') : ''
+    state.amount = numeric
+  }
+})
+</script>

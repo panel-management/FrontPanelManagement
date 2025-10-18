@@ -15,8 +15,8 @@
               <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
                 <BaseFormInput required v-model="state.clubPhoneNumber" label="شماره تلفن باشگاه" name="clubPhoneNumber"
                   type="text" class="w-full" />
-                <BaseFormInput required v-model="state.foundationDate" label="تاریخ تاسسیس باشگاه"
-                  placeholder="مثال تاریخ 1380/01/30" name="foundationDate" type="text" class="w-full" />
+                <BaseDatePicker required v-model="state.foundationDate" label="تاریخ تاسسیس باشگاه"
+                  name="foundationDate" class="w-full" />
               </div>
               <BaseFormInput required v-model="state.goal" label="هدف ایجاد باشگاه" name="goal" type="text"
                 class="w-full" />
@@ -68,6 +68,7 @@ import { clubProfileService } from "~/services/clubProfile.service";
 const isLoading: Ref<boolean> = ref(false);
 const isActive: Ref<number> = ref(0)
 const toastStore = useToastStore()
+const { jalaliToGregorian } = useDateConverter()
 const dateRegex = /^\d{4}\/\d{2}\/\d{2}$/
 
 const items = [
@@ -147,8 +148,11 @@ const state = reactive({
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true;
   try {
-    const result = await clubProfileService(event.data)
-    console.log(result)
+    const payload = {
+      ...event.data,
+      foundationDate: jalaliToGregorian(event.data.foundationDate)
+    }
+    const result = await clubProfileService(payload)
     if (result.statusCode === 201) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
       setTimeout(() => {
