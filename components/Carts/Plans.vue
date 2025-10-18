@@ -1,5 +1,5 @@
 <template>
-  <div class="container w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center gap-2 lg:pt-6 max-lg:px-2 lg:px-2">
+  <div class="container w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:pt-6 max-lg:px-2 lg:px-2">
     <div v-for="data in activePlanDataMaster" :key="data.id"
       class="relative w-full md:max-w-sm bg-white rounded-2xl p-8 text-center border-2 border-sky-200 flex flex-col gap-10 transition-all duration-300 md:hover:-translate-y-2 hover:shadow-xl">
       <div class="flex flex-col gap-3">
@@ -43,15 +43,18 @@ const isLoading = reactive<Record<number, boolean>>({})
 const formData: Ref<MasterPlanData[]> = ref([])
 const toastStore = useToastStore();
 const router = useRouter()
+const userStore = useUsersStore()
 
 async function selectPlanMaster(id: number) {
   isLoading[id] = true
   try {
     const result = await selectPlanYourSelfMasterService(id);
     if (result.statusCode === 200) {
+      toastStore.setAlert(result.data?.message, '', 'success', 'ep:success-filled')
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-      setInterval(() => {
+      setInterval(async () => {
         router.push('/dashboard')
+        await userStore.getStatusPlanUsers()
       }, 200);
     }
   } catch (error: any) {
