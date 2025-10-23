@@ -1,4 +1,16 @@
-import type { createSubscriptionsMaster } from "~/models/Payments/createSubscriptionsMaster";
+import type { createSubscriptionsMaster } from "~/models/Payments/CreateSubscriptionsMaster";
+import type { confirmSubscriptionsMaster } from "~/models/Payments/Subscriptions/confirmSubscriptionsMaster";
+
+export const getSubscriptionsPendingMasterService = () => {
+  return FetchApi("/financials/subscriptions/pending");
+};
+
+export const confirmSubscriptionsMasterService = (id: number, data: confirmSubscriptionsMaster) => {
+  return FetchApi(`/financials/subscriptions/${id}/review`, {
+    method: "PUT",
+    body: data
+  });
+};
 
 export const createSubscriptionsMasterService = (
   subscriptions: createSubscriptionsMaster
