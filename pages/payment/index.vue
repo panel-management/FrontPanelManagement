@@ -1,6 +1,19 @@
 <template>
-  <section class="flex items-center justify-center w-full h-full p-4">
-    <div class="w-full h-full pt-5 pb-3 px-7 flex justify-center items-center">
+  <section class="container flex max-lg:flex-col justify-between w-full h-full lg:pt-3">
+    <div class="w-full h-full p-4 rounded-lg shadow bg-black">
+      <h2 class="font-bold text-white text-sm md:text-lg">حساب به نام {{ paymentName }} می باشد.</h2>
+      <div class="flex flex-col gap-3 pt-5">
+        <span class="text-white flex max-md:flex-col max-md:gap-2 justify-between">
+          شماره کارت بانک سامان:
+          <span class="text-end">{{ paymentCard }}</span>
+        </span>
+        <span class="text-white flex max-md:flex-col max-md:gap-2 justify-between">
+          شماره شبا بانک سامان:
+          <span class="text-end text-sm sm:text-base">{{ paymentShaba }}</span>
+        </span>
+      </div>
+    </div>
+    <div class="w-full h-full pb-3 max-lg:pt-8 xl:px-7 flex justify-center items-center">
       <UForm :schema="schema" :state="state" @submit.prevent="onSubmit"
         class="w-full lg:w-4/5 h-full flex flex-col items-center justify-center gap-5">
         <div class="flex flex-col gap-5 w-full">
@@ -42,6 +55,10 @@ const dateRegex = /^\d{4}\/\d{2}\/\d{2}$/
 const { jalaliToGregorian } = useDateConverter()
 const toastStore = useToastStore()
 const router = useRouter()
+const config = useRuntimeConfig()
+const paymentName = config.public.PAYMENT_NAME
+const paymentCard = config.public.PAYMENT_CARD
+const paymentShaba = config.public.PAYMENT_SHABA
 
 const schema = v.object({
   bankName: v.pipe(
