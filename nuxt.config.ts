@@ -41,6 +41,9 @@ export default defineNuxtConfig({
       APP_ENV: process.env.APP_ENV,
       APP_URL: process.env.APP_URL ?? "http://localhost:3000",
       API_URL: process.env.API_URL,
+      PAYMENT_NAME: process.env.NUXT_PAYMENT_NAME,
+      PAYMENT_CARD: process.env.NUXT_PAYMENT_CARD,
+      PAYMENT_SHABA: process.env.NUXT_PAYMENT_SHABA,
     },
   },
 });
