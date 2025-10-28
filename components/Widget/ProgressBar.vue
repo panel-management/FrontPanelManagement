@@ -26,19 +26,19 @@
 import type { StatusPlanMaster } from '~/models/plan/masterPlan/StatusPlanMaster';
 import { getStatusPlanService } from '~/services/master.service';
 
-const toastStore = useToastStore()
 const formData = ref<StatusPlanMaster | null>(null)
 const emit = defineEmits(['delete'])
 
 async function getStatusPlanMaster() {
   try {
     const result = await getStatusPlanService()
-
+    console.log(result);
     if (result.statusCode === 200) {
       formData.value = result.data
-      console.log(result.data);
-    } else if (result.statusCode === 403) {
-      emit('delete')
+
+      if (result.data?.isAdmin === true) {
+        emit('delete')
+      }
     }
   } catch (error: any) {
     console.log(error.message || error);
