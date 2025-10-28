@@ -24,13 +24,6 @@ export const useUsersStore = defineStore("users", {
           message: result.message,
           statusCode: result.statusCode,
         };
-        if (result.statusCode === 403) {
-          this.planStatus = {
-            isActive: true,
-            message: "",
-            statusCode: 403,
-          };
-        }
       } catch (error: any) {
         console.error("getStatusPlanUsers failed:", error);
       }
