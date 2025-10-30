@@ -15,26 +15,26 @@
             <div class="flex flex-col gap-5 w-full">
               <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
                 <BaseFormInput :required="false" v-model="state.name" label="نام باشگاه" name="name" type="text"
-                               class="w-full"/>
+                  class="w-full" />
                 <BaseFormInput :required="false" v-model="state.phoneNumber" label="شماره تلفن باشگاه"
-                               name="phoneNumber" type="text" class="w-full"/>
+                  name="phoneNumber" type="text" class="w-full" />
               </div>
               <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
                 <BaseFormInput :required="false" v-model="state.email" label="ایمیل باشگاه" name="email" type="text"
-                               class="w-full"/>
+                  class="w-full" />
                 <BaseFormInput :required="false" v-model="state.webSite" label="وب سایت باشگاه" name="webSite"
-                               type="text" class="w-full"/>
+                  type="text" class="w-full" />
               </div>
               <div class="w-full">
                 <BaseFormTextArea :required="false" v-model="state.address" label="آدرس باشگاه" name="address"
-                                  class="w-full"/>
+                  class="w-full" />
               </div>
               <div class="w-full">
                 <BaseFormTextArea :required="false" v-model="state.about" label="درباره باشگاه" name="about"
-                                  class="w-full"/>
+                  class="w-full" />
               </div>
               <div class="flex justify-end gap-2 pt-4">
-                <UButton label="ثبت اطلاعات" color="primary" type="submit" class="disabled:blur-[1px]"/>
+                <UButton label="ثبت اطلاعات" color="primary" type="submit" class="disabled:blur-[1px]" />
               </div>
             </div>
           </UForm>
@@ -42,39 +42,48 @@
       </template>
       <template #mali>
         <div class="flex flex-col gap-6 rounded-lg w-full h-full">
-          <div class="bg-white p-4 rounded-xl w-full flex max-sm:flex-col sm:items-center justify-between gap-3 sm:gap-0">
+          <div
+            class="bg-white p-4 rounded-xl w-full flex max-sm:flex-col sm:items-center justify-between gap-3 sm:gap-0">
             <div class="flex flex-col gap-1">
               <span class="font-semibold text-2xl">انواع طرح ها</span>
               <p class="font-light text-sm">مدیریت طرح‌های مختلف عضویت و قیمت‌ ها</p>
             </div>
-            <UButton @click="modalStore.toggleModal('paymentAdd')" label="طرح جدید" size="lg" icon="material-symbols:add-rounded" variant="solid" color="neutral" class="flex justify-center w-full sm:w-fit"/>
+            <UButton @click="modalStore.toggleModal('paymentAdd')" label="طرح جدید" size="lg"
+              icon="material-symbols:add-rounded" variant="solid" color="neutral"
+              class="flex justify-center w-full sm:w-fit" />
           </div>
           <div class="bg-white p-4 rounded-xl w-full flex flex-col gap-5">
             <div class="flex items-center gap-2">
-              <UIcon name="heroicons:fire-16-solid" class="size-7 text-yellow-200"/>
+              <UIcon name="heroicons:fire-16-solid" class="size-7 text-yellow-200" />
               <span class="text-2xl font-bold">طرح‌ ها</span>
             </div>
-            <div class="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div class="bg-turquoise-50 rounded-lg p-4 w-full flex flex-col gap-4">
-                <div class="w-full flex flex-col gap-1">
-                  <span class="font-semibold text-lg xl:text-xl">شهریه ماهانه شهریور</span>
-                  <p class="text-sm font-medium">مدت: ۱ ماه</p>
+            <div v-if="!formData.length" class="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div v-for="n in 12" :key="n"
+                class="bg-turquoise-50 rounded-lg p-4 w-full flex flex-col gap-4 animate-pulse">
+                <div class="w-full flex flex-col gap-2">
+                  <div class="h-6 bg-turquoise-200 rounded w-1/3"></div> <!-- name placeholder -->
+                  <div class="h-4 bg-turquoise-200 rounded w-2/3"></div> <!-- description placeholder -->
                 </div>
-                <USeparator/>
-                <div class="flex w-full justify-between">
-                  <span class="font-medium">مبلغ:</span>
-                  <span class="font-medium"><span>۲,۵۰۰,۰۰۰</span> تومان</span>
+                <div class="w-full flex flex-col gap-4">
+                  <div class="h-4 bg-turquoise-200 rounded w-full"></div>
+                  <div class="flex w-full justify-between items-center gap-2">
+                    <div class="h-4 bg-turquoise-200 rounded w-1/4"></div>
+                    <div class="h-4 bg-turquoise-200 rounded w-1/2"></div>
+                  </div>
+                  <div class="h-4 bg-turquoise-200 rounded w-full"></div>
+                  <div class="flex w-full justify-between items-center gap-2">
+                    <div class="h-4 bg-turquoise-200 rounded w-1/4"></div>
+                    <div class="h-4 bg-turquoise-200 rounded w-1/2"></div>
+                  </div>
                 </div>
-                <USeparator/>
                 <div class="w-full flex gap-2">
-                  <UButton @click="modalStore.toggleModal('paymentEdit')" color="primary" variant="solid"
-                           icon="material-symbols-light:edit-document-rounded"
-                           class="w-full flex content-center items-center justify-center" label="ویرایش"/>
-                  <UButton color="error" variant="solid" icon="material-symbols:delete-forever-rounded"
-                           class="w-full flex content-center items-center justify-center" label="حذف"/>
+                  <div class="h-10 bg-turquoise-200 rounded w-1/2"></div>
+                  <div class="h-10 bg-turquoise-200 rounded w-1/2"></div>
                 </div>
               </div>
-              <div class="bg-turquoise-50 rounded-lg p-4 w-full flex flex-col gap-4">
+            </div>
+            <div v-else class="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <!-- <div class="bg-turquoise-50 rounded-lg p-4 w-full flex flex-col gap-4">
                 <div class="w-full flex flex-col gap-1">
                   <span class="font-semibold text-lg xl:text-xl">شهریه ماهانه شهریور</span>
                   <p class="text-sm font-medium">مدت: ۱ ماه</p>
@@ -92,91 +101,46 @@
                   <UButton color="error" variant="solid" icon="material-symbols:delete-forever-rounded"
                            class="w-full flex content-center items-center justify-center" label="حذف"/>
                 </div>
-              </div>
-              <div class="bg-turquoise-50 rounded-lg p-4 w-full flex flex-col gap-4">
+              </div> -->
+              <div class="bg-turquoise-50 rounded-lg p-4 w-full flex flex-col gap-4" v-for="data in formData"
+                :key="data.id" v-memo="data.id">
                 <div class="w-full flex flex-col gap-1">
-                  <span class="font-semibold text-lg xl:text-xl">شهریه ماهانه شهریور</span>
-                  <p class="text-sm font-medium">مدت: ۱ ماه</p>
+                  <span class="font-semibold text-lg xl:text-xl">{{ data.name }}</span>
+                  <p class="text-sm font-medium">{{ data.description }}</p>
                 </div>
-                <USeparator/>
+                <USeparator />
+                <div class="flex w-full justify-between">
+                  <span class="font-medium">مدت:</span>
+                  <span class="font-medium"><span>{{ data.durationInDays }}</span> روز</span>
+                </div>
+                <USeparator />
                 <div class="flex w-full justify-between">
                   <span class="font-medium">مبلغ:</span>
-                  <span class="font-medium"><span>۲,۵۰۰,۰۰۰</span> تومان</span>
+                  <span class="font-medium"><span>{{ Number(data.price).toLocaleString('fa-IR') }}</span> تومان</span>
                 </div>
-                <USeparator/>
+                <USeparator />
+                <div class="flex w-full justify-between items-center">
+                  <span class="font-medium">تاریخ ایجاد:</span>
+                  <span class="font-medium">{{ useJDate(data.createdAt) }}</span>
+                </div>
+                <USeparator />
                 <div class="w-full flex gap-2">
                   <UButton @click="modalStore.toggleModal('paymentEdit')" color="primary" variant="solid"
-                           icon="material-symbols-light:edit-document-rounded"
-                           class="w-full flex content-center items-center justify-center" label="ویرایش"/>
-                  <UButton color="error" variant="solid" icon="material-symbols:delete-forever-rounded"
-                           class="w-full flex content-center items-center justify-center" label="حذف"/>
-                </div>
-              </div>
-              <div class="bg-turquoise-50 rounded-lg p-4 w-full flex flex-col gap-4">
-                <div class="w-full flex flex-col gap-1">
-                  <span class="font-semibold text-lg xl:text-xl">شهریه ماهانه شهریور</span>
-                  <p class="text-sm font-medium">مدت: ۱ ماه</p>
-                </div>
-                <USeparator/>
-                <div class="flex w-full justify-between">
-                  <span class="font-medium">مبلغ:</span>
-                  <span class="font-medium"><span>۲,۵۰۰,۰۰۰</span> تومان</span>
-                </div>
-                <USeparator/>
-                <div class="w-full flex gap-2">
-                  <UButton @click="modalStore.toggleModal('paymentEdit')" color="primary" variant="solid"
-                           icon="material-symbols-light:edit-document-rounded"
-                           class="w-full flex content-center items-center justify-center" label="ویرایش"/>
-                  <UButton color="error" variant="solid" icon="material-symbols:delete-forever-rounded"
-                           class="w-full flex content-center items-center justify-center" label="حذف"/>
-                </div>
-              </div>
-              <div class="bg-turquoise-50 rounded-lg p-4 w-full flex flex-col gap-4">
-                <div class="w-full flex flex-col gap-1">
-                  <span class="font-semibold text-lg xl:text-xl">شهریه ماهانه شهریور</span>
-                  <p class="text-sm font-medium">مدت: ۱ ماه</p>
-                </div>
-                <USeparator/>
-                <div class="flex w-full justify-between">
-                  <span class="font-medium">مبلغ:</span>
-                  <span class="font-medium"><span>۲,۵۰۰,۰۰۰</span> تومان</span>
-                </div>
-                <USeparator/>
-                <div class="w-full flex gap-2">
-                  <UButton @click="modalStore.toggleModal('paymentEdit')" color="primary" variant="solid"
-                           icon="material-symbols-light:edit-document-rounded"
-                           class="w-full flex content-center items-center justify-center" label="ویرایش"/>
-                  <UButton color="error" variant="solid" icon="material-symbols:delete-forever-rounded"
-                           class="w-full flex content-center items-center justify-center" label="حذف"/>
-                </div>
-              </div>
-              <div class="bg-turquoise-50 rounded-lg p-4 w-full flex flex-col gap-4">
-                <div class="w-full flex flex-col gap-1">
-                  <span class="font-semibold text-lg xl:text-xl">شهریه ماهانه شهریور</span>
-                  <p class="text-sm font-medium">مدت: ۱ ماه</p>
-                </div>
-                <USeparator/>
-                <div class="flex w-full justify-between">
-                  <span class="font-medium">مبلغ:</span>
-                  <span class="font-medium"><span>۲,۵۰۰,۰۰۰</span> تومان</span>
-                </div>
-                <USeparator/>
-                <div class="w-full flex gap-2">
-                  <UButton @click="modalStore.toggleModal('paymentEdit')" color="primary" variant="solid"
-                           icon="material-symbols-light:edit-document-rounded"
-                           class="w-full flex content-center items-center justify-center" label="ویرایش"/>
-                  <UButton color="error" variant="solid" icon="material-symbols:delete-forever-rounded"
-                           class="w-full flex content-center items-center justify-center" label="حذف"/>
+                    icon="material-symbols-light:edit-document-rounded"
+                    class="w-full flex content-center items-center justify-center" label="ویرایش" />
+                  <UButton :loading="isLoading" @click="deletePlanMasterByStudent(data.id)" color="error"
+                    variant="solid" icon="material-symbols:delete-forever-rounded"
+                    class="w-full flex content-center items-center justify-center" label="حذف" />
                 </div>
               </div>
             </div>
           </div>
-          <div class="bg-white p-4 rounded-xl w-full flex justify-center items-center">
-            <UPagination v-model:page="page" show-edges :sibling-count="1" :total="50"/>
-          </div>
+          <!-- <div class="bg-white p-4 rounded-xl w-full flex justify-center items-center">
+            <UPagination v-model:page="page" show-edges :sibling-count="1" :total="50" />
+          </div> -->
         </div>
-        <LazyWidgetModalPaymentAdd v-model:open="modalStore.modals.paymentAdd"/>
-        <LazyWidgetModalPaymentEdit v-model:open="modalStore.modals.paymentEdit"/>
+        <LazyWidgetModalPaymentAdd v-model:open="modalStore.modals.paymentAdd" @success="getPlanMasterByStudent" />
+        <LazyWidgetModalPaymentEdit v-model:open="modalStore.modals.paymentEdit" />
       </template>
       <template #ranks>
         <div class="flex flex-col gap-6 p-4 bg-white rounded-lg w-full h-full">
@@ -186,8 +150,8 @@
               <p class="break-words font-medium text-sm">ترتیب و رنگ کمربندها یا رتبه ها را مدیریت کنید.</p>
             </div>
             <UButton @click="modalStore.toggleModal('rankAdd')" label="رتبه جدید" size="lg"
-                     icon="material-symbols:add-rounded" variant="solid" color="neutral"
-                     class="max-sm:w-full flex justify-center"/>
+              icon="material-symbols:add-rounded" variant="solid" color="neutral"
+              class="max-sm:w-full flex justify-center" />
           </div>
           <div class="flex flex-col gap-5 w-full p-2">
             <div class="flex items-center justify-between gap-2 w-full">
@@ -201,9 +165,9 @@
               </div>
               <div class="flex max-sm:flex-col gap-3">
                 <UButton @click="modalStore.toggleModal('rankEdit')" icon="material-symbols-light:edit-document-rounded"
-                         color="primary" size="lg" variant="outline" class="rounded-full"/>
+                  color="primary" size="lg" variant="outline" class="rounded-full" />
                 <UButton icon="material-symbols:delete-forever-rounded" color="error" size="lg" variant="outline"
-                         class="rounded-full"/>
+                  class="rounded-full" />
               </div>
             </div>
             <div class="flex items-center justify-between gap-2 w-full">
@@ -217,9 +181,9 @@
               </div>
               <div class="flex max-sm:flex-col gap-3">
                 <UButton @click="modalStore.toggleModal('rankEdit')" icon="material-symbols-light:edit-document-rounded"
-                         color="primary" size="lg" variant="outline" class="rounded-full"/>
+                  color="primary" size="lg" variant="outline" class="rounded-full" />
                 <UButton icon="material-symbols:delete-forever-rounded" color="error" size="lg" variant="outline"
-                         class="rounded-full"/>
+                  class="rounded-full" />
               </div>
             </div>
             <div class="flex items-center justify-between gap-2 w-full">
@@ -233,9 +197,9 @@
               </div>
               <div class="flex max-sm:flex-col gap-3">
                 <UButton @click="modalStore.toggleModal('rankEdit')" icon="material-symbols-light:edit-document-rounded"
-                         color="primary" size="lg" variant="outline" class="rounded-full"/>
+                  color="primary" size="lg" variant="outline" class="rounded-full" />
                 <UButton icon="material-symbols:delete-forever-rounded" color="error" size="lg" variant="outline"
-                         class="rounded-full"/>
+                  class="rounded-full" />
               </div>
             </div>
             <div class="flex items-center justify-between gap-2 w-full">
@@ -249,9 +213,9 @@
               </div>
               <div class="flex max-sm:flex-col gap-3">
                 <UButton @click="modalStore.toggleModal('rankEdit')" icon="material-symbols-light:edit-document-rounded"
-                         color="primary" size="lg" variant="outline" class="rounded-full"/>
+                  color="primary" size="lg" variant="outline" class="rounded-full" />
                 <UButton icon="material-symbols:delete-forever-rounded" color="error" size="lg" variant="outline"
-                         class="rounded-full"/>
+                  class="rounded-full" />
               </div>
             </div>
             <div class="flex items-center justify-between gap-2 w-full">
@@ -265,9 +229,9 @@
               </div>
               <div class="flex max-sm:flex-col gap-3">
                 <UButton @click="modalStore.toggleModal('rankEdit')" icon="material-symbols-light:edit-document-rounded"
-                         color="primary" size="lg" variant="outline" class="rounded-full"/>
+                  color="primary" size="lg" variant="outline" class="rounded-full" />
                 <UButton icon="material-symbols:delete-forever-rounded" color="error" size="lg" variant="outline"
-                         class="rounded-full"/>
+                  class="rounded-full" />
               </div>
             </div>
             <div class="flex items-center justify-between gap-2 w-full">
@@ -281,33 +245,41 @@
               </div>
               <div @click="modalStore.toggleModal('rankEdit')" class="flex max-sm:flex-col gap-3">
                 <UButton icon="material-symbols-light:edit-document-rounded" color="primary" size="lg" variant="outline"
-                         class="rounded-full"/>
+                  class="rounded-full" />
                 <UButton icon="material-symbols:delete-forever-rounded" color="error" size="lg" variant="outline"
-                         class="rounded-full"/>
+                  class="rounded-full" />
               </div>
             </div>
           </div>
         </div>
-        <LazyWidgetModalRankAdd v-model:open="modalStore.modals.rankAdd"/>
-        <LazyWidgetModalRankEdit v-model:open="modalStore.modals.rankEdit"/>
+        <LazyWidgetModalRankAdd v-model:open="modalStore.modals.rankAdd" />
+        <LazyWidgetModalRankEdit v-model:open="modalStore.modals.rankEdit" />
       </template>
     </LazyBaseTabs>
   </section>
 </template>
 <script setup lang="ts">
-import type {FormSubmitEvent, TabsItem} from "@nuxt/ui";
+import type { FormSubmitEvent, TabsItem } from "@nuxt/ui";
 import * as v from "valibot";
+import type { StudentPlanData } from "~/models/plan/studentPlan/StudentPlanData";
+import { deletePlanMasterByStudentService, getPlanMasterByStudentService } from "~/services/masterPlan.service";
 
 const modalStore = useModalStore()
+const toastStore = useToastStore()
+const { showConfirmDialog } = useConfirmDialog()
 const route = useRoute()
 const router = useRouter()
-const page = ref(5)
+// const page = ref(5)
+const isLoading: Ref<boolean> = ref(false)
 const validTabs = ['public', 'mali', 'ranks']
+// const formData: Ref<StudentPlanData[]> = ref([])
+const formData = shallowRef<StudentPlanData[]>([])
+
 const active = computed({
   get() {
     const currentTab = route.query.tab as string || 'public'
     if (!validTabs.includes(currentTab)) {
-      navigateTo({path: '/settings', query: {tab: 'public'}}, {replace: true})
+      navigateTo({ path: '/settings', query: { tab: 'public' } }, { replace: true })
     }
     return currentTab
   },
@@ -315,11 +287,12 @@ const active = computed({
     if (validTabs.includes(tab)) {
       router.push({
         path: '/settings',
-        query: {tab}
+        query: { tab }
       })
     }
   }
 })
+
 const items = [
   {
     label: 'عمومی',
@@ -343,29 +316,29 @@ const items = [
 
 const schema = v.object({
   name: v.pipe(
-      v.string(),
-      v.trim(),
+    v.string(),
+    v.trim(),
   ),
   email: v.pipe(
-      v.string(),
-      v.trim()
+    v.string(),
+    v.trim()
   ),
   webSite: v.pipe(
-      v.string(),
-      v.trim()
+    v.string(),
+    v.trim()
   ),
   phoneNumber: v.pipe(
-      v.string(),
-      v.trim(),
-      v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد.')
+    v.string(),
+    v.trim(),
+    v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد.')
   ),
   address: v.pipe(
-      v.string(),
-      v.trim(),
+    v.string(),
+    v.trim(),
   ),
   about: v.pipe(
-      v.string(),
-      v.trim(),
+    v.string(),
+    v.trim(),
   )
 })
 
@@ -380,7 +353,41 @@ const state = reactive({
   about: ''
 });
 
+async function getPlanMasterByStudent() {
+  try {
+    const result = await getPlanMasterByStudentService()
+    if (result.statusCode === 200) {
+      console.log(result.data);
+      formData.value = Array.isArray(result.data) ? result.data : []
+    }
+  } catch (error: any) {
+    console.log(error.message || error);
+  }
+}
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   console.log(event.data)
 }
+
+async function deletePlanMasterByStudent(id: number) {
+  showConfirmDialog("آیا از حذف این پلن اطمینان دارید؟ این عملیات قابل بازگشت نیست.", async () => {
+    isLoading.value = true
+    try {
+      const result = await deletePlanMasterByStudentService(id)
+      if (result.statusCode === 200) {
+        toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
+        await getPlanMasterByStudent()
+      }
+    } catch (error: any) {
+      console.error(error.message || error)
+    } finally {
+      isLoading.value = false
+    }
+  }
+  )
+}
+
+onMounted(() => {
+  nextTick(() => getPlanMasterByStudent())
+})
 </script>

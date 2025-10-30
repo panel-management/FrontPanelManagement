@@ -56,6 +56,7 @@ const { jalaliToGregorian } = useDateConverter()
 const toastStore = useToastStore()
 const router = useRouter()
 const config = useRuntimeConfig()
+const userStore = useUsersStore()
 const paymentName = config.public.PAYMENT_NAME
 const paymentCard = config.public.PAYMENT_CARD
 const paymentShaba = config.public.PAYMENT_SHABA
@@ -117,8 +118,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     const result = await createSubscriptionsMasterService(payload)
     if (result.statusCode === 201) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-      setInterval(() => {
+      setInterval(async () => {
         router.push('/dashboard')
+        await userStore.getStatusPlanUsers()
       }, 200);
     }
   } catch (error: any) {
