@@ -1,16 +1,20 @@
 import { defineStore } from "pinia";
 import { getStatusPlanService } from "~/services/master.service";
 
-interface PlanStatus {
+type PlanStatus = {
   isActive: boolean;
+  needsPayment: boolean;
+  isPending: boolean;
   message: string;
   statusCode: number;
-}
+};
 
 export const useUsersStore = defineStore("users", {
   state: () => ({
     planStatus: {
       isActive: false,
+      needsPayment: false,
+      isPending: false,
       message: "",
       statusCode: 0,
     } as PlanStatus,
@@ -21,6 +25,8 @@ export const useUsersStore = defineStore("users", {
         const result = await getStatusPlanService();
         this.planStatus = {
           isActive: result.data?.isActive,
+          needsPayment: result?.needsPayment,
+          isPending: result?.isPending,
           message: result.message,
           statusCode: result.statusCode,
         };
