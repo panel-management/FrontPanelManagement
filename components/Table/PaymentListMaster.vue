@@ -5,6 +5,10 @@
         @update:model-value="table?.tableApi?.getColumn('fullName')?.setFilterValue($event)" type="search"
         class="w-full" placeholder="جستجو بر اساس نام استاد" size="xl" variant="outline" icon="i-lucide-search"
         color="primary" />
+      <UInput :model-value="(table?.tableApi?.getColumn('phoneNumber')?.getFilterValue() as string)"
+        @update:model-value="table?.tableApi?.getColumn('phoneNumber')?.setFilterValue($event)" type="search"
+        class="w-full" placeholder="جستجو بر اساس شماره تماس استاد" size="xl" variant="outline" icon="i-lucide-search"
+        color="primary" />
     </div>
     <div class="flex max-md:flex-col gap-3 w-full h-full">
       <div class="flex max-sm:flex-col gap-3">
@@ -22,7 +26,7 @@
       }))" label="ستون ها" class="w-full" />
       <BaseDropdownMenu :items="statusOptions.map(statusPayment => (
         {
-          label: statusPayment, type: 'checkbox' as const, checked: selectedStatus.includes(statusPayment),
+          label: subscriptionStatusLabels[statusPayment], type: 'checkbox' as const, checked: selectedStatus.includes(statusPayment),
           onUpdateChecked(checked: boolean) {
             if (checked) {
               selectedStatus.push(statusPayment)
@@ -80,7 +84,7 @@
 <script setup lang="ts">
 import type { TableColumn } from "@nuxt/ui";
 import { statusConfirmSubscriptionsMaster } from "~/models/Payments/Subscriptions/confirmSubscriptionsMaster";
-import type { SubscriptionListData } from "~/models/Payments/Subscriptions/SubscriptionListData";
+import { SubscriptionStatus, type SubscriptionListData } from "~/models/Payments/Subscriptions/SubscriptionListData";
 import { confirmSubscriptionsMasterService, getSubscriptionsPendingMasterService } from "~/services/payment.service";
 
 const isLoading: Ref<boolean> = ref(false)
@@ -90,23 +94,27 @@ const UButton = resolveComponent('UButton')
 const table = useTemplateRef('table')
 const toastStore = useToastStore()
 const { showImagePreview } = useShowImagePreview()
+const { showSendMessage } = useSendMessage()
+const { showConfirmDialog } = useConfirmDialog()
 
-const selectedStatus = ref<string[]>([])
-const statusOptions = ref(['پرداخت شده', 'پرداخت نشده', 'در انتظار پرداخت'])
+const subscriptionStatusLabels: Record<SubscriptionStatus, string> = {
+  [SubscriptionStatus.PENDING]: 'در انتظار تایید',
+  [SubscriptionStatus.CONFIRMED]: 'تایید شده',
+  [SubscriptionStatus.REJECTED]: 'پرداخت ناموفق'
+}
+
+const selectedStatus = ref<SubscriptionStatus[]>([])
+const statusOptions = ref([SubscriptionStatus.CONFIRMED, SubscriptionStatus.PENDING, SubscriptionStatus.REJECTED])
 
 const filteredData = computed(() => {
-  return formData.value.filter(row => {
-    const statusMatch = selectedStatus.value.length === 0 || selectedStatus.value.includes(row.status)
-    return statusMatch
-  })
+  const statuses = selectedStatus.value
+  return formData.value.filter(row => !statuses.length || statuses.includes(row.status))
 })
 
 async function getSubscriptionListMaster() {
   isLoading.value = true
   try {
     const result = await getSubscriptionsPendingMasterService()
-    console.log(result.data);
-
     if (result.statusCode === 200) {
       formData.value = Array.isArray(result.data) ? result.data : []
     }
@@ -121,9 +129,10 @@ async function confirmSubscription(id: number, data: any) {
   isLoading.value = true
   try {
     const result = await confirmSubscriptionsMasterService(id, data)
-    console.log(result);
-    toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-    await getSubscriptionListMaster()
+    if (result.statusCode === 200) {
+      toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
+      await getSubscriptionListMaster()
+    }
   } catch (error: any) {
     console.log(error.message || error);
   } finally {
@@ -158,6 +167,7 @@ onMounted(() => {
 const columnLabels: Record<string, string> = {
   fullName: 'نام مدیر باشگاه',
   amount: 'مبلغ',
+  name: 'نام پلن',
   paymentDate: 'تاریخ پرداخت',
   trackingNumber: 'شماره پیگیری',
   payerFullName: 'نام پرداخت کننده',
@@ -180,6 +190,12 @@ const columns: TableColumn<SubscriptionListData>[] = [
     id: 'fullName',
     header: 'نام مدیر باشگاه',
     accessorFn: row => row.master?.fullName,
+    cell: ({ getValue }) => getValue()
+  },
+  {
+    id: 'phoneNumber',
+    header: 'شماره تماس مدیر باشگاه',
+    accessorFn: row => row.master?.phoneNumber,
     cell: ({ getValue }) => getValue()
   },
   {
@@ -220,6 +236,12 @@ const columns: TableColumn<SubscriptionListData>[] = [
       }
       return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => text)
     }
+  },
+  {
+    id: 'name',
+    header: 'نام پلن',
+    accessorFn: row => row.master?.masterPlan?.name,
+    cell: ({ getValue }) => getValue()
   },
   {
     accessorKey: 'amount',
@@ -278,9 +300,9 @@ const columns: TableColumn<SubscriptionListData>[] = [
           color: 'success',
           size: 'sm',
           onClick: () => {
-            console.log("confirm");
-            console.log(row.original.id);
-            confirmSubscription(row.original.id, { status: statusConfirmSubscriptionsMaster.CONFIRMED })
+            showConfirmDialog(`آیا از تایید پرداخت ${row.original.master.fullName} اطمینان دارید؟`, () => {
+              confirmSubscription(row.original.id, { status: statusConfirmSubscriptionsMaster.CONFIRMED })
+            })
           }
         }),
         h(UButton, {
@@ -290,7 +312,9 @@ const columns: TableColumn<SubscriptionListData>[] = [
           variant: 'soft',
           size: 'sm',
           onClick: () => {
-            console.log("reject");
+            showSendMessage(`رد کردن پرداخت ${row.original.master.fullName}`, (desc) => {
+              confirmSubscription(row.original.id, { status: statusConfirmSubscriptionsMaster.REJECTED, adminNotes: desc })
+            })
           }
         })
       ])

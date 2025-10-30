@@ -12,7 +12,7 @@
           stroke-linecap="round" transform="rotate(-90 60 60)" />
       </svg>
       <div class="absolute inset-0 flex flex-col justify-center items-center">
-        <span class="text-3xl font-extrabold text-black">{{ formData.progressPercentage.toFixed() }}%</span>
+        <span class="text-3xl font-extrabold text-black">{{ progress }}%</span>
         <span class="text-xs">استفاده شده</span>
       </div>
     </div>
@@ -29,23 +29,20 @@ import { getStatusPlanService } from '~/services/master.service';
 const formData = ref<StatusPlanMaster | null>(null)
 const emit = defineEmits(['delete'])
 
+const progress = computed(() => formData.value?.progressPercentage?.toFixed(0) ?? 0)
+
 async function getStatusPlanMaster() {
   try {
     const result = await getStatusPlanService()
     console.log(result);
     if (result.statusCode === 200) {
       formData.value = result.data
-
-      if (result.data?.isAdmin === true) {
-        emit('delete')
-      }
+      if (result.data?.isAdmin) emit('delete')
     }
   } catch (error: any) {
     console.log(error.message || error);
   }
 }
 
-onMounted(() => {
-  nextTick(() => getStatusPlanMaster())
-})
+onMounted(getStatusPlanMaster)
 </script>
