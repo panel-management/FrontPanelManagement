@@ -8,11 +8,17 @@ export interface SubscriptionListData {
   payerFullName: string;
   bankName: string;
   receiptImageUrl: string;
-  status: string;
+  status: SubscriptionStatus;
   masterId: number;
   confirmerId: number;
   adminNotes: string;
   createdAt: string;
   updatedAt: string;
   master: DataUsers;
+}
+
+export enum SubscriptionStatus {
+  PENDING = "PENDING",
+  CONFIRMED = "CONFIRMED",
+  REJECTED = "REJECTED",
 }
