@@ -1,6 +1,7 @@
 import type { MasterPlanData } from "~/models/plan/masterPlan/MasterPlanData";
 import type { UpdateMasterPlanData } from "~/models/plan/masterPlan/UpdateMasterPlanData";
 import type { CreatePlanStudent } from "~/models/plan/studentPlan/CreatePlanStudent";
+import type { UpdatePlanStudent } from "~/models/plan/studentPlan/UpdatePlanStudent";
 
 export const getPlanMasterOrAdminService = () => {
   return FetchApi("/financials/master-plans");
@@ -22,6 +23,13 @@ export const createPlanMasterByStudentService = (data: CreatePlanStudent) => {
     method: "POST",
     body: data,
   });
+};
+
+export const updatePlanMasterByStudentService = (id: number, data: UpdatePlanStudent) => {
+  return FetchApi(`/financials/plans/${id}`, {
+    method: "PUT",
+    body: data
+  })
 };
 
 export const updateMasterPlanService = (
