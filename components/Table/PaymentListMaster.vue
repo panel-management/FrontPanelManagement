@@ -281,7 +281,7 @@ const columns: TableColumn<SubscriptionListData>[] = [
       const src = row.getValue('receiptImageUrl')
       return h('img', {
         src,
-        class: 'size-10 rounded-full object-cover cursor-pointer',
+        class: 'aspect-square rounded-full object-cover cursor-pointer',
         onClick: () => {
           showImagePreview(`فیش واریزی ${row.original.payerFullName}`, src)
         }

@@ -56,7 +56,7 @@ const state = reactive<CreatePlanStudent>({
   description: '',
   price: '',
   durationInDays: '',
-  isDefault: ''
+  isDefault: false
 });
 
 const displayPriceComputed = computed({
@@ -124,7 +124,7 @@ function resetForm() {
               placeholder="مدت زمان باید به روز باشد" required class="w-full" />
           </div>
           <div class="w-full">
-            <BaseFormCheckBox v-model="state.isDefault" label="لطف طرح اول خود را فعال کنید" name="iSection" :required="false" />
+            <BaseFormCheckBox v-model="state.isDefault" label="لطف طرح اول خود را فعال کنید" name="isDefault" :required="false" />
           </div>
           <div class="flex justify-between gap-2 pt-4">
             <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />

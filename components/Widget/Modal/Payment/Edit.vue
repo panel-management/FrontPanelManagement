@@ -1,73 +1,154 @@
 <script setup lang="ts">
 import * as v from 'valibot'
-import type {FormSubmitEvent} from "@nuxt/ui"
+import type { FormSubmitEvent } from "@nuxt/ui"
+import type { UpdatePlanStudent } from '~/models/plan/studentPlan/UpdatePlanStudent';
+import { updatePlanMasterByStudentService } from '~/services/masterPlan.service';
 
-const emit = defineEmits(['update:open']);
+const emit = defineEmits(['update:open', 'success']);
+const toastStore = useToastStore()
+const isLoading: Ref<boolean> = ref(false)
+const modalStore = useModalStore()
+const displayPrice: Ref<string> = ref('')
 
 const props = defineProps({
   open: {
-    type: Boolean,
-    required: true
+    type: [Boolean, Object, null] as any,
+    default: false
   }
 });
 
+const planData = computed(() => {
+  return props.open && typeof props.open === 'object' ? props.open : null;
+});
+
+const planId = computed(() => {
+  return planData.value?.id || null;
+});
+
 const localOpen = computed({
-  get: () => props.open,
-  set: (Val) => emit('update:open', Val)
+  get: () => {
+    if (props.open === null) return false;
+    if (typeof props.open === 'object') return true;
+    return !!props.open;
+  },
+  set: (val) => {
+    if (!val) {
+      modalStore.toggleModal('paymentEdit', null);
+    }
+  }
 });
 
 const schema = v.object({
   name: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('نام طرح الزامی است.')
+    v.string(),
+    v.trim(),
+    v.nonEmpty('نام پلن الزامی است')
+  ),
+  description: v.pipe(
+    v.string(),
+    v.trim(),
+    v.nonEmpty('توضیحات پلن الزامی است')
   ),
   price: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('قیمت طرح الزامی است.'),
+    v.string(),
+    v.trim(),
+    v.nonEmpty('مبلغ طرح الزامی است'),
+    v.regex(/^\d+$/, 'مبلغ باید فقط شامل عدد باشد')
   ),
-  dateTime: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('مدت زمان طرح الزامی است.'),
+  durationInDays: v.pipe(
+    v.string(),
+    v.trim(),
+    v.nonEmpty('مدت زمان طرح الزامی است'),
+    v.regex(/^\d+$/, 'مدت زمان باید فقط شامل عدد باشد')
   )
 })
 
 type Schema = v.InferOutput<typeof schema>;
 
-const state = reactive({
-  name: 'خرید دستکش و مچ بند',
-  price: '3000000',
-  dateTime: '2',
+const state = reactive<UpdatePlanStudent>({
+  name: '',
+  description: '',
+  price: '',
+  durationInDays: '',
 });
 
+watch(() => planData.value, (newData) => {
+  if (newData) {
+    state.name = newData.name || '';
+    state.description = newData.description || '';
+    displayPrice.value = newData.price || '';
+    state.durationInDays = String(newData.durationInDays) || '';
+  }
+}, { immediate: true, deep: true });
+
+const displayPriceComputed = computed({
+  get() {
+    return displayPrice.value
+  },
+  set(val: string) {
+    const numeric = val.replace(/[^\d]/g, '')
+    displayPrice.value = numeric ? Number(numeric).toLocaleString('en-US') : ''
+    state.price = numeric
+  }
+})
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.log(event.data)
+  isLoading.value = true
+  try {
+    const payload = {
+      ...event.data,
+      price: Number(event.data.price),
+      durationInDays: Number(event.data.durationInDays)
+    }
+    const result = await updatePlanMasterByStudentService(planId.value, payload)
+    console.log(result)
+    if (result.statusCode === 200) {
+      console.log(event.data)
+      toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
+      localOpen.value = false
+      emit('success')
+      resetForm()
+    }
+  } catch (error: any) {
+    console.log(error.message || error);
+  } finally {
+    isLoading.value = false
+  }
+}
+
+function resetForm() {
+  state.name = '';
+  state.description = '';
+  displayPrice.value = '';
+  state.durationInDays = '';
 }
 </script>
 
 <template>
   <UModal v-model:open="localOpen" title="ویرایش طرح" description="ویرایش اطلاعات طرح"
-          :ui="{ footer: 'justify-between' }">
+    :ui="{ footer: 'justify-between' }">
     <template #body>
       <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
         <div class="flex flex-col gap-5 w-full">
           <div class="w-full">
             <BaseFormInput v-model="state.name" label="نام طرح" name="name" type="text"
-                           placeholder="مثال: شهریه ویژه یا خرید تجهیزات ورزشی" required class="w-full"/>
+              placeholder="مثال: شهریه ویژه یا خرید تجهیزات ورزشی" required class="w-full" />
           </div>
           <div class="w-full">
-            <BaseFormInput v-model="state.price" label="قیمت (تومان)" name="price" type="text"
-                           placeholder="2,500,000" required class="w-full"/>
+            <BaseFormInput v-model="state.description" label="توضیحات" name="description" type="text"
+              placeholder="توضیح کوتاه درباره طرح" required class="w-full" />
           </div>
           <div class="w-full">
-            <BaseFormInput v-model="state.dateTime" label="مدت زمان" name="dateTime" type="text"
-                           placeholder="1 ماه" required class="w-full"/>
+            <BaseFormInput v-model="displayPriceComputed" label="قیمت (تومان)" name="price" type="text"
+              placeholder="2,500,000" required class="w-full" />
+          </div>
+          <div class="w-full">
+            <BaseFormInput v-model="state.durationInDays" label="مدت زمان" name="durationInDays" type="text"
+              placeholder="مدت زمان باید به روز باشد" required class="w-full" />
           </div>
           <div class="flex justify-between gap-2 pt-4">
-            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false"/>
-            <UButton label="ویرایش طرح" color="primary" type="submit"/>
+            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
+            <UButton label="ویرایش طرح" color="primary" type="submit" />
           </div>
         </div>
       </UForm>
