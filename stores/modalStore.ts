@@ -6,8 +6,6 @@ export const useModalStore = defineStore("modal", () => {
     paymentAdminAdd: false,
     paymentEdit: false,
     paymentAdminEdit: false,
-    rankAdd: false,
-    rankEdit: false,
     studentAdd: false,
     studentEdit: false,
     coachesAdd: false,
