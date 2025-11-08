@@ -18,7 +18,8 @@ export const useDateConverter = () => {
 
   const gregorianToJalali = (gregorianDate: string): string => {
     try {
-      const [year, month, day] = gregorianDate.split("-").map(Number);
+      const [datePart] = gregorianDate.split("T")
+      const [year, month, day] = datePart.split("-").map(Number);
       const jalali = jalaali.toJalaali(year, month, day);
 
       return `${jalali.jy}/${String(jalali.jm).padStart(2, "0")}/${String(
