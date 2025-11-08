@@ -1,5 +1,5 @@
 <template>
-  <section class="container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
+  <section class="xl:container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
     <div
       class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-between items-center-safe gap-5 md:gap-10">
       <Carts v-for="item in itemsCard" :key="item.id" :data="item" />

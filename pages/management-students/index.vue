@@ -1,5 +1,5 @@
 <template>
-  <section class="container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
+  <section class="xl:container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
     <div class="w-full flex justify-between items-center">
       <div class="flex flex-col gap-2 sm:p-2">
         <h2 class="text-lg sm:text-3xl font-bold">لیست هنرجویان</h2>

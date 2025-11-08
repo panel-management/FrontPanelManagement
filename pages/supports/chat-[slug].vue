@@ -1,5 +1,5 @@
 <template>
-  <div class="container h-dvh w-full rounded-sm p-4 bg-muted flex flex-col gap-4">
+  <div class="xl:container h-dvh w-full rounded-sm p-4 bg-muted flex flex-col gap-4">
     <div class="flex justify-between">
       <div class="flex flex-col gap-2">
         <span class="text-2xl font-medium">مشکل در ثبت حضور و غیاب</span>

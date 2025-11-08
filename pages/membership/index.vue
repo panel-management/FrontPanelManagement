@@ -63,7 +63,7 @@
 import { ar } from "#ui/locale";
 import * as v from "valibot";
 import type { FormSubmitEvent, StepperItem } from "@nuxt/ui";
-import { clubProfileService } from "~/services/clubProfile.service";
+import { createClubProfileService } from "~/services/clubProfile.service";
 
 const isLoading: Ref<boolean> = ref(false);
 const isActive: Ref<number> = ref(0)
@@ -152,7 +152,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       ...event.data,
       foundationDate: jalaliToGregorian(event.data.foundationDate)
     }
-    const result = await clubProfileService(payload)
+    const result = await createClubProfileService(payload)
     if (result.statusCode === 201) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
       setTimeout(() => {

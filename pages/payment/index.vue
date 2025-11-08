@@ -1,5 +1,5 @@
 <template>
-  <section class="container flex max-lg:flex-col justify-between w-full h-full lg:pt-3">
+  <section class="xl:container flex max-lg:flex-col justify-between w-full h-full lg:pt-3">
     <div class="w-full h-full p-4 rounded-lg shadow bg-black">
       <h2 class="font-bold text-white text-sm md:text-lg">حساب به نام {{ paymentName }} می باشد.</h2>
       <div class="flex flex-col gap-3 pt-5">

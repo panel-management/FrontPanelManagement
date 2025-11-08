@@ -1,5 +1,5 @@
 <template>
-  <section class="container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-5 md:gap-10">
+  <section class="xl:container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-5 md:gap-10">
     <div class="bg-white p-4 rounded-xl w-full flex flex-col lg:items-center gap-5">
       <div class="flex items-center justify-between w-full">
         <div class="flex gap-3">

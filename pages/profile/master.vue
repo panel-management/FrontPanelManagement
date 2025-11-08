@@ -1,5 +1,5 @@
 <template>
-  <section v-if="data?.data" class="container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-5">
+  <section v-if="data?.data" class="xl:container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-5">
     <div class="bg-white p-4 md:p-6 rounded-xl w-full flex flex-col lg:items-center gap-5">
       <div class="flex items-center justify-between w-full">
         <div class="flex gap-3">

@@ -1,5 +1,5 @@
 <template>
-  <section class="container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
+  <section class="xl:container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
     <div class="w-full h-full flex flex-col gap-2 sm:p-2">
       <h2 class="text-lg sm:text-3xl font-bold">تنظیمات سیستم</h2>
       <span class="text-xs sm:text-sm font-medium">مدیریت و پیکربندی تنظیمات کلی سیستم</span>
@@ -11,32 +11,50 @@
             <span class="text-2xl font-bold">اطلاعات عمومی باشگاه</span>
             <p class="break-words font-medium text-sm">اطلاعات تماس و معرفی باشگاه را تنظیم کنید.</p>
           </div>
-          <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
-            <div class="flex flex-col gap-5 w-full">
-              <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-                <BaseFormInput :required="false" v-model="state.name" label="نام باشگاه" name="name" type="text"
+          <UForm :schema="schema" :state="state" @submit.prevent="onSubmit"
+            class="w-full flex flex-col items-center justify-center gap-5">
+            <ClientOnly>
+              <div class="flex flex-col gap-5 w-full">
+                <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
+                  <BaseFormInput required v-model="state.clubName" label="نام باشگاه" name="clubName" type="text"
+                    class="w-full" />
+                  <BaseFormInput required v-model="state.activityType" label="حوزه فعالیت" name="activityType"
+                    type="text" class="w-full" />
+                </div>
+                <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
+                  <BaseFormInput required v-model="state.clubPhoneNumber" label="شماره تلفن باشگاه"
+                    name="clubPhoneNumber" type="text" class="w-full" />
+                  <BaseDatePicker required v-model="state.foundationDate" label="تاریخ تاسسیس باشگاه"
+                    name="foundationDate" class="w-full" />
+                </div>
+                <BaseFormInput required v-model="state.goal" label="هدف ایجاد باشگاه" name="goal" type="text"
                   class="w-full" />
-                <BaseFormInput :required="false" v-model="state.phoneNumber" label="شماره تلفن باشگاه"
-                  name="phoneNumber" type="text" class="w-full" />
+                <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
+                  <BaseFormInput :required="false" v-model="state.socialNetworks.instagram"
+                    label="ایدی اینستاگرام باشگاه (اختیاری)" name="instagram" type="text" class="w-full" />
+                  <BaseFormInput :required="false" v-model="state.socialNetworks.telegram"
+                    label="لینک گروه تلگرام باشگاه (اختیاری)" name="telegram" type="text" class="w-full" />
+                </div>
+                <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
+                  <BaseFormInput :required="false" v-model="state.socialNetworks.eitaa"
+                    label="لینک گروه ایتا باشگاه (اختیاری)" name="eitaa" type="text" class="w-full" />
+                  <BaseFormInput :required="false" v-model="state.socialNetworks.website" label="لینک وب سایت (اختیاری)"
+                    name="website" type="text" class="w-full" />
+                </div>
+                <div class="w-full">
+                  <BaseFormTextArea required v-model="state.clubAddress" label="آدرس باشگاه" name="clubAddress"
+                    class="w-full" />
+                </div>
+                <div class="w-full">
+                  <BaseFormTextArea required v-model="state.aboutClub" label="درباره باشگاه" name="aboutClub"
+                    class="w-full" />
+                </div>
+                <div class="flex justify-start gap-2 pt-4">
+                  <UButton :loading="isLoading" type="submit" color="primary" class="flex justify-center text-base"
+                    label="ثبت اطلاعات" />
+                </div>
               </div>
-              <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-                <BaseFormInput :required="false" v-model="state.email" label="ایمیل باشگاه" name="email" type="text"
-                  class="w-full" />
-                <BaseFormInput :required="false" v-model="state.webSite" label="وب سایت باشگاه" name="webSite"
-                  type="text" class="w-full" />
-              </div>
-              <div class="w-full">
-                <BaseFormTextArea :required="false" v-model="state.address" label="آدرس باشگاه" name="address"
-                  class="w-full" />
-              </div>
-              <div class="w-full">
-                <BaseFormTextArea :required="false" v-model="state.about" label="درباره باشگاه" name="about"
-                  class="w-full" />
-              </div>
-              <div class="flex justify-end gap-2 pt-4">
-                <UButton label="ثبت اطلاعات" color="primary" type="submit" class="disabled:blur-[1px]" />
-              </div>
-            </div>
+            </ClientOnly>
           </UForm>
         </div>
       </template>
@@ -103,7 +121,7 @@
                 </div>
               </div> -->
               <div class="bg-turquoise-50 rounded-lg p-4 w-full flex flex-col gap-4" v-for="data in formData"
-                :key="data.id" v-memo="data.id">
+                :key="data.id">
                 <div class="w-full flex flex-col gap-1">
                   <span class="font-semibold text-lg xl:text-xl">{{ data.name }}</span>
                   <p class="text-sm font-medium">{{ data.description }}</p>
@@ -125,7 +143,7 @@
                 </div>
                 <USeparator />
                 <div class="w-full flex gap-2">
-                  <UButton @click="modalStore.toggleModal('paymentEdit')" color="primary" variant="solid"
+                  <UButton @click="modalStore.toggleModal('paymentEdit', data)" color="primary" variant="solid"
                     icon="material-symbols-light:edit-document-rounded"
                     class="w-full flex content-center items-center justify-center" label="ویرایش" />
                   <UButton :loading="isLoading" @click="deletePlanMasterByStudent(data.id)" color="error"
@@ -140,120 +158,33 @@
           </div> -->
         </div>
         <LazyWidgetModalPaymentAdd v-model:open="modalStore.modals.paymentAdd" @success="getPlanMasterByStudent" />
-        <LazyWidgetModalPaymentEdit v-model:open="modalStore.modals.paymentEdit" />
+        <LazyWidgetModalPaymentEdit v-model:open="modalStore.modals.paymentEdit" @success="getPlanMasterByStudent" />
       </template>
       <template #ranks>
         <div class="flex flex-col gap-6 p-4 bg-white rounded-lg w-full h-full">
           <div class="w-full flex max-sm:flex-col items-center justify-between gap-4 sm:gap-2">
             <div class="flex flex-col gap-2">
-              <span class="text-2xl font-bold">کمربندهای کاراته</span>
+              <span class="text-2xl font-bold">کمربندها یا درجه ها</span>
               <p class="break-words font-medium text-sm">ترتیب و رنگ کمربندها یا رتبه ها را مدیریت کنید.</p>
             </div>
-            <UButton @click="modalStore.toggleModal('rankAdd')" label="رتبه جدید" size="lg"
-              icon="material-symbols:add-rounded" variant="solid" color="neutral"
-              class="max-sm:w-full flex justify-center" />
           </div>
-          <div class="flex flex-col gap-5 w-full p-2">
-            <div class="flex items-center justify-between gap-2 w-full">
-              <div class="flex items-center gap-2">
-                <div class="flex justify-center items-center bg-muted rounded-full size-10">1</div>
-                <div class="flex justify-center items-center belt-blue rounded-full size-14"></div>
-                <div class="flex flex-col gap-1 mr-2">
-                  <span class="font-semibold text-xl">کمربند ابی</span>
-                  <p class="font-medium text-muted text-sm">رنگ: آبی</p>
+          <ClientOnly>
+            <div class="flex flex-col gap-5 w-full p-2">
+              <div class="flex items-center justify-between gap-2 w-full" v-for="items in data?.data" :key="items.id">
+                <div class="flex items-center gap-2">
+                  <div class="flex justify-center items-center bg-muted rounded-full size-10">{{ items.id }}</div>
+                  <div class="flex justify-center items-center rounded-full size-14"
+                    :class="[getBeltClass(items.color)]">
+                  </div>
+                  <div class="flex flex-col gap-1 mr-2">
+                    <span class="font-semibold text-xl">کمربند {{ items.color }}</span>
+                    <p class="font-medium text-muted text-sm">رنگ: {{ items.color }}</p>
+                  </div>
                 </div>
               </div>
-              <div class="flex max-sm:flex-col gap-3">
-                <UButton @click="modalStore.toggleModal('rankEdit')" icon="material-symbols-light:edit-document-rounded"
-                  color="primary" size="lg" variant="outline" class="rounded-full" />
-                <UButton icon="material-symbols:delete-forever-rounded" color="error" size="lg" variant="outline"
-                  class="rounded-full" />
-              </div>
             </div>
-            <div class="flex items-center justify-between gap-2 w-full">
-              <div class="flex items-center gap-2">
-                <div class="flex justify-center items-center bg-muted rounded-full size-10">2</div>
-                <div class="flex justify-center items-center belt-yellow rounded-full size-14"></div>
-                <div class="flex flex-col gap-1 mr-2">
-                  <span class="font-semibold text-xl">کمربند ابی</span>
-                  <p class="font-medium text-muted text-sm">رنگ: آبی</p>
-                </div>
-              </div>
-              <div class="flex max-sm:flex-col gap-3">
-                <UButton @click="modalStore.toggleModal('rankEdit')" icon="material-symbols-light:edit-document-rounded"
-                  color="primary" size="lg" variant="outline" class="rounded-full" />
-                <UButton icon="material-symbols:delete-forever-rounded" color="error" size="lg" variant="outline"
-                  class="rounded-full" />
-              </div>
-            </div>
-            <div class="flex items-center justify-between gap-2 w-full">
-              <div class="flex items-center gap-2">
-                <div class="flex justify-center items-center bg-muted rounded-full size-10">3</div>
-                <div class="flex justify-center items-center belt-orange rounded-full size-14"></div>
-                <div class="flex flex-col gap-1 mr-2">
-                  <span class="font-semibold text-xl">کمربند ابی</span>
-                  <p class="font-medium text-muted text-sm">رنگ: آبی</p>
-                </div>
-              </div>
-              <div class="flex max-sm:flex-col gap-3">
-                <UButton @click="modalStore.toggleModal('rankEdit')" icon="material-symbols-light:edit-document-rounded"
-                  color="primary" size="lg" variant="outline" class="rounded-full" />
-                <UButton icon="material-symbols:delete-forever-rounded" color="error" size="lg" variant="outline"
-                  class="rounded-full" />
-              </div>
-            </div>
-            <div class="flex items-center justify-between gap-2 w-full">
-              <div class="flex items-center gap-2">
-                <div class="flex justify-center items-center bg-muted rounded-full size-10">4</div>
-                <div class="flex justify-center items-center belt-green rounded-full size-14"></div>
-                <div class="flex flex-col gap-1 mr-2">
-                  <span class="font-semibold text-xl">کمربند ابی</span>
-                  <p class="font-medium text-muted text-sm">رنگ: آبی</p>
-                </div>
-              </div>
-              <div class="flex max-sm:flex-col gap-3">
-                <UButton @click="modalStore.toggleModal('rankEdit')" icon="material-symbols-light:edit-document-rounded"
-                  color="primary" size="lg" variant="outline" class="rounded-full" />
-                <UButton icon="material-symbols:delete-forever-rounded" color="error" size="lg" variant="outline"
-                  class="rounded-full" />
-              </div>
-            </div>
-            <div class="flex items-center justify-between gap-2 w-full">
-              <div class="flex items-center gap-2">
-                <div class="flex justify-center items-center bg-muted rounded-full size-10">5</div>
-                <div class="flex justify-center items-center belt-brown rounded-full size-14"></div>
-                <div class="flex flex-col gap-1 mr-2">
-                  <span class="font-semibold text-xl">کمربند ابی</span>
-                  <p class="font-medium text-muted text-sm">رنگ: آبی</p>
-                </div>
-              </div>
-              <div class="flex max-sm:flex-col gap-3">
-                <UButton @click="modalStore.toggleModal('rankEdit')" icon="material-symbols-light:edit-document-rounded"
-                  color="primary" size="lg" variant="outline" class="rounded-full" />
-                <UButton icon="material-symbols:delete-forever-rounded" color="error" size="lg" variant="outline"
-                  class="rounded-full" />
-              </div>
-            </div>
-            <div class="flex items-center justify-between gap-2 w-full">
-              <div class="flex items-center gap-2">
-                <div class="flex justify-center items-center bg-muted rounded-full size-10">6</div>
-                <div class="flex justify-center items-center belt-black rounded-full size-14"></div>
-                <div class="flex flex-col gap-1 mr-2">
-                  <span class="font-semibold text-xl">کمربند ابی</span>
-                  <p class="font-medium text-muted text-sm">رنگ: آبی</p>
-                </div>
-              </div>
-              <div @click="modalStore.toggleModal('rankEdit')" class="flex max-sm:flex-col gap-3">
-                <UButton icon="material-symbols-light:edit-document-rounded" color="primary" size="lg" variant="outline"
-                  class="rounded-full" />
-                <UButton icon="material-symbols:delete-forever-rounded" color="error" size="lg" variant="outline"
-                  class="rounded-full" />
-              </div>
-            </div>
-          </div>
+          </ClientOnly>
         </div>
-        <LazyWidgetModalRankAdd v-model:open="modalStore.modals.rankAdd" />
-        <LazyWidgetModalRankEdit v-model:open="modalStore.modals.rankEdit" />
       </template>
     </LazyBaseTabs>
   </section>
@@ -261,9 +192,13 @@
 <script setup lang="ts">
 import type { FormSubmitEvent, TabsItem } from "@nuxt/ui";
 import * as v from "valibot";
+import type { ClubProfileData } from "~/models/clubProfile/ClubProfileData";
 import type { StudentPlanData } from "~/models/plan/studentPlan/StudentPlanData";
+import { getClubProfileService, updateClubProfileService } from "~/services/clubProfile.service";
 import { deletePlanMasterByStudentService, getPlanMasterByStudentService } from "~/services/masterPlan.service";
+import { getAllBeltService } from "~/services/sportBelt.service";
 
+const dateRegex = /^\d{4}\/\d{2}\/\d{2}$/
 const modalStore = useModalStore()
 const toastStore = useToastStore()
 const { showConfirmDialog } = useConfirmDialog()
@@ -274,6 +209,29 @@ const isLoading: Ref<boolean> = ref(false)
 const validTabs = ['public', 'mali', 'ranks']
 // const formData: Ref<StudentPlanData[]> = ref([])
 const formData = shallowRef<StudentPlanData[]>([])
+const clubProfile = ref<ClubProfileData | null>(null)
+const { jalaliToGregorian, gregorianToJalali } = useDateConverter()
+
+function getBeltClass(color: string) {
+  const colorMap: Record<string, string> = {
+    'سفید': 'belt-white',
+    'خاکستری': 'belt-gray',
+    'زرد': 'belt-yellow',
+    'نارنجی': 'belt-orange',
+    'سبز': 'belt-green',
+    'آبی': 'belt-blue',
+    'بنفش': 'belt-purple',
+    'قهوه‌ای': 'belt-brown',
+    'قرمز': 'belt-red',
+    'قرمز/سیاه': 'belt-red-black',
+    'قرمز/سفید': 'belt-red-white',
+    'مشکی': 'belt-black',
+    'صورتی': 'belt-pink',
+    'طلایی': 'belt-gold',
+    'نقره‌ای': 'belt-silver'
+  }
+  return colorMap[color]
+}
 
 const active = computed({
   get() {
@@ -315,43 +273,89 @@ const items = [
 ] satisfies TabsItem[]
 
 const schema = v.object({
-  name: v.pipe(
+  clubName: v.pipe(
     v.string(),
     v.trim(),
+    v.nonEmpty('نام باشگاه الزامی است')
   ),
-  email: v.pipe(
-    v.string(),
-    v.trim()
-  ),
-  webSite: v.pipe(
-    v.string(),
-    v.trim()
-  ),
-  phoneNumber: v.pipe(
+  activityType: v.pipe(
     v.string(),
     v.trim(),
-    v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد.')
+    v.nonEmpty('حوزه فعالیت الزامی است')
   ),
-  address: v.pipe(
+  clubPhoneNumber: v.pipe(
     v.string(),
     v.trim(),
+    v.nonEmpty('شماره تلفن باشگاه الزامی است'),
+    v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
+    v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد'),
+    v.custom((value) => /^\d+$/.test(value), 'شماره تلفن فقط می‌تواند شامل اعداد باشد')
   ),
-  about: v.pipe(
+  foundationDate: v.pipe(
     v.string(),
     v.trim(),
+    v.nonEmpty('تاریخ تاسسیس باشگاه الزامی است'),
+    v.custom((value) => dateRegex.test(value), 'فرمت تاریخ باید 1380/01/30 باشد')
+  ),
+  goal: v.pipe(
+    v.string(),
+    v.trim(),
+    v.nonEmpty('هدف ایجاد باشگاه الزامی است')
+  ),
+  clubAddress: v.pipe(
+    v.string(),
+    v.trim(),
+    v.nonEmpty('آدرس باشگاه الزامی است')
+  ),
+  aboutClub: v.pipe(
+    v.string(),
+    v.trim(),
+    v.nonEmpty('درباره باشگاه الزامی است')
   )
 })
 
 type Schema = v.InferOutput<typeof schema>;
 
 const state = reactive({
-  name: '',
-  email: '',
-  webSite: '',
-  phoneNumber: '',
-  address: '',
-  about: ''
+  clubName: '',
+  activityType: '',
+  clubPhoneNumber: '',
+  foundationDate: '',
+  goal: '',
+  clubAddress: '',
+  aboutClub: '',
+  socialNetworks: {
+    instagram: '',
+    telegram: '',
+    eitaa: '',
+    website: '',
+  }
 });
+
+watch(clubProfile, (value) => {
+  if (!value) return
+  state.clubName = value.clubName
+  state.activityType = value.activityType
+  state.clubPhoneNumber = value.clubPhoneNumber
+  state.foundationDate = gregorianToJalali(value.foundationDate)
+  state.goal = value.goal
+  state.clubAddress = value.clubAddress
+  state.aboutClub = value.aboutClub
+  state.socialNetworks = { ...value.socialNetworks }
+})
+
+const { data, status } = await useAsyncData('beltData', () => getAllBeltService())
+if (!data.value || !data.value.data) {
+  if (import.meta.client) {
+    toastStore.setAlert(data.value?.message, '', 'error', 'bx:bxs-error')
+    router.push('/setting')
+  } else {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'پروفایل پیدا نشده لطف دوباره تلاش کنید'
+    })
+  }
+}
 
 async function getPlanMasterByStudent() {
   try {
@@ -365,8 +369,44 @@ async function getPlanMasterByStudent() {
   }
 }
 
+async function getClubProfile() {
+  try {
+    const result = await getClubProfileService()
+    if (result.statusCode === 200) {
+      clubProfile.value = result.data
+    }
+  } catch (error: any) {
+    console.log(error.message || error);
+  }
+}
+
+async function getBelt() {
+  try {
+    const result = await getAllBeltService()
+    if (result.statusCode === 200) {
+      console.log(result.data);
+    }
+  } catch (error: any) {
+    console.log(error.message || error);
+  }
+}
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.log(event.data)
+  isLoading.value = true
+  try {
+    const payload = {
+      ...event.data,
+      foundationDate: jalaliToGregorian(event.data.foundationDate)
+    }
+    const result = await updateClubProfileService(payload);
+    if (result.statusCode === 200) {
+      toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
+    }
+  } catch (error: any) {
+    console.log(error.message || error);
+  } finally {
+    isLoading.value = false
+  }
 }
 
 async function deletePlanMasterByStudent(id: number) {
@@ -388,6 +428,8 @@ async function deletePlanMasterByStudent(id: number) {
 }
 
 onMounted(() => {
-  nextTick(() => getPlanMasterByStudent())
+  getPlanMasterByStudent()
+  getClubProfile()
+  getBelt()
 })
 </script>
