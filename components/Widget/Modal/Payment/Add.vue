@@ -44,9 +44,7 @@ const schema = v.object({
     v.nonEmpty('مدت زمان طرح الزامی است'),
     v.regex(/^\d+$/, 'مدت زمان باید فقط شامل عدد باشد')
   ),
-  isDefault: v.optional(
-    v.boolean()
-  )
+  isDefault: v.boolean()
 })
 
 type Schema = v.InferOutput<typeof schema>;

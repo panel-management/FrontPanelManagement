@@ -36,7 +36,31 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   if (import.meta.client) {
     // @ts-ignore
-    jalaliDatepicker?.destroy?.()
+    jalaliDatepicker.hide()
   }
 })
 </script>
+<!-- <style>
+body>div:has(.jdp-years),
+body>div:has(.jdp-days) {
+  z-index: 99999 !important;
+  pointer-events: auto !important;
+  position: fixed !important;
+}
+
+.jdp-years,
+.jdp-months,
+.jdp-days,
+.jdp-day,
+.jdp-footer,
+.jdp-day,
+.jdp-day-name,
+.jdp-btn-today,
+.jdp-btn-empty,
+.jdp-icon-plus,
+.jdp-icon-minus,
+.jdp-year,
+.jdp-month {
+  pointer-events: auto !important;
+}
+</style> -->

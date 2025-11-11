@@ -45,9 +45,7 @@ const schema = v.object({
     v.trim(),
     v.nonEmpty('توضیحات الزامی است.')
   ),
-  isActive: v.pipe(
-    v.boolean(),
-  )
+  isActive: v.boolean(),
 })
 
 type Schema = v.InferOutput<typeof schema>;
