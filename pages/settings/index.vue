@@ -380,6 +380,17 @@ async function getClubProfile() {
   }
 }
 
+async function getBelt() {
+  try {
+    const result = await getAllBeltService()
+    if (result.statusCode === 200) {
+      console.log(result.data);
+    }
+  } catch (error: any) {
+    console.log(error.message || error);
+  }
+}
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
   try {
@@ -419,5 +430,6 @@ async function deletePlanMasterByStudent(id: number) {
 onMounted(() => {
   getPlanMasterByStudent()
   getClubProfile()
+  getBelt()
 })
 </script>
