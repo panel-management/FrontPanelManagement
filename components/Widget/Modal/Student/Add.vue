@@ -2,15 +2,18 @@
 import * as v from 'valibot'
 import type { FormSubmitEvent } from "@nuxt/ui"
 import { getAllBeltService } from '~/services/sportBelt.service';
-import type { Belt } from '~/models/sportAndBelt/belt';
 import { getPlanMasterByStudentService } from '~/services/masterPlan.service';
 import type { StudentPlanData } from '~/models/plan/studentPlan/StudentPlanData';
+import type { Belt } from '~/models/sportAndBelt/belt';
+import { createStudentService } from '~/services/student.service';
 
-const emit = defineEmits(['update:open']);
+const emit = defineEmits(['update:open', 'success']);
+const isLoading: Ref<boolean> = ref(false)
 const beltSelect: Ref<any[]> = ref([])
 const planSelect: Ref<any[]> = ref([])
 const beltData: Ref<Belt[]> = ref([])
 const planData: Ref<StudentPlanData[]> = ref([])
+const toastStore = useToastStore()
 // const itemsSelect = ref(['سفید', 'نارنجی', 'ابی', 'زرد', 'سبز', 'قهوه ای', 'مشکی'])
 
 const props = defineProps({
@@ -48,7 +51,7 @@ const schema = v.object({
     v.string(),
     v.trim(),
     v.nonEmpty('تاریخ تولد هنرجو الزامی است'),
-    v.regex(/^\d{4}\/\d{2}\/\d{2}$/, 'فرمت تاریخ شمسی صحیح نیست. مثال: 1380/07/30')
+    v.regex(/^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/, 'فرمت تاریخ میلادی صحیح نیست. مثال: 2000-04-20')
   ),
   phoneNumber: v.pipe(
     v.string(),
@@ -134,7 +137,40 @@ async function getAllPlanStudent() {
 }
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.log(event.data)
+  isLoading.value = true
+  try {
+    const payload = {
+      ...event.data,
+      age: Number(event.data.age),
+      planId: Number(event.data.planId),
+      beltIds: [Number(event.data.beltIds)]
+    }
+    const result = await createStudentService(payload)
+    if (result.statusCode === 201) {
+      toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
+      localOpen.value = false
+      emit('success')
+      resetForm();
+    }
+  } catch (error: any) {
+    console.log(error.message || error);
+  } finally {
+    isLoading.value = false
+  }
+}
+
+function resetForm() {
+  state.fullName = '';
+  state.nationalCode = '';
+  state.age = '';
+  state.birthDate = '';
+  state.phoneNumber = '';
+  state.phoneNumberEmergency = '';
+  state.address = '';
+  state.beltIds = '';
+  state.planId = '';
+  state.underSupervisionDoctor = false;
+  state.diseaseRecords = false;
 }
 
 onMounted(() => {
@@ -189,7 +225,7 @@ onMounted(() => {
           </div>
           <div class="flex justify-between gap-2 pt-4">
             <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
-            <UButton label="افزودن هنرجو" color="primary" type="submit" />
+            <UButton :loading="isLoading" label="افزودن هنرجو" color="primary" type="submit" />
           </div>
         </div>
       </UForm>
