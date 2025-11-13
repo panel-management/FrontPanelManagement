@@ -1,6 +1,9 @@
 import type { Sport } from "~/models/sportAndBelt/sport";
 import type { Active } from "~/models/Active";
 import type { PaymentStatus } from "~/models/PaymentStatus";
+import type { MasterPlanData } from "~/models/plan/masterPlan/MasterPlanData";
+import type { SubscriptionListData } from "~/models/Payments/Subscriptions/SubscriptionListData";
+import type { StudentListData } from "../student/StudentListData";
 
 export interface MasterData {
   user_id: number;
@@ -9,14 +12,14 @@ export interface MasterData {
   nationalCode: string;
   phoneNumber: string;
   history: string;
-  image: any;
+  image: string;
   active: Active;
   certificates: string;
   masterPlanId: string;
   sport: Sport;
-  students: any[];
-  subscriptionPayments: any[];
-  masterPlan: any[];
+  students: StudentListData;
+  subscriptionPayments: SubscriptionListData;
+  masterPlan: MasterPlanData;
   paymentStatus: PaymentStatus;
   createdAt: string;
   updatedAt: string;

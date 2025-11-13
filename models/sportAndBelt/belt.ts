@@ -1,6 +1,16 @@
 export interface Belt {
   id: number;
   color: string;
-  achievedByUsers: any[];
-  currentlyHeldByUsers: any[];
+  achievedByUsers: AchievedBelt[];
+  currentlyHeldByUsers: CurrentBelt[];
+}
+
+export interface CurrentBelt {
+  id: number;
+  color: string;
+}
+
+export interface AchievedBelt {
+  id: number;
+  color: string;
 }
