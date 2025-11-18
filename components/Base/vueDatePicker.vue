@@ -37,6 +37,11 @@ watch(date, (val) => {
   model.value = val
 })
 
+watch(model, (val) => {
+  formattedDate.value = val || ''
+  date.value = val || ''
+}, { immediate: true })
+
 onClickOutside(wrapper, () => {
   open.value = false
 })

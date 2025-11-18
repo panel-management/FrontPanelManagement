@@ -23,7 +23,7 @@ const isFullScreen: Ref<boolean> = ref(false);
 const currentTime: Ref<string> = ref('');
 const isOpen: Ref<boolean> = ref(false)
 const formData: Ref<DataUsers | null> = ref(null)
-const router = useRouter()
+const route = useRoute()
 const accountStore = useAccountStore()
 let timerId = ref(null);
 
@@ -138,7 +138,7 @@ watch(formData, (value) => {
         onSelect() {
           accountStore.isLogout()
           setTimeout(() => {
-            router.push('/auth')
+            navigateTo(`/auth?redirectTo=${encodeURIComponent(route.fullPath)}`, { replace: true })
           }, 200)
         }
       }
