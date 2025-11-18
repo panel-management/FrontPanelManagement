@@ -3,7 +3,7 @@ import type { Active } from "~/models/Active";
 import type { PaymentStatus } from "~/models/PaymentStatus";
 import type { MasterPlanData } from "~/models/plan/masterPlan/MasterPlanData";
 import type { SubscriptionListData } from "~/models/Payments/Subscriptions/SubscriptionListData";
-import type { StudentListData } from "../student/StudentListData";
+import type { StudentListData } from "../student/StudentData";
 
 export interface MasterData {
   user_id: number;

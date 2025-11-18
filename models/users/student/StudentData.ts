@@ -1,25 +1,19 @@
 import type { Active } from "~/models/Active";
 import type { SubscriptionListData } from "~/models/Payments/Subscriptions/SubscriptionListData";
+import type { PaymentStatus } from "~/models/PaymentStatus";
 import type { Belt } from "~/models/sportAndBelt/belt";
 import type { Sport } from "~/models/sportAndBelt/sport";
 
-export interface StudentListData {
+export interface StudentData {
+  user_id: number;
   fullName: string;
   phoneNumber: string;
-  phoneNumberEmergency: string;
-  nationalCode: string;
-  address: string;
-  age: number;
-  birthDate: string;
-  diseaseRecords: boolean;
-  underSupervisionDoctor: boolean;
   active: Active;
-  achievedBelts: Belt;
+  paymentStatus: PaymentStatus;
   currentBelt: Belt;
+  achievedBelts: Belt;
   sport: Sport;
   subscriptionPayments: SubscriptionListData;
-  type: number;
-  masterId: number;
   createdAt: string;
   updatedAt: string;
 }
