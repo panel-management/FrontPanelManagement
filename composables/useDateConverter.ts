@@ -1,4 +1,5 @@
 import jalaali from "jalaali-js";
+import dayjs from "dayjs";
 
 export const useDateConverter = () => {
   const jalaliToGregorian = (jalaliDate: string): string | null => {
@@ -18,7 +19,7 @@ export const useDateConverter = () => {
 
   const gregorianToJalali = (gregorianDate: string): string => {
     try {
-      const [datePart] = gregorianDate.split("T")
+      const [datePart] = gregorianDate.split("T");
       const [year, month, day] = datePart.split("-").map(Number);
       const jalali = jalaali.toJalaali(year, month, day);
 
@@ -42,9 +43,19 @@ export const useDateConverter = () => {
     }
   };
 
+  const gregorianToDate = (gregorianDate: string): string | null => {
+    try {
+      return dayjs(gregorianDate).format("YYYY-MM-DD");
+    } catch (error) {
+      console.error("خطا در تبدیل تاریخ:", error);
+      return null;
+    }
+  };
+
   return {
     jalaliToGregorian,
     gregorianToJalali,
     jalaliToDate,
+    gregorianToDate,
   };
 };
