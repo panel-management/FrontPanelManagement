@@ -17,7 +17,7 @@
         <span class="text-2xl font-bold">لیست هنرجویان ({{ formData.length }} نفر)</span>
         <p class="wrap-break-word font-medium text-sm">مشاهده کامل اطلاعات هنرجویان و مدیریت آنها</p>
       </div>
-      <TableStudentsTable :items="formData" :loading="isLoading" @refresh="getAllStudents" />
+      <TableStudentsTable :items="formData" v-model:loading="isLoading" @refresh="getAllStudents" />
     </div>
     <LazyWidgetModalStudentAdd v-model:open="modalStore.modals.studentAdd" @success="getAllStudents" />
     <LazyWidgetModalStudentEdit v-model:open="modalStore.modals.studentEdit" @success="getAllStudents" />
@@ -29,7 +29,7 @@ import { getAllStudentService } from '~/services/student.service';
 
 const modalStore = useModalStore()
 const formData = shallowRef<StudentData[]>([])
-const isLoading: Ref<boolean> = ref(false)
+const isLoading: Ref<boolean> = ref(true)
 
 async function getAllStudents() {
   isLoading.value = true
