@@ -1,4 +1,5 @@
-import type { UpdateMasterData } from "~/models/users/master/UpdateMasterData";
+import type { UpdateMaster } from "~/models/users/master/UpdateMaster";
+
 
 // get All Master just Admin
 export const getAllMasterService = () => {
@@ -34,19 +35,19 @@ export const getMasterByIdService = () => {
 };
 
 // update profile just yourself master
-export const updateProfileMasterService = (master: UpdateMasterData) => {
+export const updateProfileMasterService = (master: UpdateMaster) => {
   let data = new FormData();
   data.append("fullName", master.fullName);
   data.append("phoneNumber", master.phoneNumber);
   data.append("nationalCode", master.nationalCode);
-  data.append("age", master.age);
+  data.append("age", master.age.toString());
   data.append("birthDate", master.birthDate);
   data.append("history", master.history);
   data.append("certificates", master.certificates);
   if (master.imageFile) {
     data.append("imageFile", master.imageFile);
   }
-  return FetchApi<UpdateMasterData>("/master/update/details", {
+  return FetchApi<UpdateMaster>("/master/update/details", {
     method: "PUT",
     body: data,
   });
@@ -55,13 +56,13 @@ export const updateProfileMasterService = (master: UpdateMasterData) => {
 // update profile master just yourself admin
 export const updateProfileMasterJustAdminService = (
   id: number,
-  master: UpdateMasterData
+  master: UpdateMaster
 ) => {
   let data = new FormData();
   data.append("fullName", master.fullName);
   data.append("phoneNumber", master.phoneNumber);
   data.append("nationalCode", master.nationalCode);
-  data.append("age", master.age);
+  data.append("age", master.age.toString());
   data.append("birthDate", master.birthDate);
   data.append("history", master.history);
   data.append("certificates", master.certificates);
@@ -69,7 +70,7 @@ export const updateProfileMasterJustAdminService = (
   if (master.imageFile) {
     data.append("imageFile", master.imageFile);
   }
-  return FetchApi<UpdateMasterData>(`/master/update/${id}`, {
+  return FetchApi<UpdateMaster>(`/master/update/${id}`, {
     method: "PUT",
     body: data,
   });
