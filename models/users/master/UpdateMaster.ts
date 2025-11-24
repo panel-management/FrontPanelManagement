@@ -1,15 +1,11 @@
-import type { Sport } from "~/models/sportAndBelt/sport";
-
-export interface UpdateMasterData {
+export interface UpdateMaster {
   fullName: string;
   nationalCode: string;
   phoneNumber: string;
-  age: string;
+  age: number;
   birthDate: string;
   history: string;
   certificates: string;
-  sport: Sport;
   sportId: number;
   imageFile?: File;
-  imageUrl?: string;
 }

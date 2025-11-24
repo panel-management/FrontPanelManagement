@@ -1,23 +1,25 @@
 import type { Sport } from "~/models/sportAndBelt/sport";
-import type { Active } from "~/models/Active";
-import type { PaymentStatus } from "~/models/PaymentStatus";
-import type { MasterPlanData } from "~/models/plan/masterPlan/MasterPlanData";
-import type { SubscriptionListData } from "~/models/Payments/Subscriptions/SubscriptionListData";
 import type { StudentListData } from "../student/StudentListData";
+import type { MasterPlanData } from "~/models/plan/masterPlan/MasterPlanData";
+import type { StudentData } from "../student/StudentData";
+import type { SubscriptionListData } from "~/models/Payments/Subscriptions/SubscriptionListData";
 
-export interface MasterData {
+export interface MasterListData {
   user_id: number;
   type: number;
   fullName: string;
-  nationalCode: string;
   phoneNumber: string;
+  nationalCode: string;
+  image: string;
+  active: string;
+  age: number;
+  birthDate: string;
   history: string;
-  active: Active;
-  sport: Sport;
-  students: StudentListData;
-  subscriptionPayments: SubscriptionListData;
+  certificates: string;
   masterPlan: MasterPlanData;
-  paymentStatus: PaymentStatus;
+  sport: Sport;
+  students: StudentData;
+  subscriptionPayments: SubscriptionListData;
   createdAt: string;
   updatedAt: string;
 }
