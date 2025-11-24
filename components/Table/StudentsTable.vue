@@ -39,7 +39,7 @@
         }))" label="وضعیت شهریه ها" />
       </div>
     </div>
-    <UTable ref="table" :loading="props.loading" :data="filteredData" :columns="columns"
+    <UTable ref="table" :loading="loadingModel" loading-color="neutral" :data="filteredData" :columns="columns"
       empty="هیچ اطلاعاتی برای نمایش وجود ندارد" sticky class="h-96 lg:h-svh no-scrollbar">
       <template #expanded="{ row }">
         <pre>{{ row.original }}</pre>
@@ -62,13 +62,12 @@ const table = useTemplateRef('table')
 const modalStore = useModalStore()
 const toastStore = useToastStore()
 const { showConfirmDialog } = useConfirmDialog()
-const rowLoading = ref<number | null>(null)
 const itemsSelect: Ref<any[]> = ref([])
 
 const emit = defineEmits(['refresh'])
+const loadingModel = defineModel<boolean>('loading', { required: true })
 const props = defineProps<{
   items: StudentData[],
-  loading: boolean
 }>()
 
 const paymentStatusLabels: Record<PaymentStatus, string> = {
@@ -110,7 +109,7 @@ async function getAllBelt() {
 }
 
 async function deleteAccountStudent(id: number) {
-  rowLoading.value = id
+  loadingModel.value = true
   try {
     const result = await deleteStudentService(id)
     console.log(result.data);
@@ -121,7 +120,7 @@ async function deleteAccountStudent(id: number) {
   } catch (error: any) {
     console.log(error.message || error);
   } finally {
-    rowLoading.value = null
+    loadingModel.value = false
   }
 }
 
@@ -308,7 +307,6 @@ const columns: TableColumn<StudentData>[] = [
         label: 'حذف هنرجو',
         icon: 'ic:sharp-delete',
         color: 'error',
-        loading: rowLoading.value === row.original.user_id,
         onSelect() {
           const userId = row.original.user_id
           showConfirmDialog(`آیا میخواهید هنرجو ${row.original.fullName} را حذف کنید؟`, () => {

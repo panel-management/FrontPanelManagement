@@ -3,20 +3,21 @@ import * as v from 'valibot'
 import type { FormSubmitEvent } from "@nuxt/ui"
 import type { TabsItem } from '@nuxt/ui'
 import { getMasterByIdForAdminService, updateProfileMasterJustAdminService } from '~/services/master.service';
-import type { MasterData } from '~/models/users/master/MasterData';
-import type { UpdateMasterData } from '~/models/users/master/UpdateMasterData';
+import type { MasterListData } from '~/models/users/master/MasterListData';
 import { getAllSportService } from '~/services/sportBelt.service';
 import type { Sport } from '~/models/sportAndBelt/sport';
+import type { UpdateMaster } from '~/models/users/master/UpdateMaster';
+import { PaymentStatus } from '~/models/PaymentStatus';
 
-const emit = defineEmits(['update:open']);
+const emit = defineEmits(['update:open', 'refresh']);
 const isShow: Ref<boolean> = ref(true)
 const isLoading: Ref<boolean> = ref(false)
 const modalStore = useModalStore()
 const toastStore = useToastStore()
-const formData = ref<MasterData | null>(null)
+const { gregorianToDate, gregorianToJalali } = useDateConverter()
+const formData = ref<MasterListData | null>(null)
 const sportItems = ref<Sport[]>([])
 const itemsSelect = ref<{ label: string; value: string }[]>([])
-const dateRegex = /^\d{4}\/\d{2}\/\d{2}$/
 
 const userId = computed(() => modalStore.modals.masterEdit)
 
@@ -55,9 +56,11 @@ async function loadMaster() {
     return
   }
   try {
-    const res = await getMasterByIdForAdminService(userId.value)
-    if (res.statusCode === 200) {
-      formData.value = res.data as MasterData
+    const result = await getMasterByIdForAdminService(userId.value)
+    if (result.statusCode === 200) {
+      console.log(result.data);
+
+      formData.value = result.data as MasterListData
     }
   } catch (error: any) {
     console.log(error.message || error)
@@ -67,21 +70,17 @@ async function loadMaster() {
 
 async function loadSports() {
   try {
-    const res = await getAllSportService()
-    if (res.statusCode === 200) {
-      sportItems.value = Array.isArray(res.data) ? res.data : []
-      itemsSelect.value = mapToSelectOptions(sportItems.value)
+    const result = await getAllSportService()
+    if (result.statusCode === 200) {
+      sportItems.value = Array.isArray(result.data) ? result.data : []
+      itemsSelect.value = sportItems.value.map(items => ({
+        label: items.name,
+        value: String(items.id)
+      }))
     }
   } catch (err: any) {
     console.error('Error loadSports:', err)
   }
-}
-
-function mapToSelectOptions(sports: Sport[]) {
-  return sports.map(s => ({
-    label: s.name,
-    value: String(s.id),
-  }))
 }
 
 onMounted(() => {
@@ -120,15 +119,11 @@ const schema = v.object({
     v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد.'),
     v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد.')
   ),
-  history: v.pipe(v.string(), v.trim()),
-  age: v.pipe(v.string(), v.trim()),
   birthDate: v.pipe(
     v.string(),
     v.trim(),
-    v.custom((value) => dateRegex.test(value), 'فرمت تاریخ باید 1380/01/30 باشد')
+    v.regex(/^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/, 'فرمت تاریخ میلادی صحیح نیست. مثال: 2000-04-20')
   ),
-  certificates: v.pipe(v.string(), v.trim()),
-  sport: v.pipe(v.string(), v.trim()),
   imageFile: v.optional(
     v.pipe(
       v.file(),
@@ -137,12 +132,16 @@ const schema = v.object({
       v.maxSize(1024 * 1024, 'عکس باید زیر 1 مگابایت باشد.')
     )
   ),
+  history: v.pipe(v.string(), v.trim()),
+  certificates: v.pipe(v.string(), v.trim()),
+  age: v.pipe(v.string(), v.trim()),
+  sportId: v.pipe(v.string(), v.trim()),
 })
 
 type Schema = v.InferOutput<typeof schema>
 
 // state form data
-const state = reactive<UpdateMasterData>({
+const state = reactive<UpdateMaster>({
   fullName: '',
   phoneNumber: '',
   nationalCode: '',
@@ -150,10 +149,9 @@ const state = reactive<UpdateMasterData>({
   birthDate: '',
   history: '',
   certificates: '',
-  sport: '',
-  sportId: undefined,
-  imageUrl: undefined,
+  sportId: '',
   imageFile: undefined,
+  imageUrl: undefined,
 })
 
 // view data and updated data
@@ -165,52 +163,93 @@ watch(formData, (data) => {
     state.age = ''
     state.birthDate = ''
     state.history = ''
+    state.sportId = ''
     state.certificates = ''
-    state.sport = ''
-    state.imageUrl = undefined
     state.imageFile = undefined
-    state.sportId = undefined
+    state.imageUrl = undefined
     return
   }
   state.fullName = data.fullName ?? ''
   state.phoneNumber = data.phoneNumber ?? ''
   state.nationalCode = data.nationalCode ?? ''
   state.age = data.age?.toString() ?? ''
-  state.birthDate = data.birthDate ?? ''
+  state.birthDate = data.birthDate ? gregorianToDate(data.birthDate) : ''
   state.history = data.history ?? ''
   state.certificates = data.certificates ?? ''
-  state.sport = data.sport?.id?.toString() ?? ''
+  state.sportId = data.sport.id.toString() ?? '',
   state.imageUrl = data.image ?? ''
 })
 
-// covert sport to sportId from submit data
-function prepareUpdateData(formValues: any) {
-  const upd: any = { ...formValues }
-  if (upd.sport && !isNaN(Number(upd.sport))) {
-    upd.sportId = Number(upd.sport)
-  } else {
-    delete upd.sportId
-  }
-  return upd
+const paymentStatusText: Record<PaymentStatus, string> = {
+  NO_PAYMENT: 'پرداخت وجود ندارد',
+  CONFIRMED: 'پرداخت شده',
+  PENDING: 'در انتظار پرداخت',
+  REJECTED: 'پرداخت نشده'
 }
 
-// updated data master
+const lastPayment = computed(() => {
+  const arr = formData.value?.subscriptionPayments
+  return Array.isArray(arr) && arr.length > 0 ? arr[0] : null
+})
+
+const paymentIcon = {
+  CONFIRMED: 'clarity:success-standard-line',
+  PENDING: 'solar:shield-warning-bold',
+  REJECTED: 'codicon:error',
+  NO_PAYMENT: 'bi:emoji-neutral-fill',
+}
+
+const paymentIconColor = {
+  CONFIRMED: 'text-success',
+  PENDING: 'text-warning',
+  REJECTED: 'text-error',
+  NO_PAYMENT: 'text-gray-500',
+}
+
+const paymentIconBadge = {
+  CONFIRMED: 'primary',
+  PENDING: 'warning',
+  REJECTED: 'error',
+  NO_PAYMENT: 'neutral',
+}
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
   try {
-    const updateData = prepareUpdateData(event.data)
-    const res = await updateProfileMasterJustAdminService(userId.value, updateData)
-    if (res.statusCode === 200) {
-      toastStore.setAlert(res.message, '', 'success', 'ep:success-filled')
-      await loadMaster()
-      refreshNuxtData()
+    const result = await updateProfileMasterJustAdminService(userId.value, event.data)
+    if (result.statusCode === 200) {
+      console.log(result.data);
+      toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
       isShow.value = true
+      localOpen.value = false
+      emit('refresh')
     }
   } catch (err: any) {
     console.error('onSubmit error:', err)
   } finally {
     isLoading.value = false
   }
+}
+
+function getBeltClass(color: string) {
+  const colorMap: Record<string, string> = {
+    'سفید': 'belt-white',
+    'خاکستری': 'belt-gray',
+    'زرد': 'belt-yellow',
+    'نارنجی': 'belt-orange',
+    'سبز': 'belt-green',
+    'آبی': 'belt-blue',
+    'بنفش': 'belt-purple',
+    'قهوه‌ای': 'belt-brown',
+    'قرمز': 'belt-red',
+    'قرمز/سیاه': 'belt-red-black',
+    'قرمز/سفید': 'belt-red-white',
+    'مشکی': 'belt-black',
+    'صورتی': 'belt-pink',
+    'طلایی': 'belt-gold',
+    'نقره‌ای': 'belt-silver'
+  }
+  return colorMap[color]
 }
 
 function enableInputs() {
@@ -243,10 +282,6 @@ function disableInputs() {
                   <div class="flex max-sm:flex-col gap-2 sm:gap-3">
                     <UBadge :color="formData.active === 'ENABLE' ? 'primary' : 'error'" variant="soft"
                       :label="formData.active === 'ENABLE' ? 'فعال' : 'غیر فعال'" class="font-semibold" />
-                    <UBadge
-                      :color="formData.paymentStatus === 'CONFIRMED' ? 'success' : formData.paymentStatus === 'PENDING' ? 'warning' : 'error'"
-                      :label="formData.paymentStatus === 'CONFIRMED' ? 'پرداخت شده' : formData.paymentStatus === 'PENDING' ? 'در انتظار' : 'پرداخت نشده'"
-                      variant="soft" class="font-semibold w-fit" />
                   </div>
                 </div>
               </div>
@@ -294,7 +329,7 @@ function disableInputs() {
             <div class="flex items-center gap-1">
               <UIcon name="bxs:certification" class="size-6 text-black" />
               <span class="font-medium text-base mt-1">مدرک و گواهینامه ها:</span>
-              <span class="font-medium text-base mt-1">{{ formData.certificates ?? 'وجود ندارد' }}</span>
+              <span class="font-medium text-base mt-1">{{ formData.certificates || 'وجود ندارد' }}</span>
             </div>
             <div class="flex items-center gap-1">
               <UIcon name="solar:planet-2-bold" class="size-6 text-black" />
@@ -318,7 +353,8 @@ function disableInputs() {
               <UIcon name="material-symbols:calendar-today-outline-rounded" class="size-6 text-turquoise-500" />
             </div>
             <div class="flex flex-col md:items-center gap-1">
-              <span class="font-semibold text-xl">{{ formData.history }} سال</span>
+              <span class="font-semibold text-xl" v-if="formData.history">{{ formData.history }} سال</span>
+              <span class="font-semibold text-xl" v-else>سابقه وجود ندارد</span>
               <span class="font-medium">سابقه تدریس</span>
             </div>
           </div>
@@ -354,8 +390,8 @@ function disableInputs() {
                     <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
                       <BaseFormInput :required="false" :disable="isShow" v-model="state.age" label="سن" name="age"
                         type="text" placeholder="سن" class="w-full" />
-                      <BaseFormInput :required="false" :disable="isShow" v-model="state.birthDate" label="تاریخ تولد"
-                        name="birthDate" type="text" placeholder="مثال تاریخ 1350/01/01" class="w-full" />
+                      <BaseVueDatePicker :required="false" :disable="isShow" v-model="state.birthDate"
+                        label="تاریخ تولد" name="birthDate" class="w-full" />
                     </div>
                     <div class="w-full">
                       <BaseFormInput :required="false" :disable="isShow" v-model="state.certificates"
@@ -363,21 +399,21 @@ function disableInputs() {
                         placeholder="مدرک و گواهینامه ها مربیگری خلاصه" class="w-full" />
                     </div>
                     <div class="w-full">
-                      <BaseFormSelect :required="false" :disable="isShow" v-model="state.sport" :items="itemsSelect"
-                        name="sport" label="انتخاب رشته ورزشی" />
+                      <BaseFormSelect :required="false" :disable="isShow" v-model="state.sportId" :items="itemsSelect"
+                        name="sportId" label="انتخاب رشته ورزشی" />
                     </div>
                     <div class="w-full flex flex-col justify-center items-center">
                       <ClientOnly>
                         <BaseFormUploadFile :required="false" :disable="isShow" v-model="state.imageFile"
-                          label="ارسال عکس گواهینامه" name="image"
+                          label="ارسال عکس گواهینامه" name="imageFile"
                           description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا MB 1" class="w-full" />
                       </ClientOnly>
                       <img v-if="state.imageUrl" class="object-cover md:w-2/3 pt-10" :src="state.imageUrl"
-                        :alt="state.fullName" draggable="false" loading="lazy">
+                        :alt="formData.fullName" draggable="false" loading="lazy">
                     </div>
                     <div class="flex justify-end gap-2 pt-4">
-                      <UButton v-if="!isShow" :loading="isLoading" label="اعمال تغییرات" color="primary" type="submit"
-                        class="disabled:blur-[1px]" />
+                      <UButton v-if="!isShow" :loading="isLoading" label="اعمال تغییرات" color="primary"
+                        type="submit" />
                     </div>
                   </div>
                 </UForm>
@@ -394,22 +430,23 @@ function disableInputs() {
                   <p class="break-words font-medium text-sm md:text-base">لیست هنرجویانی که تحت نظر این مربی هستند</p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 w-full">
-                  <div class="w-full rounded-lg bg-muted p-4">
+                  <div class="w-full rounded-lg bg-muted p-4" v-for="data in formData.students" :key="data.user_id">
                     <div class="flex flex-col items-center gap-3 w-full">
                       <div class="rounded-full bg-white size-14 flex items-center justify-center text-lg font-bold">
-                        <!-- {{ name[0].slice(0, 1) }} -->
+                        {{ data.fullName.slice(0, 1) }}
                       </div>
                       <div class="flex justify-between gap-4 w-full">
-                        <span class="font-medium text-lg">علی احمدی</span>
-                        <span class="belt-blue text-sm">کمربند ابی</span>
+                        <span class="font-medium text-lg">{{ data.fullName }}</span>
+                        <span class="text-sm" :class="[getBeltClass(data.currentBelt.color)]">کمربند {{
+                          data.currentBelt.color }}</span>
                       </div>
-                      <div class="flex justify-between gap-4 w-full">
-                        <span class="font-medium">حضور 85%</span>
-                        <span class="font-medium">عضویت 1403/10/20</span>
+                      <div class="flex items-center justify-between gap-4 w-full">
+                        <span class="font-medium">عضویت </span>
+                        <span class="font-medium">{{ gregorianToJalali(data.createdAt) }}</span>
                       </div>
-                      <div class="flex justify-between items-center gap-4">
+                      <!-- <div class="flex justify-between items-center gap-4">
                         <UBadge color="success" label="پرداخت شده" />
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>
@@ -426,9 +463,12 @@ function disableInputs() {
                     <div
                       class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white shadow-lg rounded-lg">
                       <div class="bg-muted rounded-full size-12 flex justify-center items-center">
-                        <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
+                        <UIcon :name="paymentIcon[lastPayment?.status] || 'bi:emoji-neutral-fill'" class="size-7"
+                          :class="paymentIconColor[lastPayment?.status] || 'text-gray-400'" />
                       </div>
-                      <span class="text-xl font-medium">پرداخت شده</span>
+                      <span class="text-xl font-medium">
+                        {{ lastPayment ? paymentStatusText[lastPayment?.status] : 'هیچ پرداختی موجود نیست' }}
+                      </span>
                       <span class="text-sm">وضعیت فعلی</span>
                     </div>
                     <div
@@ -436,21 +476,25 @@ function disableInputs() {
                       <div class="bg-muted rounded-full size-12 flex justify-center items-center">
                         <UIcon name="fluent:payment-32-filled" class="size-6 text-black" />
                       </div>
-                      <span class="text-xl font-medium">۲,۵۰۰,۰۰۰</span>
+                      <span class="text-xl font-medium">{{ Number(formData.masterPlan.price).toLocaleString('fa-IR')
+                      }}</span>
                       <span class="text-sm">شهریه ماهانه (تومان)</span>
                     </div>
                     <div
                       class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white shadow-lg rounded-lg">
                       <div class="bg-muted rounded-full size-12 flex justify-center items-center">
-                        <UIcon name="material-symbols:calendar-today-rounded" class="size-6 text-teal-300" />
+                        <UIcon name="material-symbols:calendar-today-rounded" class="size-6 text-yellow-300" />
                       </div>
-                      <span class="text-xl font-medium">۱۴۰۳/۰۷/۰۱</span>
-                      <span class="text-sm">سررسید بعدی</span>
+                      <span class="text-xl font-medium">
+                        {{ lastPayment ? gregorianToJalali(lastPayment.createdAt) : 'هیچ پرداختی موجود نیست' }}
+                      </span>
+                      <span class="text-sm">زمان پرداخت</span>
                     </div>
                   </div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 w-full bg-white rounded-lg p-4">
-                  <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 w-full bg-white rounded-lg p-4"
+                  v-if="formData.subscriptionPayments">
+                  <!-- <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
                     <div class="flex justify-center items-center">
                       <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
                     </div>
@@ -463,78 +507,26 @@ function disableInputs() {
                       </div>
                       <UBadge label="پراخت شده" color="primary" />
                     </div>
-                  </div>
-                  <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
+                  </div> -->
+                  <div class="flex items-center gap-4 bg-muted p-3 rounded-xl"
+                    v-for="payment in formData.subscriptionPayments" :key="payment.id">
                     <div class="flex justify-center items-center">
-                      <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
+                      <UIcon :name="paymentIcon[lastPayment?.status] || 'bi:emoji-neutral-fill'" class="size-6"
+                        :class="paymentIconColor[lastPayment?.status] || 'text-gray-400'" />
                     </div>
                     <div class="w-full flex justify-between items-center">
                       <div class="flex flex-col gap-1">
-                        <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
+                        <span class="font-semibold text-lg">{{ Number(payment.amount).toLocaleString('fa-IR') }}
+                          تومان</span>
                         <span class="font-medium text-sm flex items-center gap-1">
-                          ۱۴۰۳/۰۶/۰۱ - نقد
+                          {{ gregorianToJalali(payment.paymentDate) }}
                         </span>
                       </div>
-                      <UBadge label="پراخت شده" color="primary" />
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-                    <div class="flex justify-center items-center">
-                      <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-                    </div>
-                    <div class="w-full flex justify-between items-center">
-                      <div class="flex flex-col gap-1">
-                        <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                        <span class="font-medium text-sm flex items-center gap-1">
-                          ۱۴۰۳/۰۶/۰۱ - کارت
-                        </span>
-                      </div>
-                      <UBadge label="پراخت شده" color="primary" />
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-                    <div class="flex justify-center items-center">
-                      <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-                    </div>
-                    <div class="w-full flex justify-between items-center">
-                      <div class="flex flex-col gap-1">
-                        <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                        <span class="font-medium text-sm flex items-center gap-1">
-                          ۱۴۰۳/۰۶/۰۱ - نقد
-                        </span>
-                      </div>
-                      <UBadge label="پراخت شده" color="primary" />
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-                    <div class="flex justify-center items-center">
-                      <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-                    </div>
-                    <div class="w-full flex justify-between items-center">
-                      <div class="flex flex-col gap-1">
-                        <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                        <span class="font-medium text-sm flex items-center gap-1">
-                          ۱۴۰۳/۰۶/۰۱ - کارت
-                        </span>
-                      </div>
-                      <UBadge label="پراخت شده" color="primary" />
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-                    <div class="flex justify-center items-center">
-                      <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-                    </div>
-                    <div class="w-full flex justify-between items-center">
-                      <div class="flex flex-col gap-1">
-                        <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                        <span class="font-medium text-sm flex items-center gap-1">
-                          ۱۴۰۳/۰۶/۰۱ - نقد
-                        </span>
-                      </div>
-                      <UBadge label="پراخت شده" color="primary" />
+                      <UBadge :label="paymentStatusText[payment.status]" :color="paymentIconBadge[payment.status]" />
                     </div>
                   </div>
                 </div>
+                <span v-else>هیچ دیتا پرداختی وجود ندارد</span>
               </div>
             </template>
           </LazyBaseTabs>

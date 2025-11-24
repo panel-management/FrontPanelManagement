@@ -50,18 +50,17 @@
         }))" label="وضعیت پلن ها" />
       </div>
     </div>
-    <UTable sticky :loading="isLoading" loading-color="neutral" ref="table" :data="filteredData" :columns="columns"
+    <UTable sticky :loading="loadingModel" loading-color="neutral" ref="table" :data="filteredData" :columns="columns"
       empty="هیچ اطلاعاتی برای نمایش وجود ندارد" class="h-96 lg:h-svh no-scrollbar">
       <template #expanded="{ row }">
         <pre>{{ row.original }}</pre>
       </template>
     </UTable>
   </div>
-  <LazyWidgetModalMasterEdit v-model:open="modalStore.modals.masterEdit" />
 </template>
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-import { changeStatusMasterService, deleteMasterService, getAllMasterService } from "~/services/master.service";
+import { changeStatusMasterService, deleteMasterService } from "~/services/master.service";
 import type { MasterData } from "~/models/users/master/MasterData";
 import { Active } from "~/models/Active";
 import { PaymentStatus } from "~/models/PaymentStatus";
@@ -75,9 +74,13 @@ const table = useTemplateRef('table')
 const { showConfirmDialog } = useConfirmDialog()
 const modalStore = useModalStore()
 const toastStore = useToastStore()
-const isLoading: Ref<boolean> = ref(false)
-const formData: Ref<MasterData[]> = ref([])
 const itemsSelect: Ref<any[]> = ref([])
+
+const emit = defineEmits(['refresh'])
+const loadingModel = defineModel<boolean>('loading', { required: true })
+const props = defineProps<{
+  items: MasterData[]
+}>()
 
 const activeLabels: Record<Active, string> = {
   [Active.ENABLE]: 'فعال',
@@ -104,7 +107,7 @@ const statusPaymentOption: Ref<PaymentStatus[]> = ref(
 // const statusPaymentOption = ref(['پرداخت شده', 'پرداخت نشده', 'در انتظار پرداخت'])
 
 const filteredData = computed(() => {
-  return formData.value.filter(row => {
+  return props.items.filter(row => {
     const statusAccountMatch =
       selectedStatusAccount.value.length === 0 || selectedStatusAccount.value.includes(row.active)
     const statusPaymentMatch =
@@ -115,22 +118,7 @@ const filteredData = computed(() => {
   })
 })
 
-async function getAllMasterData() {
-  isLoading.value = true
-  try {
-    const result = await getAllMasterService()
-    if (result.statusCode === 200) {
-      formData.value = Array.isArray(result.data) ? result.data : [];
-      console.log(result.data)
-    }
-  } catch (error: any) {
-    console.log(error.message || error)
-  } finally {
-    isLoading.value = false
-  }
-}
-
-async function getSportAll() {
+async function getSport() {
   try {
     const result = await getAllSportService()
     if (result.statusCode === 200) {
@@ -143,42 +131,41 @@ async function getSportAll() {
 }
 
 async function changeStatusUser(id: number, status: Active) {
-  isLoading.value = true
+  loadingModel.value = true
   try {
     const result = await changeStatusMasterService(id, status)
     if (result.statusCode === 200) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-      const userIndex = formData.value.findIndex(user => user.user_id === id)
+      const userIndex = props.items.findIndex(user => user.user_id === id)
       if (userIndex !== -1) {
-        formData.value[userIndex].active = status
+        props.items[userIndex].active = status
       }
     }
   } catch (error: any) {
     console.log(error.message || error)
   } finally {
-    isLoading.value = false
+    loadingModel.value = false
   }
 }
 
 async function deleteAccountUser(id: number) {
-  isLoading.value = true
+  loadingModel.value = true
   try {
     const result = await deleteMasterService(id)
     if (result.statusCode === 200) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-      refreshNuxtData()
+      emit('refresh')
     }
   } catch (error: any) {
     console.log(error.message || error);
   } finally {
-    isLoading.value = false
+    loadingModel.value = false
   }
 }
 
 onMounted(() => {
   nextTick(() => {
-    getAllMasterData()
-    getSportAll()
+    getSport()
   })
 })
 

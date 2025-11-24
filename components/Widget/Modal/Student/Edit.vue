@@ -204,6 +204,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
       emit('success')
       isShow.value = true
+      localOpen.value = false
     }
   } catch (error: any) {
     console.log(error.message || error);
@@ -257,10 +258,6 @@ function disableInputs(): void {
                 <div class="flex gap-3">
                   <UBadge color="info" variant="solid" :label="formData.currentBelt.color" class="font-medium" />
                   <UBadge color="neutral" variant="soft" :label="formData.sport.name" class="font-semibold w-fit" />
-                  <UBadge
-                    :color="formData.paymentStatus === 'CONFIRMED' ? 'success' : formData.paymentStatus === 'PENDING' ? 'warning' : 'error'"
-                    :label="formData.paymentStatus === 'CONFIRMED' ? 'پرداخت شده' : formData.paymentStatus === 'PENDING' ? 'در انتظار' : 'پرداخت نشده'"
-                    variant="soft" class="font-semibold w-fit" />
                 </div>
               </div>
             </div>
@@ -386,10 +383,10 @@ function disableInputs(): void {
                     <span class="text-lg" :class="[getBeltClass(data?.color)]">{{ data?.color }}</span>
                     <div class="flex flex-col gap-1">
                       <span class="font-semibold text-lg">کمربند {{ data?.color }}</span>
-                      <span class="font-medium text-sm flex items-center gap-1">
+                      <!-- <span class="font-medium text-sm flex items-center gap-1">
                         <UIcon name="material-symbols:calendar-today-outline-rounded" class="size-4 text-black/70" />
-                        <!-- {{ data?.createAt || new Date().getFullYear() }} -->
-                      </span>
+                        {{ data?.createAt || new Date().getFullYear() }}
+                      </span> -->
                     </div>
                   </div>
                 </div>
