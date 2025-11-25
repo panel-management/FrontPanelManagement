@@ -5,6 +5,10 @@ export const getAllStudentService = () => {
   return FetchApi("/student");
 };
 
+export const getStudentJustStudentByIdService = () => {
+  return FetchApi("/student/details");
+};
+
 export const getStudentByIdService = (id: number) => {
   return FetchApi(`/student/${id}`);
 };
@@ -12,6 +16,13 @@ export const getStudentByIdService = (id: number) => {
 export const createStudentService = (data: CreateStudent) => {
   return FetchApi("/student", {
     method: "POST",
+    body: data,
+  });
+};
+
+export const updateStudentJustStudentByIdService = (data: UpdateStudent) => {
+  return FetchApi(`/student/update/details`, {
+    method: "PUT",
     body: data,
   });
 };
