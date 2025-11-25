@@ -8,5 +8,5 @@ export interface UpdateStudent {
   address: string;
   underSupervisionDoctor: boolean;
   diseaseRecords: boolean;
-  beltIds: number[];
+  beltIds?: number[];
 }
