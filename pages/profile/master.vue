@@ -1,17 +1,18 @@
 <template>
-  <section v-if="data?.data" class="xl:container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-5">
+  <section v-if="master?.data" class="xl:container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-5">
     <div class="bg-white p-4 md:p-6 rounded-xl w-full flex flex-col lg:items-center gap-5">
       <div class="flex items-center justify-between w-full">
         <div class="flex gap-3">
           <div class="bg-black rounded-full size-16 flex justify-center items-center text-white">
-            {{ data.data.fullName.slice(0, 1) }}
+            {{ master.data.fullName.slice(0, 1) }}
           </div>
           <div class="flex flex-col gap-2">
-            <span class="font-medium text-xl">{{ data.data.fullName }}</span>
+            <span class="font-medium text-xl">{{ master.data.fullName }}</span>
             <div class="flex flex-wrap gap-2 sm:gap-3">
-              <UBadge v-if="data.data.type === 1" color="secondary" variant="solid" label="استاد" class="font-medium" />
-              <UBadge :color="data.data.active === 'ENABLE' ? 'primary' : 'error'" variant="soft"
-                :label="data.data.active === 'ENABLE' ? 'فعال' : 'غیر فعال'" class="font-semibold" />
+              <UBadge v-if="master.data.type === 1" color="secondary" variant="solid" label="استاد"
+                class="font-medium" />
+              <UBadge :color="master.data.active === 'ENABLE' ? 'primary' : 'error'" variant="soft"
+                :label="master.data.active === 'ENABLE' ? 'فعال' : 'غیر فعال'" class="font-semibold" />
             </div>
           </div>
         </div>
@@ -26,44 +27,46 @@
         <div class="flex items-center gap-1">
           <UIcon name="ic:baseline-call" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">شماره تلفن:</span>
-          <span class="font-medium text-base mt-1">{{ data.data.phoneNumber }}</span>
+          <span class="font-medium text-base mt-1">{{ master.data.phoneNumber }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="iconoir:barcode" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">کدملی:</span>
-          <span class="font-medium text-base mt-1">{{ data.data.nationalCode }}</span>
+          <span class="font-medium text-base mt-1">{{ master.data.nationalCode }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">عضویت:</span>
-          <span class="font-medium text-base mt-1">{{ useJDate(data.data.createdAt) }}</span>
+          <span class="font-medium text-base mt-1">{{ useJDate(master.data.createdAt) }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="hugeicons:students" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">هنرجو:</span>
-          <span class="font-medium text-base mt-1">{{ data.data.students.length }}</span>
+          <span class="font-medium text-base mt-1">{{ master.data.students.length ?? 'هنرجو وجود ندارد' }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="ion:university" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">سابقه:</span>
           <span class="font-medium text-base mt-1">
-            {{ data.data.history ? `سال ${data.data.history}` : 'وجود ندارد' }}
+            {{ master.data.history ? `سال ${master.data.history}` : 'وجود ندارد' }}
           </span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="solar:medal-ribbons-star-bold" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">تخصص:</span>
-          <span class="font-medium text-base mt-1">{{ data.data.sport.name }}</span>
+          <span class="font-medium text-base mt-1">{{ master.data.sport.name }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="bxs:certification" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">مدرک و گواهینامه ها:</span>
-          <span class="font-medium text-base mt-1">{{ data.data.certificates ?? 'وجود ندارد' }}</span>
+          <span class="font-medium text-base mt-1">
+            {{ master.data.certificates ? master.data.certificates : 'وجود ندارد' }}
+          </span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="solar:planet-2-bold" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">پلن انتخاب شده:</span>
-          <span class="font-medium text-base mt-1">{{ data.data.masterPlan.name ?? 'پلن وجود ندارد' }}</span>
+          <span class="font-medium text-base mt-1">{{ master.data.masterPlan.name ?? 'پلن وجود ندارد' }}</span>
         </div>
       </div>
       <div class="flex gap-3 min-md:hidden">
@@ -93,8 +96,8 @@
               <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
                 <BaseFormInput :required="false" :disable="isShow" v-model="state.age" label="سن" name="age" type="text"
                   placeholder="سن" class="w-full" />
-                <BaseFormInput :required="false" :disable="isShow" v-model="state.birthDate" label="تاریخ تولد"
-                  name="birthDate" type="text" placeholder="مثال تاریخ 1350/01/01" class="w-full" />
+                <BaseDatePicker :required="false" :disable="isShow" v-model="state.birthDate" label="تاریخ تولد"
+                  name="birthDate" class="w-full" />
               </div>
               <div class="w-full pt-1">
                 <BaseFormInput :required="false" :disable="isShow" v-model="state.certificates"
@@ -104,22 +107,21 @@
               <div class="w-full flex flex-col justify-center items-center pt-1">
                 <ClientOnly>
                   <BaseFormUploadFile :required="false" :disable="isShow" v-model="state.imageFile"
-                    label="ارسال عکس گواهینامه" name="image"
+                    label="ارسال عکس گواهینامه" name="imageFile"
                     description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا MB 1" class="w-full" />
                 </ClientOnly>
                 <img v-if="state.imageUrl" class="object-cover md:w-2/3 pt-10" :src="state.imageUrl"
                   :alt="state.fullName" draggable="false" loading="lazy">
               </div>
               <div class="flex justify-end gap-2 pt-4">
-                <UButton v-if="!isShow" :loading="isLoading" label="اعمال تغییرات" color="primary" type="submit"
-                  class="disabled:blur-[1px]" />
+                <UButton v-if="!isShow" :loading="isLoading" label="اعمال تغییرات" color="primary" type="submit" />
               </div>
             </div>
           </UForm>
         </div>
       </template>
       <template #paymentStatus>
-        <div v-if="formData.length" class="flex flex-col gap-6 w-full h-full">
+        <div v-if="master.data.subscriptionPayments.length" class="flex flex-col gap-6 w-full h-full">
           <div class="bg-white flex flex-col gap-5 rounded-lg p-4 w-full">
             <div class="flex items-center gap-2">
               <UIcon name="solar:dollar-bold" class="size-6 text-black/70" />
@@ -129,9 +131,12 @@
               <div
                 class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white shadow-lg rounded-lg">
                 <div class="bg-muted rounded-full size-12 flex justify-center items-center">
-                  <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
+                  <UIcon :name="paymentIcon[lastPayment?.status] || 'bi:emoji-neutral-fill'" class="size-7"
+                    :class="paymentIconColor[lastPayment?.status] || 'text-gray-400'" />
                 </div>
-                <span class="text-xl font-medium">پرداخت شده</span>
+                <span class="text-xl font-medium">
+                  {{ lastPayment ? paymentStatusText[lastPayment?.status] : 'هیچ پرداختی موجود نیست' }}
+                </span>
                 <span class="text-sm">وضعیت فعلی</span>
               </div>
               <div
@@ -139,102 +144,55 @@
                 <div class="bg-muted rounded-full size-12 flex justify-center items-center">
                   <UIcon name="fluent:payment-32-filled" class="size-6 text-black" />
                 </div>
-                <span class="text-xl font-medium">۲,۵۰۰,۰۰۰</span>
+                <span class="text-xl font-medium">
+                  {{ Number(master.data.masterPlan.price).toLocaleString('fa-IR') }}
+                </span>
                 <span class="text-sm">شهریه ماهانه (تومان)</span>
               </div>
               <div
                 class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white shadow-lg rounded-lg">
                 <div class="bg-muted rounded-full size-12 flex justify-center items-center">
-                  <UIcon name="material-symbols:calendar-today-rounded" class="size-6 text-teal-300" />
+                  <UIcon name="material-symbols:calendar-today-rounded" class="size-6 text-yellow-300" />
                 </div>
-                <span class="text-xl font-medium">۱۴۰۳/۰۷/۰۱</span>
-                <span class="text-sm">سررسید بعدی</span>
+                <span class="text-xl font-medium">
+                  {{ lastPayment ? gregorianToJalali(lastPayment.createdAt) : 'هیچ پرداختی موجود نیست' }}
+                </span>
+                <span class="text-sm">زمان پرداخت</span>
               </div>
             </div>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 w-full bg-white rounded-lg p-4">
-            <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 w-full bg-white rounded-lg p-4"
+            v-if="master.data.subscriptionPayments">
+            <!-- <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
+                    <div class="flex justify-center items-center">
+                      <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
+                    </div>
+                    <div class="w-full flex justify-between items-center">
+                      <div class="flex flex-col gap-1">
+                        <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
+                        <span class="font-medium text-sm flex items-center gap-1">
+                          ۱۴۰۳/۰۶/۰۱ - کارت
+                        </span>
+                      </div>
+                      <UBadge label="پراخت شده" color="primary" />
+                    </div>
+                  </div> -->
+            <div class="flex items-center gap-4 bg-muted p-3 rounded-xl"
+              v-for="payment in master.data.subscriptionPayments" :key="payment.id">
               <div class="flex justify-center items-center">
-                <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
+                <UIcon :name="paymentIcon[lastPayment?.status] || 'bi:emoji-neutral-fill'" class="size-6"
+                  :class="paymentIconColor[lastPayment?.status] || 'text-gray-400'" />
               </div>
               <div class="w-full flex justify-between items-center">
                 <div class="flex flex-col gap-1">
-                  <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
+                  <span class="font-semibold text-lg">
+                    {{ Number(payment.amount).toLocaleString('fa-IR') }} تومان
+                  </span>
                   <span class="font-medium text-sm flex items-center gap-1">
-                    ۱۴۰۳/۰۶/۰۱ - کارت
+                    {{ gregorianToJalali(payment.paymentDate) }}
                   </span>
                 </div>
-                <UBadge label="پراخت شده" color="primary" />
-              </div>
-            </div>
-            <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-              <div class="flex justify-center items-center">
-                <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-              </div>
-              <div class="w-full flex justify-between items-center">
-                <div class="flex flex-col gap-1">
-                  <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                  <span class="font-medium text-sm flex items-center gap-1">
-                    ۱۴۰۳/۰۶/۰۱ - نقد
-                  </span>
-                </div>
-                <UBadge label="پراخت شده" color="primary" />
-              </div>
-            </div>
-            <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-              <div class="flex justify-center items-center">
-                <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-              </div>
-              <div class="w-full flex justify-between items-center">
-                <div class="flex flex-col gap-1">
-                  <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                  <span class="font-medium text-sm flex items-center gap-1">
-                    ۱۴۰۳/۰۶/۰۱ - کارت
-                  </span>
-                </div>
-                <UBadge label="پراخت شده" color="primary" />
-              </div>
-            </div>
-            <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-              <div class="flex justify-center items-center">
-                <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-              </div>
-              <div class="w-full flex justify-between items-center">
-                <div class="flex flex-col gap-1">
-                  <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                  <span class="font-medium text-sm flex items-center gap-1">
-                    ۱۴۰۳/۰۶/۰۱ - نقد
-                  </span>
-                </div>
-                <UBadge label="پراخت شده" color="primary" />
-              </div>
-            </div>
-            <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-              <div class="flex justify-center items-center">
-                <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-              </div>
-              <div class="w-full flex justify-between items-center">
-                <div class="flex flex-col gap-1">
-                  <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                  <span class="font-medium text-sm flex items-center gap-1">
-                    ۱۴۰۳/۰۶/۰۱ - کارت
-                  </span>
-                </div>
-                <UBadge label="پراخت شده" color="primary" />
-              </div>
-            </div>
-            <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-              <div class="flex justify-center items-center">
-                <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-              </div>
-              <div class="w-full flex justify-between items-center">
-                <div class="flex flex-col gap-1">
-                  <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                  <span class="font-medium text-sm flex items-center gap-1">
-                    ۱۴۰۳/۰۶/۰۱ - نقد
-                  </span>
-                </div>
-                <UBadge label="پراخت شده" color="primary" />
+                <UBadge :label="paymentStatusText[payment.status]" :color="paymentIconBadge[payment.status]" />
               </div>
             </div>
           </div>
@@ -249,15 +207,15 @@
 <script setup lang="ts">
 import * as v from 'valibot'
 import type { FormSubmitEvent, TabsItem } from "@nuxt/ui"
-import { getHistorySubscriptionsMasterService, getMasterByIdService, updateProfileMasterService } from '~/services/master.service'
-import type { UpdateMasterData } from '~/models/users/master/UpdateMasterData'
+import { getMasterByIdService, updateProfileMasterService } from '~/services/master.service'
+import type { UpdateMaster } from '~/models/users/master/UpdateMaster'
+import type { PaymentStatus } from '~/models/PaymentStatus'
 
 const isShow: Ref<boolean> = ref(true)
 const isLoading: Ref<boolean> = ref(false)
-const dateRegex = /^\d{4}\/\d{2}\/\d{2}$/
 const router = useRouter();
 const toastStore = useToastStore()
-const formData: Ref<any[]> = ref([])
+const { gregorianToJalali, jalaliToGregorian } = useDateConverter()
 
 const schema = v.object({
   fullName: v.pipe(
@@ -289,7 +247,7 @@ const schema = v.object({
   birthDate: v.pipe(
     v.string(),
     v.trim(),
-    v.custom((value) => dateRegex.test(value), 'فرمت تاریخ باید 1380/01/30 باشد')
+    v.regex(/^\d{4}\/\d{2}\/\d{2}$/, 'فرمت تاریخ باید 1380/01/01 باشد')
   ),
   certificates: v.pipe(
     v.string(),
@@ -317,11 +275,11 @@ const items = [
 
 type Schema = v.InferOutput<typeof schema>;
 
-const { data } = await useAsyncData('current-master-profile', () => getMasterByIdService());
-console.log(data.value?.data);
-if (!data.value || !data.value.data) {
+const { data: master, refresh } = await useAsyncData('current-master-profile', () => getMasterByIdService());
+console.log(master.value?.data);
+if (!master.value || !master.value?.data) {
   if (import.meta.client) {
-    toastStore.setAlert(data.value?.message, '', 'error', 'bx:bxs-error')
+    toastStore.setAlert(master.value?.message, '', 'error', 'bx:bxs-error')
     router.push('/dashboard')
   } else {
     throw createError({
@@ -331,43 +289,68 @@ if (!data.value || !data.value.data) {
   }
 }
 
-const state = reactive<UpdateMasterData>({
-  fullName: data.value?.data.fullName ?? '',
-  phoneNumber: data.value?.data.phoneNumber ?? '',
-  nationalCode: data.value?.data.nationalCode ?? '',
-  age: String(data.value?.data.age ?? ''),
-  birthDate: data.value?.data.birthDate ?? '',
-  history: data.value?.data.history ?? '',
-  certificates: data.value?.data.certificates ?? '',
-  imageUrl: data.value?.data.image ?? undefined,
+const state = reactive<UpdateMaster>({
+  fullName: master.value?.data.fullName ?? '',
+  phoneNumber: master.value?.data.phoneNumber ?? '',
+  nationalCode: master.value?.data.nationalCode ?? '',
+  age: master.value?.data.age?.toString() ?? '',
+  birthDate: gregorianToJalali(master.value?.data.birthDate) ?? '',
+  history: master.value?.data.history ?? '',
+  certificates: master.value?.data.certificates ?? '',
+  imageUrl: master.value?.data.image ?? undefined,
   imageFile: undefined
 });
+
+const paymentStatusText: Record<PaymentStatus, string> = {
+  NO_PAYMENT: 'پرداخت وجود ندارد',
+  CONFIRMED: 'پرداخت شده',
+  PENDING: 'در انتظار پرداخت',
+  REJECTED: 'پرداخت نشده'
+}
+
+const lastPayment = computed(() => {
+  const arr = master.value?.data?.subscriptionPayments
+  return Array.isArray(arr) && arr.length > 0 ? arr[0] : null
+})
+
+const paymentIcon = {
+  CONFIRMED: 'clarity:success-standard-line',
+  PENDING: 'solar:shield-warning-bold',
+  REJECTED: 'codicon:error',
+  NO_PAYMENT: 'bi:emoji-neutral-fill',
+}
+
+const paymentIconColor = {
+  CONFIRMED: 'text-success',
+  PENDING: 'text-warning',
+  REJECTED: 'text-error',
+  NO_PAYMENT: 'text-gray-500',
+}
+
+const paymentIconBadge = {
+  CONFIRMED: 'primary',
+  PENDING: 'warning',
+  REJECTED: 'error',
+  NO_PAYMENT: 'neutral',
+}
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
   try {
-    const result = await updateProfileMasterService(event.data)
+    const payload = {
+      ...event.data,
+      birthDate: jalaliToGregorian(event.data.birthDate)
+    }
+    const result = await updateProfileMasterService(payload);
     if (result.statusCode === 200) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-      refreshNuxtData()
+      refresh()
       isShow.value = true
     }
   } catch (error: any) {
     console.log(error)
   } finally {
     isLoading.value = false
-  }
-}
-
-async function getHistoryPaymentMaster() {
-  try {
-    const result = await getHistorySubscriptionsMasterService()
-    if (result.statusCode === 200) {
-      console.log(result.data);
-      formData.value = Array.isArray(result.data) ? result.data : []
-    }
-  } catch (error: any) {
-    console.log(error.massage || error);
   }
 }
 
@@ -378,8 +361,4 @@ function enableInputs(): void {
 function disableInputs(): void {
   isShow.value = true
 }
-
-onMounted(()=>{
-  nextTick(()=> getHistoryPaymentMaster())
-})
 </script>
