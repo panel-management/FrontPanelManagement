@@ -15,8 +15,8 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
 import { useJDate } from "../composables/useJdate";
-import { getDataAllUsersService } from "~/services/users.service";
 import type { DataUsers } from "~/models/users/dataUsers";
+import { getDataUserService } from '~/services/users.service';
 
 const dropDownMenu = ref<DropdownMenuItem[][]>([])
 const isFullScreen: Ref<boolean> = ref(false);
@@ -49,7 +49,7 @@ const updateTime = () => {
 
 async function viewDataUser() {
   try {
-    const result = await getDataAllUsersService()
+    const result = await getDataUserService()
     if (result.statusCode === 200) {
       formData.value = result.data as DataUsers
     } else if (result.statusCode === 401) {

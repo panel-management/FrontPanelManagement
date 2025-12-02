@@ -24,9 +24,9 @@
 </template>
 <script lang="ts" setup>
 import type { StatusPlanMaster } from '~/models/plan/masterPlan/StatusPlanMaster';
-import { getStatusPlanService } from '~/services/master.service';
+import { getStatusPlanService } from '~/services/users.service';
 
-const formData = ref<StatusPlanMaster | null>(null)
+const formData = shallowRef<StatusPlanMaster | null>(null)
 const emit = defineEmits(['delete'])
 
 const progress = computed(() => formData.value?.progressPercentage?.toFixed(0) ?? 0)
@@ -36,8 +36,8 @@ async function getStatusPlanMaster() {
     const result = await getStatusPlanService()
     console.log(result);
     if (result.statusCode === 200) {
-      formData.value = result.data
-      if (result.data?.isAdmin) emit('delete')
+      formData.value = result.data as StatusPlanMaster
+      if (result?.isAdmin) emit('delete')
     }
   } catch (error: any) {
     console.log(error.message || error);

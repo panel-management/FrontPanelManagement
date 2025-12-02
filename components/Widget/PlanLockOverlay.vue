@@ -5,7 +5,8 @@
         class="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-lg bg-black/40 overflow-hidden">
         <div class="bg-white p-6 rounded-lg shadow-lg min-w-lg h-54 flex flex-col justify-center items-center gap-5">
           <p class="font-medium w-96 text-center">{{ planStatus.message || 'پلن شما فعال نیست' }}</p>
-          <UButton v-if="!planStatus.isPending" :to="linkPage" color="primary" class="p-3" :label="getLabelButton" />
+          <UButton v-if="!planStatus.isPending && planStatus.userType === 'MASTER'" :to="linkPage" color="primary"
+            class="p-3" :label="getLabelButton" />
         </div>
       </div>
     </Transition>
@@ -31,22 +32,23 @@ const showOverlay = computed(() => {
 })
 
 const linkPage = computed(() => {
-  const { statusCode, needsPayment, isPending } = planStatus.value
-  if (statusCode === 200 || statusCode === 403) {
-    return '/memberShip/plans'
-  } else if (needsPayment) {
+  const { needsPayment, isPending, isActive } = planStatus.value
+  if (needsPayment) {
     return '/payment'
+  } else if (!isActive) {
+    return '/memberShip/plans'
   } else if (isPending) {
     return null
   }
 })
 
 const getLabelButton = computed(() => {
-  const { statusCode, needsPayment } = planStatus.value
-  if (statusCode === 200 || statusCode === 403) {
-    return "انتخاب پلن"
-  } else if (needsPayment) {
+  const { needsPayment, isActive } = planStatus.value
+
+  if (needsPayment) {
     return "پرداخت پلن"
+  } else if (!isActive) {
+    return "انتخاب پلن"
   }
 })
 </script>
