@@ -1,14 +1,8 @@
 import type { UpdateMaster } from "~/models/users/master/UpdateMaster";
 
-
 // get All Master just Admin
 export const getAllMasterService = () => {
   return FetchApi("/master");
-};
-
-// get Status Plan Master
-export const getStatusPlanService = () => {
-  return FetchApi("/master/my-plan/status");
 };
 
 // get history subscriptions master
