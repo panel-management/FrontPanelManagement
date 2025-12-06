@@ -5,7 +5,7 @@
       <span class="text-xs sm:text-sm font-medium">مدیریت کامل امور مالی باشگاه</span>
     </div>
     <div class="w-full h-full flex flex-col gap-5">
-      <LazyTableManagementFinancial/>
+      <TableManagementFinancial />
     </div>
   </section>
 </template>
