@@ -26,13 +26,13 @@
           },
           onSelect(e?: Event) { e?.preventDefault() }
         }))" label="کمربند ها" />
-        <BaseDropdownMenu :items="statusPaymentOption.map(statusPayment => ({
-          label: paymentStatusLabels[statusPayment], type: 'checkbox' as const, checked: selectedStatusPayment.includes(statusPayment),
+        <BaseDropdownMenu :items="statusTransactionOption.map(statusTransaction => ({
+          label: transactionStatusLabels[statusTransaction], type: 'checkbox' as const, checked: selectedTransactionStatus.includes(statusTransaction),
           onUpdateChecked(checked: boolean) {
             if (checked) {
-              selectedStatusPayment.push(statusPayment)
+              selectedTransactionStatus.push(statusTransaction)
             } else {
-              selectedStatusPayment = selectedStatusPayment.filter(b => b !== statusPayment)
+              selectedTransactionStatus = selectedTransactionStatus.filter(b => b !== statusTransaction)
             }
           },
           onSelect(e?: Event) { e?.preventDefault() }
@@ -49,8 +49,8 @@
 </template>
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-import { PaymentStatus } from '~/models/PaymentStatus'
 import type { Belt } from '~/models/sportAndBelt/belt'
+import { TransactionStatus } from '~/models/transactions/TransactionStatus'
 import type { StudentData } from '~/models/users/student/StudentData'
 import { getAllBeltService } from '~/services/sportBelt.service'
 import { deleteStudentService } from '~/services/student.service'
@@ -70,18 +70,18 @@ const props = defineProps<{
   items: StudentData[],
 }>()
 
-const paymentStatusLabels: Record<PaymentStatus, string> = {
-  [PaymentStatus.PENDING]: 'در انتظار تایید',
-  [PaymentStatus.CONFIRMED]: 'پرداخت شده',
-  [PaymentStatus.REJECTED]: 'پرداخت نشده',
-  [PaymentStatus.NO_PAYMENT]: 'بدون موجودی',
+const transactionStatusLabels: Record<TransactionStatus, string> = {
+  [TransactionStatus.PAID]: 'پرداخت شده',
+  [TransactionStatus.PENDING]: 'در انتظار تایید',
+  [TransactionStatus.UNPAID]: 'پرداخت نشده',
+  [TransactionStatus.UPCOMING]: 'پرداخت های آینده',
 }
 
 const selectedBelts = ref<string[]>([])
-const selectedStatusPayment = ref<PaymentStatus[]>([])
+const selectedTransactionStatus = ref<TransactionStatus[]>([])
 const beltOptions: Ref<Belt[]> = ref([])
-const statusPaymentOption: Ref<PaymentStatus[]> = ref(
-  [PaymentStatus.PENDING, PaymentStatus.CONFIRMED, PaymentStatus.REJECTED, PaymentStatus.NO_PAYMENT]
+const statusTransactionOption: Ref<TransactionStatus[]> = ref(
+  [TransactionStatus.PAID, TransactionStatus.PENDING, TransactionStatus.UNPAID, TransactionStatus.UPCOMING]
 )
 // const beltOptions = ref(['سفید', 'نارنجی', 'ابی', 'زرد', 'سبز', 'قهوه ای', 'سیاه'])
 // const statusPaymentOption = ref(['پرداخت شده', 'پرداخت نشده', 'در انتظار پرداخت'])
@@ -89,7 +89,7 @@ const statusPaymentOption: Ref<PaymentStatus[]> = ref(
 const filteredData = computed(() => {
   return props.items.filter(row => {
     const beltMatch = selectedBelts.value.length === 0 || selectedBelts.value.includes(row.currentBelt.color)
-    const statusMatch = selectedStatusPayment.value.length === 0 || selectedStatusPayment.value.includes(row.paymentStatus)
+    const statusMatch = selectedTransactionStatus.value.length === 0 || selectedTransactionStatus.value.includes(row.studentTransactions)
     return beltMatch && statusMatch
   })
 })
@@ -152,11 +152,9 @@ const columnLabels: Record<string, string> = {
   fullName: 'نام کامل',
   phoneNumber: 'شماره تلفن',
   currentBelt: 'کمربند ها',
-  paymentStatus: 'وضعیت شهریه',
+  studentTransactions: 'وضعیت شهریه',
   active: 'وضعیت حساب ها',
   sport: 'رشته',
-  status: 'وضعیت شهریه',
-  attendance: 'حضور',
   createdAt: 'تاریخ ایجاد',
   updatedAt: 'تاریخ بروزرسانی'
 }
@@ -180,7 +178,7 @@ const columns: TableColumn<StudentData>[] = [
     accessorKey: 'currentBelt',
     header: 'کمربند ها',
     cell: ({ row }) => {
-      const belt = row.getValue('currentBelt')?.color
+      const belt = row.getValue('currentBelt')?.color as string
 
       const color = ({
         'سفید': 'belt-white border' as const,
@@ -198,35 +196,35 @@ const columns: TableColumn<StudentData>[] = [
         'صورتی': 'belt-pink' as const,
         'طلایی': 'belt-gold' as const,
         'نقره‌ای': 'belt-silver' as const
-      })[belt as string]
+      })[belt]
 
       return h("span", { class: `px-2  py-1 rounded-lg font-medium text-xs ${color}` }, belt)
     }
   },
   {
-    accessorKey: 'paymentStatus',
+    accessorKey: 'studentTransactions',
     header: 'وضعیت شهریه',
     cell: ({ row }) => {
-      const paymentStatus = row.getValue('paymentStatus')
+      const transactions = row.getValue('studentTransactions') as string
       const color = ({
-        'CONFIRMED': 'success' as const,
-        'REJECTED': 'error' as const,
+        'PAID': 'success' as const,
+        'UNPAID': 'error' as const,
         'PENDING': 'warning' as const,
-        'NO_PAYMENT': 'error' as const,
-      })[paymentStatus as string]
-      let text = paymentStatus
-      switch (paymentStatus) {
-        case 'NO_PAYMENT':
-          text = 'پرداخت وجود ندارد'
+        'UPCOMING': 'error' as const,
+      })[transactions]
+      let text = transactions
+      switch (transactions) {
+        case 'UPCOMING':
+          text = 'پرداخت در اینده'
           break;
-        case 'CONFIRMED':
+        case 'PAID':
           text = 'پرداخت شده'
           break;
         case 'PENDING':
           text = 'در انتظار پرداخت'
           break;
-        case 'REJECTED':
-          text = 'پر داخت نشده'
+        case 'UNPAID':
+          text = 'پرداخت نشده'
           break;
       }
       return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => text)
@@ -236,11 +234,11 @@ const columns: TableColumn<StudentData>[] = [
     accessorKey: 'active',
     header: 'وضعیت',
     cell: ({ row }) => {
-      const activeValue = row.getValue('active')
+      const activeValue = row.getValue('active') as string
       const color = ({
         'ENABLE': 'success' as const,
         'DISABLE': 'error' as const,
-      })[activeValue as string]
+      })[activeValue]
       const statusText = activeValue === 'ENABLE' ? 'فعال' : 'غیر فعال'
       return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => statusText)
     }

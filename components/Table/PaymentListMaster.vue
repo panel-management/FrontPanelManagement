@@ -73,7 +73,7 @@
       <span class="text-lg md:text-2xl font-bold">همه تراکنش های مالی ({{ formData.length }} مورد)</span>
       <p class="break-words font-medium text-sm">تمام تراکنش‌ های</p>
     </div>
-    <UTable ref="table" :loading="isLoading" :data="filteredData" :columns="columns"
+    <UTable ref="table" :loading="isLoading" loading-color="neutral" :data="filteredData" :columns="columns"
       empty="هیچ اطلاعاتی برای نمایش وجود ندارد" sticky class="h-96 lg:h-svh no-scrollbar">
       <template #expanded="{ row }">
         <pre>{{ row.original }}</pre>
@@ -107,8 +107,7 @@ const selectedStatus = ref<SubscriptionStatus[]>([])
 const statusOptions = ref([SubscriptionStatus.CONFIRMED, SubscriptionStatus.PENDING, SubscriptionStatus.REJECTED])
 
 const filteredData = computed(() => {
-  const statuses = selectedStatus.value
-  return formData.value.filter(row => !statuses.length || statuses.includes(row.status))
+  return formData.value.filter(row => !selectedStatus.value.length || selectedStatus.value.includes(row.status))
 })
 
 async function getSubscriptionListMaster() {
