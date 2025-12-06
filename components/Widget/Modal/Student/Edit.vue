@@ -7,6 +7,7 @@ import type { StudentListData } from '~/models/users/student/StudentListData';
 import type { UpdateStudent } from '~/models/users/student/UpdateStudent';
 import type { Belt } from '~/models/sportAndBelt/belt';
 import { getAllBeltService } from '~/services/sportBelt.service';
+import type { TransactionStatus } from '~/models/transactions/TransactionStatus';
 
 const emit = defineEmits(['update:open', 'success']);
 const isShow: Ref<boolean> = ref(true)
@@ -191,6 +192,39 @@ watch(formData, (data) => {
   state.beltIds = data.currentBelt?.id?.toString() ?? ''
 })
 
+const transactionStatusText: Record<TransactionStatus, string> = {
+  PAID: 'پرداخت شده',
+  PENDING: 'در انتظار پرداخت',
+  UNPAID: 'پرداخت نشده',
+  UPCOMING: 'پرداخت در اینده',
+}
+
+const lastTransaction = computed(() => {
+  const arr = formData.value?.studentTransactions
+  return Array.isArray(arr) && arr.length > 0 ? arr[0] : null
+})
+
+const transactionIcon = {
+  PAID: 'clarity:success-standard-line',
+  PENDING: 'solar:shield-warning-bold',
+  UNPAID: 'codicon:error',
+  UPCOMING: 'bi:emoji-neutral-fill',
+}
+
+const transactionIconColor = {
+  PAID: 'text-success',
+  PENDING: 'text-warning',
+  UNPAID: 'text-error',
+  UPCOMING: 'text-gray-500',
+}
+
+const transactionIconBadge = {
+  PAID: 'primary',
+  PENDING: 'warning',
+  UNPAID: 'error',
+  UPCOMING: 'neutral',
+}
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
   try {
@@ -347,8 +381,8 @@ function disableInputs(): void {
                     </div>
                     <USeparator />
                     <div class="w-full">
-                      <BaseFormSelect :required="false" v-model="state.beltIds" :items="itemsSelect"
-                        name="beltIds" label="انتخاب کمربند" :disable="isShow" />
+                      <BaseFormSelect :required="false" v-model="state.beltIds" :items="itemsSelect" name="beltIds"
+                        label="انتخاب کمربند" :disable="isShow" />
                     </div>
                     <div class="flex justify-end gap-2 pt-4">
                       <UButton v-if="!isShow" :loading="isLoading" label="اعمال تغییرات" color="primary" type="submit"
@@ -403,9 +437,12 @@ function disableInputs(): void {
                     <div
                       class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white shadow-lg rounded-lg">
                       <div class="bg-muted rounded-full size-12 flex justify-center items-center">
-                        <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
+                        <UIcon :name="transactionIcon[lastTransaction?.status] || 'bi:emoji-neutral-fill'"
+                          class="size-7" :class="transactionIconColor[lastTransaction?.status] || 'text-gray-400'" />
                       </div>
-                      <span class="text-xl font-medium">پرداخت شده</span>
+                      <span class="text-xl font-medium">
+                        {{ lastTransaction ? transactionStatusText[lastTransaction?.status] : 'هیچ پرداختی موجود نیست' }}
+                      </span>
                       <span class="text-sm">وضعیت فعلی</span>
                     </div>
                     <div
@@ -413,7 +450,9 @@ function disableInputs(): void {
                       <div class="bg-muted rounded-full size-12 flex justify-center items-center">
                         <UIcon name="fluent:payment-32-filled" class="size-6 text-black" />
                       </div>
-                      <span class="text-xl font-medium">۲,۵۰۰,۰۰۰</span>
+                      <span class="text-xl font-medium">
+                        {{ Number(formData.studentTransactions[0].amount).toLocaleString('fa-IR') }}
+                      </span>
                       <span class="text-sm">شهریه ماهانه (تومان)</span>
                     </div>
                     <div
@@ -421,97 +460,38 @@ function disableInputs(): void {
                       <div class="bg-muted rounded-full size-12 flex justify-center items-center">
                         <UIcon name="material-symbols:calendar-today-rounded" class="size-6 text-teal-300" />
                       </div>
-                      <span class="text-xl font-medium">۱۴۰۳/۰۷/۰۱</span>
+                      <span class="text-xl font-medium">
+                        {{ lastTransaction ? gregorianToJalali(lastTransaction.dueDate) : 'هیچ پرداختی موجود نیست' }}
+                      </span>
                       <span class="text-sm">سررسید بعدی</span>
                     </div>
                   </div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 w-full bg-white rounded-lg p-4">
-                  <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-                    <div class="flex justify-center items-center">
-                      <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-                    </div>
-                    <div class="w-full flex justify-between items-center">
-                      <div class="flex flex-col gap-1">
-                        <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                        <span class="font-medium text-sm flex items-center gap-1">
-                          ۱۴۰۳/۰۶/۰۱ - کارت
-                        </span>
+                <div class="bg-white w-full h-72 p-4 rounded-lg overflow-hidden" v-if="formData.studentTransactions">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 overflow-auto h-full w-full">
+                    <div class="flex items-center gap-4 bg-muted p-3 rounded-xl"
+                      v-for="transaction in formData.studentTransactions" :key="transaction.id">
+                      <div class="flex justify-center items-center">
+                        <UIcon :name="transactionIcon[lastTransaction?.status] || 'bi:emoji-neutral-fill'"
+                          class="size-6" :class="transactionIconColor[lastTransaction?.status] || 'text-gray-400'" />
                       </div>
-                      <UBadge label="پراخت شده" color="primary" />
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-                    <div class="flex justify-center items-center">
-                      <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-                    </div>
-                    <div class="w-full flex justify-between items-center">
-                      <div class="flex flex-col gap-1">
-                        <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                        <span class="font-medium text-sm flex items-center gap-1">
-                          ۱۴۰۳/۰۶/۰۱ - نقد
-                        </span>
+                      <div class="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <div class="flex flex-col gap-1">
+                          <span class="font-semibold text-lg">
+                            {{ Number(transaction.amount).toLocaleString('fa-IR') }}
+                            تومان
+                          </span>
+                          <span class="font-medium text-sm flex items-center gap-1">
+                            {{ gregorianToJalali(transaction.paymentDate) }}
+                          </span>
+                        </div>
+                        <UBadge :label="transactionStatusText[transaction.status]"
+                          :color="transactionIconBadge[transaction.status]" />
                       </div>
-                      <UBadge label="پراخت شده" color="primary" />
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-                    <div class="flex justify-center items-center">
-                      <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-                    </div>
-                    <div class="w-full flex justify-between items-center">
-                      <div class="flex flex-col gap-1">
-                        <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                        <span class="font-medium text-sm flex items-center gap-1">
-                          ۱۴۰۳/۰۶/۰۱ - کارت
-                        </span>
-                      </div>
-                      <UBadge label="پراخت شده" color="primary" />
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-                    <div class="flex justify-center items-center">
-                      <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-                    </div>
-                    <div class="w-full flex justify-between items-center">
-                      <div class="flex flex-col gap-1">
-                        <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                        <span class="font-medium text-sm flex items-center gap-1">
-                          ۱۴۰۳/۰۶/۰۱ - نقد
-                        </span>
-                      </div>
-                      <UBadge label="پراخت شده" color="primary" />
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-                    <div class="flex justify-center items-center">
-                      <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-                    </div>
-                    <div class="w-full flex justify-between items-center">
-                      <div class="flex flex-col gap-1">
-                        <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                        <span class="font-medium text-sm flex items-center gap-1">
-                          ۱۴۰۳/۰۶/۰۱ - کارت
-                        </span>
-                      </div>
-                      <UBadge label="پراخت شده" color="primary" />
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-                    <div class="flex justify-center items-center">
-                      <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-                    </div>
-                    <div class="w-full flex justify-between items-center">
-                      <div class="flex flex-col gap-1">
-                        <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                        <span class="font-medium text-sm flex items-center gap-1">
-                          ۱۴۰۳/۰۶/۰۱ - نقد
-                        </span>
-                      </div>
-                      <UBadge label="پراخت شده" color="primary" />
                     </div>
                   </div>
                 </div>
+                <span v-else>هیچ دیتا پرداختی وجود ندارد</span>
               </div>
             </template>
           </LazyBaseTabs>

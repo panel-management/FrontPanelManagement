@@ -177,7 +177,7 @@ watch(formData, (data) => {
   state.history = data.history ?? ''
   state.certificates = data.certificates ?? ''
   state.sportId = data.sport.id.toString() ?? '',
-  state.imageUrl = data.image ?? ''
+    state.imageUrl = data.image ?? ''
 })
 
 const paymentStatusText: Record<PaymentStatus, string> = {
@@ -476,8 +476,9 @@ function disableInputs() {
                       <div class="bg-muted rounded-full size-12 flex justify-center items-center">
                         <UIcon name="fluent:payment-32-filled" class="size-6 text-black" />
                       </div>
-                      <span class="text-xl font-medium">{{ Number(formData.masterPlan.price).toLocaleString('fa-IR')
-                      }}</span>
+                      <span class="text-xl font-medium">
+                        {{ Number(formData.masterPlan.price).toLocaleString('fa-IR') }}
+                      </span>
                       <span class="text-sm">شهریه ماهانه (تومان)</span>
                     </div>
                     <div
@@ -492,37 +493,26 @@ function disableInputs() {
                     </div>
                   </div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 w-full bg-white rounded-lg p-4"
-                  v-if="formData.subscriptionPayments">
-                  <!-- <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-                    <div class="flex justify-center items-center">
-                      <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-                    </div>
-                    <div class="w-full flex justify-between items-center">
-                      <div class="flex flex-col gap-1">
-                        <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                        <span class="font-medium text-sm flex items-center gap-1">
-                          ۱۴۰۳/۰۶/۰۱ - کارت
-                        </span>
+                <div class="bg-white w-full h-72 p-4 rounded-lg overflow-hidden" v-if="formData.subscriptionPayments">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 overflow-auto h-full w-full">
+                    <div class="flex items-center gap-4 bg-muted p-3 rounded-xl"
+                      v-for="payment in formData.subscriptionPayments" :key="payment.id">
+                      <div class="flex justify-center items-center">
+                        <UIcon :name="paymentIcon[lastPayment?.status] || 'bi:emoji-neutral-fill'" class="size-6"
+                          :class="paymentIconColor[lastPayment?.status] || 'text-gray-400'" />
                       </div>
-                      <UBadge label="پراخت شده" color="primary" />
-                    </div>
-                  </div> -->
-                  <div class="flex items-center gap-4 bg-muted p-3 rounded-xl"
-                    v-for="payment in formData.subscriptionPayments" :key="payment.id">
-                    <div class="flex justify-center items-center">
-                      <UIcon :name="paymentIcon[lastPayment?.status] || 'bi:emoji-neutral-fill'" class="size-6"
-                        :class="paymentIconColor[lastPayment?.status] || 'text-gray-400'" />
-                    </div>
-                    <div class="w-full flex justify-between items-center">
-                      <div class="flex flex-col gap-1">
-                        <span class="font-semibold text-lg">{{ Number(payment.amount).toLocaleString('fa-IR') }}
-                          تومان</span>
-                        <span class="font-medium text-sm flex items-center gap-1">
-                          {{ gregorianToJalali(payment.paymentDate) }}
-                        </span>
+                      <div class="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <div class="flex flex-col gap-1">
+                          <span class="font-semibold text-lg">
+                            {{ Number(payment.amount).toLocaleString('fa-IR') }}
+                            تومان
+                          </span>
+                          <span class="font-medium text-sm flex items-center gap-1">
+                            {{ gregorianToJalali(payment.paymentDate) }}
+                          </span>
+                        </div>
+                        <UBadge :label="paymentStatusText[payment.status]" :color="paymentIconBadge[payment.status]" />
                       </div>
-                      <UBadge :label="paymentStatusText[payment.status]" :color="paymentIconBadge[payment.status]" />
                     </div>
                   </div>
                 </div>

@@ -1,8 +1,17 @@
 <script setup lang="ts">
 import * as v from 'valibot'
-import type {FormSubmitEvent} from "@nuxt/ui"
+import type { FormSubmitEvent } from "@nuxt/ui"
+import { getAllStudentService } from '~/services/student.service';
+import type { StudentData } from '~/models/users/student/StudentData';
+import type { CreateTransactionEquipment } from '~/models/transactions/CreateTransactionEquipment';
+import { createTransactionEquipmentService } from '~/services/transactions.service';
 
-const emit = defineEmits(['update:open']);
+const emit = defineEmits(['update:open', 'success']);
+const toastStore = useToastStore()
+const isLoading: Ref<boolean> = ref(false)
+const displayAmount: Ref<string> = ref('')
+const itemsSelect: Ref<any> = ref([])
+const studentData: Ref<StudentData[]> = ref([])
 
 const props = defineProps({
   open: {
@@ -16,58 +25,102 @@ const localOpen = computed({
   set: (Val) => emit('update:open', Val)
 });
 
-const itemsSelect = ref(['امیر', 'حسین', 'حسن', 'رضا', 'قاسم', 'علی', 'شادمان'])
-
 const schema = v.object({
-  name: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('نام محصول الزامی است.')
+  studentId: v.pipe(
+    v.string(),
+    v.trim(),
+    v.nonEmpty('نام هنرجو الزامی است')
   ),
-  price: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('قیمت محصول الزامی است.')
+  amount: v.pipe(
+    v.string(),
+    v.trim(),
+    v.nonEmpty('مبلغ محصول الزامی است'),
+    v.regex(/^\d+$/, 'مبلغ باید فقط شامل عدد باشد')
   ),
-  selectBelt: v.pipe(
-      v.string(),
-      v.trim(),
+  description: v.pipe(
+    v.string(),
+    v.trim(),
+    v.nonEmpty('توضیح درباره محصول الزامی است')
   ),
 })
 
 type Schema = v.InferOutput<typeof schema>;
 
-const state = reactive({
-  name: '',
-  price: '',
-  selectBelt: 'امیر',
+async function getListStudent() {
+  try {
+    const result = await getAllStudentService()
+    console.log(result.data);
+    if (result.statusCode === 200) {
+      studentData.value = Array.isArray(result.data) ? result.data : [];
+      itemsSelect.value = studentData.value.map(item => ({
+        label: item.fullName,
+        value: String(item.user_id)
+      }))
+    }
+  } catch (error: any) {
+    console.log(error.message || error);
+  }
+}
+
+const state = reactive<CreateTransactionEquipment>({
+  studentId: '',
+  amount: '',
+  description: '',
 });
 
+const displayAmountComputed = computed({
+  get() {
+    return displayAmount.value
+  },
+  set(val: string) {
+    const numeric = val.replace(/[^\d]/g, '')
+    displayAmount.value = numeric ? Number(numeric).toLocaleString('en-US') : ''
+    state.amount = numeric
+  }
+})
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.log(event.data)
+  isLoading.value = true;
+  try {
+    const result = await createTransactionEquipmentService(event.data);
+    console.log(result);
+    console.log(event.data)
+    if (result.statusCode === 201) {
+      toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
+      emit('success')
+      localOpen.value = false
+    }
+  } catch (error) {
+
+  } finally {
+    isLoading.value = false;
+  }
 }
+
+onMounted(getListStudent)
 </script>
 
 <template>
   <UModal v-model:open="localOpen" title="ثبت محصول جدید" description="اطلاعات محصول را تکمیل کنید"
-          :ui="{ footer: 'justify-between' }">
+    :ui="{ footer: 'justify-between' }">
     <template #body>
       <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
         <div class="flex flex-col gap-5 w-full">
           <div class="w-full">
-            <BaseFormSelect :required="false" v-model="state.selectBelt" :items="itemsSelect" name="selectBelt" label="انتخاب هنرجو"/>
+            <BaseFormSelect :required="true" v-model="state.studentId" :items="itemsSelect" name="studentId"
+              placeholder="انتخاب نام هنرجو" label="انتخاب هنرجو" />
           </div>
           <div class="w-full">
-            <BaseFormInput v-model="state.name" label="نام محصول" name="name" type="text"
-                           placeholder="خرید دستکش" required class="w-full"/>
+            <BaseFormInput v-model="displayAmountComputed" label="مبلغ محصول(تومان)" name="amount" type="text"
+              placeholder="1,000,000" required class="w-full" />
           </div>
           <div class="w-full">
-            <BaseFormInput v-model="state.price" label="قیمت محصول" name="price" type="text"
-                           placeholder="120000" required class="w-full"/>
+            <BaseFormInput v-model="state.description" label="توضیح درباره محصول" name="description" type="text"
+              placeholder="مثال: خرید دستکش بوکس" required class="w-full" />
           </div>
           <div class="flex justify-between gap-2 pt-4">
-            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false"/>
-            <UButton label="ثبت محصول" color="primary" type="submit"/>
+            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
+            <UButton :loading="isLoading" label="ثبت محصول" color="primary" type="submit" />
           </div>
         </div>
       </UForm>
