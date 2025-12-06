@@ -1,7 +1,7 @@
 import type { Active } from "~/models/Active";
-import type { SubscriptionListData } from "~/models/Payments/Subscriptions/SubscriptionListData";
 import type { Belt } from "~/models/sportAndBelt/belt";
 import type { Sport } from "~/models/sportAndBelt/sport";
+import type { TransactionData } from "~/models/transactions/TransactionData";
 
 export interface StudentListData {
   fullName: string;
@@ -17,7 +17,7 @@ export interface StudentListData {
   achievedBelts: Belt;
   currentBelt: Belt;
   sport: Sport;
-  subscriptionPayments: SubscriptionListData;
+  studentTransactions: TransactionData[];
   type: number;
   masterId: number;
   createdAt: string;

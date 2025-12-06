@@ -1,33 +1,6 @@
 export interface DataUsers {
-    user_id: number
-    fullName: string
-    phoneNumber: string
-    phoneNumberEmergency: any
-    nationalCode: string
-    birthDate: any
-    address: any
-    age: any
-    active: string
-    type: number
-    image: any
-    history: any
-    trialEndsAt: any
-    hasUsedTrial: boolean
-    instructorProfile: any
-    diseaseRecords: boolean
-    underSupervisionDoctor: boolean
-    certificates: any
-    achievedBelts: any[]
-    currentBelt: any
-    currentBeltId: any
-    sport: any
-    sportId: any
-    plan: any
-    planId: any
-    masterPlan: any
-    masterPlanId: any
-    tickets: any[]
-    subscriptionPayments: any[]
-    createdAt: string
-    updatedAt: string
+  user_id: number;
+  type: number;
+  fullName: string;
+  phoneNumber: string;
 }

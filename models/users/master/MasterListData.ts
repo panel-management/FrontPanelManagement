@@ -1,5 +1,4 @@
 import type { Sport } from "~/models/sportAndBelt/sport";
-import type { StudentListData } from "../student/StudentListData";
 import type { MasterPlanData } from "~/models/plan/masterPlan/MasterPlanData";
 import type { StudentData } from "../student/StudentData";
 import type { SubscriptionListData } from "~/models/Payments/Subscriptions/SubscriptionListData";
@@ -19,7 +18,7 @@ export interface MasterListData {
   masterPlan: MasterPlanData;
   sport: Sport;
   students: StudentData;
-  subscriptionPayments: SubscriptionListData;
+  subscriptionPayments: SubscriptionListData[];
   createdAt: string;
   updatedAt: string;
 }
