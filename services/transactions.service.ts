@@ -5,8 +5,8 @@ export const getHistoryTransactionMasterService = (page: number, limit: number) 
   return FetchApi(`/financials/transactions/master/history?page=${page}&limit=${limit}`);
 };
 
-export const getHistoryTransactionStudentService = () => {
-  return FetchApi("/financials/transactions/student/history");
+export const getHistoryTransactionStudentService = (page: number, limit: number) => {
+  return FetchApi(`/financials/transactions/student/history?page=${page}&limit=${limit}`);
 };
 
 export const createTransactionEquipmentService = (
