@@ -144,9 +144,9 @@ const formData: Ref<TransactionData[]> = ref([])
 const generalSum = shallowRef<GeneralSum | null>(null)
 const isLoading: Ref<boolean> = ref(false)
 const hasMore: Ref<boolean> = ref(true)
-const page: Ref<number> = ref(1)
-const totalPages: Ref<number> = ref(1)
-const limit = 15
+const page = ref(1)
+const limit = ref(15)
+const totalPages = ref(0)
 
 
 const paymentMethodLabels: Record<PaymentMethodStatus, string> = {
@@ -196,7 +196,7 @@ async function getTransactionStudent() {
 
   isLoading.value = true;
   try {
-    const result = await getHistoryTransactionMasterService(page.value, limit);
+    const result = await getHistoryTransactionMasterService(page.value, limit.value);
     console.log(result);
     if (result.statusCode === 200) {
       const newItems = Array.isArray(result.data?.transactions) ? result.data?.transactions : [];
