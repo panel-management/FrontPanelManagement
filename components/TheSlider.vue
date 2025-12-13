@@ -42,7 +42,7 @@ const items = ref<NavigationMenuItem[][]>([
     {
       label: 'مدیریت مربیان',
       icon: 'ic:sharp-supervisor-account',
-      to: '/management-coaches',
+      to: '/management-coach',
       onSelect: (e) => {
         isOpen.value = false
       }
