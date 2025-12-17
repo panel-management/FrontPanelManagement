@@ -284,7 +284,7 @@ if (!master.value || !master.value?.data) {
   } else {
     throw createError({
       statusCode: 404,
-      statusMessage: 'پروفایل پیدا نشده لطف دوباره تلاش کنید'
+      message: 'پروفایل پیدا نشده لطف دوباره تلاش کنید'
     })
   }
 }
