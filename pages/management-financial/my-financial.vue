@@ -217,13 +217,6 @@ const transactionStatusColor: Record<TransactionStatus, string> = {
   [TransactionStatus.UPCOMING]: 'bg-neutral-50',
 }
 
-const transactionStatusLabel: Record<TransactionStatus, string> = {
-  [TransactionStatus.PAID]: 'پرداخت شده',
-  [TransactionStatus.PENDING]: 'در انتظار پرداخت',
-  [TransactionStatus.UNPAID]: 'پرداخت نشده',
-  [TransactionStatus.UPCOMING]: 'آینده',
-}
-
 const transactionStatusIcon: Record<TransactionStatus, string> = {
   [TransactionStatus.PAID]: 'clarity:success-line',
   [TransactionStatus.PENDING]: 'ic:baseline-watch-later',

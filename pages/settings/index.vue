@@ -212,27 +212,6 @@ const formData = shallowRef<StudentPlanData[]>([])
 const clubProfile = ref<ClubProfileData | null>(null)
 const { jalaliToGregorian, gregorianToJalali } = useDateConverter()
 
-function getBeltClass(color: string) {
-  const colorMap: Record<string, string> = {
-    'سفید': 'belt-white',
-    'خاکستری': 'belt-gray',
-    'زرد': 'belt-yellow',
-    'نارنجی': 'belt-orange',
-    'سبز': 'belt-green',
-    'آبی': 'belt-blue',
-    'بنفش': 'belt-purple',
-    'قهوه‌ای': 'belt-brown',
-    'قرمز': 'belt-red',
-    'قرمز/سیاه': 'belt-red-black',
-    'قرمز/سفید': 'belt-red-white',
-    'مشکی': 'belt-black',
-    'صورتی': 'belt-pink',
-    'طلایی': 'belt-gold',
-    'نقره‌ای': 'belt-silver'
-  }
-  return colorMap[color]
-}
-
 const active = computed({
   get() {
     const currentTab = route.query.tab as string || 'public'

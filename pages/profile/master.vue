@@ -209,7 +209,6 @@ import * as v from 'valibot'
 import type { FormSubmitEvent, TabsItem } from "@nuxt/ui"
 import { getMasterByIdService, updateProfileMasterService } from '~/services/master.service'
 import type { UpdateMaster } from '~/models/users/master/UpdateMaster'
-import type { PaymentStatus } from '~/models/PaymentStatus'
 
 const isShow: Ref<boolean> = ref(true)
 const isLoading: Ref<boolean> = ref(false)
@@ -301,38 +300,10 @@ const state = reactive<UpdateMaster>({
   imageFile: undefined
 });
 
-const paymentStatusText: Record<PaymentStatus, string> = {
-  NO_PAYMENT: 'پرداخت وجود ندارد',
-  CONFIRMED: 'پرداخت شده',
-  PENDING: 'در انتظار پرداخت',
-  REJECTED: 'پرداخت نشده'
-}
-
 const lastPayment = computed(() => {
   const arr = master.value?.data?.subscriptionPayments
   return Array.isArray(arr) && arr.length > 0 ? arr[0] : null
 })
-
-const paymentIcon = {
-  CONFIRMED: 'clarity:success-standard-line',
-  PENDING: 'solar:shield-warning-bold',
-  REJECTED: 'codicon:error',
-  NO_PAYMENT: 'bi:emoji-neutral-fill',
-}
-
-const paymentIconColor = {
-  CONFIRMED: 'text-success',
-  PENDING: 'text-warning',
-  REJECTED: 'text-error',
-  NO_PAYMENT: 'text-gray-500',
-}
-
-const paymentIconBadge = {
-  CONFIRMED: 'primary',
-  PENDING: 'warning',
-  REJECTED: 'error',
-  NO_PAYMENT: 'neutral',
-}
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
