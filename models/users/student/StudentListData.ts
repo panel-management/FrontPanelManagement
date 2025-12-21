@@ -1,4 +1,5 @@
 import type { Active } from "~/models/Active";
+import type { StudentPlanData } from "~/models/plan/studentPlan/StudentPlanData";
 import type { Belt } from "~/models/sportAndBelt/belt";
 import type { Sport } from "~/models/sportAndBelt/sport";
 import type { TransactionData } from "~/models/transactions/TransactionData";
@@ -14,6 +15,7 @@ export interface StudentListData {
   diseaseRecords: boolean;
   underSupervisionDoctor: boolean;
   active: Active;
+  assignedPlan: StudentPlanData;
   achievedBelts: Belt;
   currentBelt: Belt;
   sport: Sport;
