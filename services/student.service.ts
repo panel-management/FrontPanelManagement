@@ -1,8 +1,12 @@
 import type { CreateStudent } from "~/models/users/student/CreateStudent";
 import type { UpdateStudent } from "~/models/users/student/UpdateStudent";
 
-export const getAllStudentService = () => {
-  return FetchApi("/student");
+export const getAllStudentService = (page: number, limit: number) => {
+  return FetchApi(`/student?page=${page}&limit=${limit}`);
+};
+
+export const getStudentForEquipmentService = () => {
+  return FetchApi("/student/equipment");
 };
 
 export const getStudentJustStudentByIdService = () => {
