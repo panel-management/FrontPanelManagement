@@ -139,9 +139,7 @@ async function confirmSubscription(id: number, data: any) {
   }
 }
 
-onMounted(() => {
-  nextTick(() => getSubscriptionListMaster())
-})
+onMounted(getSubscriptionListMaster)
 
 // type Payment = {
 //   id: string

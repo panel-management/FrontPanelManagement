@@ -121,7 +121,7 @@
       </template>
     </UTable>
   </div>
-  <LazyWidgetModalEquipmentAdd v-model:open="modalStore.modals.equipmentAdd" @success="getTransactionStudent" />
+  <LazyWidgetModalEquipmentAdd v-model:open="modalStore.modals.equipmentAdd" @success="refreshPage" />
 </template>
 <script setup lang="ts">
 import type { TableColumn } from "@nuxt/ui";
@@ -147,7 +147,6 @@ const hasMore: Ref<boolean> = ref(true)
 const page = ref(1)
 const limit = ref(15)
 const totalPages = ref(0)
-
 
 const paymentMethodLabels: Record<PaymentMethodStatus, string> = {
   [PaymentMethodStatus.CASH]: 'نقدی',
@@ -178,9 +177,6 @@ const typeTransactionOptions: Ref<TransactionType[]> = ref(
 const statusOptions: Ref<TransactionStatus[]> = ref(
   [TransactionStatus.PAID, TransactionStatus.PENDING, TransactionStatus.UNPAID, TransactionStatus.UPCOMING]
 )
-// const paymentMethodOptions = ref(['آنلاین', 'نقدی'])
-// const typeTransactionOptions = ref(['شهریه', 'تجهیزات'])
-// const statusOptions = ref(['پرداخت شده', 'پرداخت نشده', 'در انتظار پرداخت'])
 
 const filteredData = computed(() => {
   return formData.value.filter(row => {
@@ -261,6 +257,12 @@ async function rejectTransaction(id: number, description: RejectTransaction) {
   } finally {
     isLoading.value = false
   }
+}
+
+async function refreshPage() {
+  page.value = 1;
+  hasMore.value = true;
+  await getTransactionStudent();
 }
 
 onMounted(async () => {

@@ -65,7 +65,6 @@ import type { MasterData } from "~/models/users/master/MasterData";
 import { Active } from "~/models/Active";
 import { PaymentStatus } from "~/models/PaymentStatus";
 import type { Sport } from "~/models/sportAndBelt/sport";
-import { getAllSportService } from "~/services/sportBelt.service";
 
 const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
@@ -74,18 +73,14 @@ const table = useTemplateRef('table')
 const { showConfirmDialog } = useConfirmDialog()
 const modalStore = useModalStore()
 const toastStore = useToastStore()
+const gettingVariousDataStore = useGettingVariousDataStore()
 const itemsSelect: Ref<any[]> = ref([])
 
-const emit = defineEmits(['refresh'])
+const emit = defineEmits(['deleted'])
 const loadingModel = defineModel<boolean>('loading', { required: true })
 const props = defineProps<{
   items: MasterData[]
 }>()
-
-const activeLabels: Record<Active, string> = {
-  [Active.ENABLE]: 'فعال',
-  [Active.DISABLE]: 'غیر فعال',
-}
 
 const paymentStatusLabels: Record<PaymentStatus, string> = {
   [PaymentStatus.PENDING]: 'در انتظار تایید',
@@ -102,9 +97,6 @@ const statusAccountOptions: Ref<Active[]> = ref([Active.ENABLE, Active.DISABLE])
 const statusPaymentOption: Ref<PaymentStatus[]> = ref(
   [PaymentStatus.PENDING, PaymentStatus.CONFIRMED, PaymentStatus.REJECTED, PaymentStatus.NO_PAYMENT]
 )
-// const statusAccountOptions = ref(['فعال', 'غیر فعال'])
-// const statusSportOptions = ref(['کارته', 'بوکس', 'کیک بوکس', 'جودو', 'کشتی', 'کنگفو', 'تکواندو', 'موی تای', 'ام‌ام‌ای'])
-// const statusPaymentOption = ref(['پرداخت شده', 'پرداخت نشده', 'در انتظار پرداخت'])
 
 const filteredData = computed(() => {
   return props.items.filter(row => {
@@ -117,18 +109,6 @@ const filteredData = computed(() => {
     return statusAccountMatch && statusPaymentMatch && statusSportMatch
   })
 })
-
-async function getSport() {
-  try {
-    const result = await getAllSportService()
-    if (result.statusCode === 200) {
-      statusSportOptions.value = Array.isArray(result.data) ? result.data : [];
-      itemsSelect.value = statusSportOptions.value.map(item => item.name)
-    }
-  } catch (error: any) {
-    console.log(error.message || error)
-  }
-}
 
 async function changeStatusUser(id: number, status: Active) {
   loadingModel.value = true
@@ -153,8 +133,8 @@ async function deleteAccountUser(id: number) {
   try {
     const result = await deleteMasterService(id)
     if (result.statusCode === 200) {
+      emit('deleted', id)
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-      emit('refresh')
     }
   } catch (error: any) {
     console.log(error.message || error);
@@ -163,11 +143,12 @@ async function deleteAccountUser(id: number) {
   }
 }
 
-onMounted(() => {
-  nextTick(() => {
-    getSport()
-  })
+watchEffect(() => {
+  statusSportOptions.value = gettingVariousDataStore.sportData
+  itemsSelect.value = statusSportOptions.value.map(item => item.name)
 })
+
+onMounted(gettingVariousDataStore.fetchSports)
 
 // type Payment = {
 //   id: string
@@ -200,9 +181,11 @@ const columnLabels: Record<string, string> = {
   active: 'وضعیت',
   sport: 'رشته',
   history: 'سابقه تدریس',
-  students: 'تعداد هنرجویان',
+  studentCount: 'تعداد هنرجویان',
   createdAt: 'تاریخ',
+  updatedAt: 'آخرین بروزرسانی',
 }
+
 const columns: TableColumn<MasterData>[] = [
   {
     accessorKey: 'fullName',
@@ -288,14 +271,14 @@ const columns: TableColumn<MasterData>[] = [
     }
   },
   {
-    accessorKey: 'students',
+    accessorKey: 'studentCount',
     header: 'هنرجویان',
     cell: ({ row }) => {
-      const students = row.getValue('students')
-      if (students.length <= 0) {
+      const student = row.getValue('studentCount')
+      if (!student) {
         return h("span", { class: 'font-medium' }, 'هنرجو وجود ندارد')
       } else {
-        return h("span", { class: 'font-medium' }, `${students.length} نفر`)
+        return h("span", { class: 'font-medium' }, `${student} نفر`)
       }
     }
   },
@@ -304,6 +287,19 @@ const columns: TableColumn<MasterData>[] = [
     header: 'تاریخ',
     cell: ({ row }) => {
       return new Date(row.getValue('createdAt')).toLocaleString('fa-IR', {
+        day: 'numeric',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      })
+    }
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: 'آخرین بروزرسانی',
+    cell: ({ row }) => {
+      return new Date(row.getValue('updatedAt')).toLocaleString('fa-IR', {
         day: 'numeric',
         month: 'short',
         hour: '2-digit',
@@ -326,18 +322,15 @@ const columns: TableColumn<MasterData>[] = [
         label: 'مشاهده پروفایل',
         icon: 'material-symbols:person',
         onSelect() {
-          const userId = row.original.user_id
-          modalStore.toggleModal('masterEdit', userId)
+          modalStore.toggleModal('masterEdit', row.original.user_id)
         }
       }, {
         label: 'تغییر وضعیت',
         icon: 'hugeicons:exchange-01',
         onSelect() {
-          const userId = row.original.user_id
-          const statusAccount = row.original.active
-          const newStatus = statusAccount === 'ENABLE' ? 'DISABLE' : 'ENABLE'
+          const newStatus = row.original.active === 'ENABLE' ? 'DISABLE' : 'ENABLE'
           showConfirmDialog(` آیا میخواهید وضعیت حساب کاربر ${row.original.fullName} را تغییر دهید.`, () => {
-            changeStatusUser(userId, newStatus as Active)
+            changeStatusUser(row.original.user_id, newStatus as Active)
           })
         }
       }, {
@@ -345,9 +338,8 @@ const columns: TableColumn<MasterData>[] = [
         icon: 'ic:sharp-delete',
         color: 'error',
         onSelect() {
-          const userId = row.original.user_id
           showConfirmDialog(`آیا میخواهید استاد ${row.original.fullName} را حذف کنید؟`, () => {
-            deleteAccountUser(userId)
+            deleteAccountUser(row.original.user_id)
           })
         }
       }]

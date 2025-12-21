@@ -27,7 +27,7 @@
           onSelect(e?: Event) { e?.preventDefault() }
         }))" label="کمربند ها" />
         <BaseDropdownMenu :items="statusTransactionOption.map(statusTransaction => ({
-          label: transactionStatusLabels[statusTransaction], type: 'checkbox' as const, checked: selectedTransactionStatus.includes(statusTransaction),
+          label: transactionStatusLabel[statusTransaction], type: 'checkbox' as const, checked: selectedTransactionStatus.includes(statusTransaction),
           onUpdateChecked(checked: boolean) {
             if (checked) {
               selectedTransactionStatus.push(statusTransaction)
@@ -52,7 +52,6 @@ import type { TableColumn } from '@nuxt/ui'
 import type { Belt } from '~/models/sportAndBelt/belt'
 import { TransactionStatus } from '~/models/transactions/TransactionStatus'
 import type { StudentData } from '~/models/users/student/StudentData'
-import { getAllBeltService } from '~/services/sportBelt.service'
 import { deleteStudentService } from '~/services/student.service'
 
 const UButton = resolveComponent('UButton')
@@ -62,20 +61,14 @@ const table = useTemplateRef('table')
 const modalStore = useModalStore()
 const toastStore = useToastStore()
 const { showConfirmDialog } = useConfirmDialog()
+const gettingVariousDataStore = useGettingVariousDataStore()
 const itemsSelect: Ref<any[]> = ref([])
 
-const emit = defineEmits(['refresh'])
+const emit = defineEmits(['deleted'])
 const loadingModel = defineModel<boolean>('loading', { required: true })
 const props = defineProps<{
   items: StudentData[],
 }>()
-
-const transactionStatusLabels: Record<TransactionStatus, string> = {
-  [TransactionStatus.PAID]: 'پرداخت شده',
-  [TransactionStatus.PENDING]: 'در انتظار تایید',
-  [TransactionStatus.UNPAID]: 'پرداخت نشده',
-  [TransactionStatus.UPCOMING]: 'پرداخت های آینده',
-}
 
 const selectedBelts = ref<string[]>([])
 const selectedTransactionStatus = ref<TransactionStatus[]>([])
@@ -83,8 +76,6 @@ const beltOptions: Ref<Belt[]> = ref([])
 const statusTransactionOption: Ref<TransactionStatus[]> = ref(
   [TransactionStatus.PAID, TransactionStatus.PENDING, TransactionStatus.UNPAID, TransactionStatus.UPCOMING]
 )
-// const beltOptions = ref(['سفید', 'نارنجی', 'ابی', 'زرد', 'سبز', 'قهوه ای', 'سیاه'])
-// const statusPaymentOption = ref(['پرداخت شده', 'پرداخت نشده', 'در انتظار پرداخت'])
 
 const filteredData = computed(() => {
   return props.items.filter(row => {
@@ -94,28 +85,14 @@ const filteredData = computed(() => {
   })
 })
 
-async function getAllBelt() {
-  try {
-    const result = await getAllBeltService()
-    console.log(result.data);
-
-    if (result.statusCode === 200) {
-      beltOptions.value = Array.isArray(result.data) ? result.data : [];
-      itemsSelect.value = beltOptions.value.map(item => item.color)
-    }
-  } catch (error: any) {
-    console.log(error.message || error)
-  }
-}
-
 async function deleteAccountStudent(id: number) {
   loadingModel.value = true
   try {
     const result = await deleteStudentService(id)
-    console.log(result.data);
+    console.log(result);
     if (result.statusCode === 200) {
+      emit('deleted', id)
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-      emit('refresh')
     }
   } catch (error: any) {
     console.log(error.message || error);
@@ -124,9 +101,12 @@ async function deleteAccountStudent(id: number) {
   }
 }
 
-onMounted(() => {
-  nextTick(() => getAllBelt())
+watchEffect(() => {
+  beltOptions.value = gettingVariousDataStore.beltData
+  itemsSelect.value = beltOptions.value.map(item => item.color)
 })
+
+onMounted(gettingVariousDataStore.fetchBelts)
 
 // type Payment = {
 //   id: string
@@ -298,17 +278,15 @@ const columns: TableColumn<StudentData>[] = [
         label: 'مشاهده پروفایل',
         icon: 'material-symbols:person',
         onSelect() {
-          const userId = row.original.user_id
-          modalStore.toggleModal('studentEdit', userId)
+          modalStore.toggleModal('studentEdit', row.original.user_id)
         }
       }, {
         label: 'حذف هنرجو',
         icon: 'ic:sharp-delete',
         color: 'error',
         onSelect() {
-          const userId = row.original.user_id
           showConfirmDialog(`آیا میخواهید هنرجو ${row.original.fullName} را حذف کنید؟`, () => {
-            deleteAccountStudent(userId)
+            deleteAccountStudent(row.original.user_id)
           })
         },
       }]

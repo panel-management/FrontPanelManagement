@@ -50,18 +50,11 @@ const modalStore = useModalStore()
 const toastStore = useToastStore()
 const { showConfirmDialog } = useConfirmDialog()
 
-const emit = defineEmits<{
-  (e: 'delete', id: number): void
-}>()
+const emit = defineEmits(['delete'])
 const loadingModel = defineModel<boolean>('loading', { required: true })
 const props = defineProps<{
   items: CoachData[]
 }>()
-
-const activeLabels: Record<Active, string> = {
-  [Active.ENABLE]: 'فعال',
-  [Active.DISABLE]: 'غیر فعال',
-}
 
 const selectedStatusAccount = ref<Active[]>([])
 const statusAccountOptions: Ref<Active[]> = ref([Active.ENABLE, Active.DISABLE])
