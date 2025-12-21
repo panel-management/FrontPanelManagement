@@ -1,5 +1,5 @@
 <template>
-  <section class="xl:container flex max-lg:flex-col justify-between w-full h-full lg:pt-3">
+  <section class="flex max-lg:flex-col justify-between w-full h-full lg:pt-3">
     <div class="w-full h-full p-4 rounded-lg shadow bg-black">
       <h2 class="font-bold text-white text-sm md:text-lg">حساب به نام {{ paymentName }} می باشد.</h2>
       <div class="flex flex-col gap-3 pt-5">
@@ -20,7 +20,7 @@
           <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
             <BaseFormInput required v-model="state.bankName" label="نام بانک" name="bankName" type="text"
               class="w-full" />
-            <BaseFormInput required v-model="displayAmountComputed" label="مبلغ واریز" name="amount" type="text"
+            <BaseFormInput required v-model="displayPrice" label="مبلغ واریز" name="amount" type="text"
               class="w-full" />
           </div>
           <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
@@ -48,10 +48,9 @@
 import * as v from "valibot";
 import type { FormSubmitEvent } from "@nuxt/ui";
 import { createSubscriptionsMasterService } from "~/services/payment.service";
+import type { createSubscriptionsMaster } from "~/models/Payments/CreateSubscriptionsMaster";
 
 const isLoading: Ref<boolean> = ref(false);
-const displayAmount = ref('')
-const dateRegex = /^\d{4}\/\d{2}\/\d{2}$/
 const { jalaliToGregorian } = useDateConverter()
 const toastStore = useToastStore()
 const router = useRouter()
@@ -71,13 +70,13 @@ const schema = v.object({
     v.string(),
     v.trim(),
     v.nonEmpty('شماره پیگیری الزامی است'),
-    v.custom((value) => /^\d+$/.test(value), 'شماره پیگیری فقد می تواند شامل عدد باشد')
+    v.regex(/^\d+$/, 'شماره پیگیری فقد می تواند شامل عدد باشد')
   ),
   paymentDate: v.pipe(
     v.string(),
     v.trim(),
     v.nonEmpty('تاریخ پرداخت الزامی است'),
-    v.custom((value) => dateRegex.test(value), 'فرمت تاریخ باید 1404/05/20 باشد')
+    v.regex(/^\d{4}\/\d{2}\/\d{2}$/, 'فرمت تاریخ باید 1404/05/20 باشد'),
   ),
   payerFullName: v.pipe(
     v.string(),
@@ -88,7 +87,7 @@ const schema = v.object({
     v.string(),
     v.trim(),
     v.nonEmpty('مبلغ واریز الزامی است'),
-    v.custom((value) => /^\d+$/.test(value), 'مبلغ واریز فقد می تواند شامل عدد باشد')
+    v.regex(/^\d+$/, 'مبلغ واریز فقد می تواند شامل عدد باشد')
   ),
   imageFile: v.pipe(
     v.file('فیش واریز الزامی است'),
@@ -99,7 +98,7 @@ const schema = v.object({
 
 type Schema = v.InferOutput<typeof schema>;
 
-const state = reactive({
+const state = reactive<createSubscriptionsMaster>({
   payerFullName: '',
   bankName: '',
   paymentDate: '',
@@ -108,10 +107,12 @@ const state = reactive({
   imageFile: '',
 });
 
+const { displayPrice } = useFormattedPrice(toRef(state, 'amount'))
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
   try {
-    const payload = {
+    const payload: createSubscriptionsMaster = {
       ...event.data,
       paymentDate: jalaliToGregorian(event.data.paymentDate)
     }
@@ -129,15 +130,4 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     isLoading.value = false
   }
 }
-
-const displayAmountComputed = computed({
-  get() {
-    return displayAmount.value
-  },
-  set(val: string) {
-    const numeric = val.replace(/[^\d]/g, '')
-    displayAmount.value = numeric ? Number(numeric).toLocaleString('en-US') : ''
-    state.amount = numeric
-  }
-})
 </script>

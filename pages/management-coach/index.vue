@@ -1,5 +1,5 @@
 <template>
-  <section class="xl:container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
+  <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
     <div class="w-full flex justify-between items-center">
       <div class="flex flex-col gap-2 sm:p-2">
         <h2 class="text-lg sm:text-3xl font-bold">مدیریت مربیان</h2>
@@ -19,7 +19,7 @@
       </div>
       <TableCoachTable :items="formData" v-model:loading="isLoading" @delete="handleDelete" />
     </div>
-    <LazyWidgetModalCoachAdd v-model:open="modalStore.modals.coachesAdd" @success="getAllCoach" />
+    <LazyWidgetModalCoachAdd v-model:open="modalStore.modals.coachesAdd" @success="getCoachData" />
     <LazyWidgetModalCoachEdit v-model:open="modalStore.modals.coachesEdit" @updated="handleUpdate" />
   </section>
 </template>
@@ -31,7 +31,7 @@ const formData: Ref<CoachData[]> = ref([])
 const isLoading: Ref<boolean> = ref(false)
 const modalStore = useModalStore()
 
-async function getAllCoach() {
+async function getCoachData() {
   isLoading.value = true
   try {
     const result = await getAllCoachService()
@@ -58,5 +58,5 @@ function handleDelete(id: number) {
   formData.value = formData.value.filter(user => user.user_id !== id)
 }
 
-onMounted(getAllCoach)
+onMounted(getCoachData)
 </script>

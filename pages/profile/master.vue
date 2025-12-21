@@ -1,25 +1,25 @@
 <template>
-  <section v-if="master?.data" class="xl:container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-5">
+  <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-5">
     <div class="bg-white p-4 md:p-6 rounded-xl w-full flex flex-col lg:items-center gap-5">
       <div class="flex items-center justify-between w-full">
         <div class="flex gap-3">
           <div class="bg-black rounded-full size-16 flex justify-center items-center text-white">
-            {{ master.data.fullName.slice(0, 1) }}
+            {{ master?.data?.fullName.slice(0, 1) }}
           </div>
           <div class="flex flex-col gap-2">
-            <span class="font-medium text-xl">{{ master.data.fullName }}</span>
+            <span class="font-medium text-xl">{{ master?.data?.fullName }}</span>
             <div class="flex flex-wrap gap-2 sm:gap-3">
-              <UBadge v-if="master.data.type === 1" color="secondary" variant="solid" label="استاد"
+              <UBadge v-if="master?.data?.type === 1" color="secondary" variant="solid" label="استاد"
                 class="font-medium" />
-              <UBadge :color="master.data.active === 'ENABLE' ? 'primary' : 'error'" variant="soft"
-                :label="master.data.active === 'ENABLE' ? 'فعال' : 'غیر فعال'" class="font-semibold" />
+              <UBadge :color="master?.data?.active === 'ENABLE' ? 'primary' : 'error'" variant="soft"
+                :label="master?.data?.active === 'ENABLE' ? 'فعال' : 'غیر فعال'" class="font-semibold" />
             </div>
           </div>
         </div>
         <div class="flex gap-3 max-md:hidden">
-          <UButton v-if="isShow" @click="enableInputs" color="tertiary" variant="outline" size="lg" label="ویرایش"
+          <UButton v-if="isShow" @click="toggleInout" color="tertiary" variant="outline" size="lg" label="ویرایش"
             trailing-icon="material-symbols:edit-square-outline-rounded" />
-          <UButton v-if="!isShow" @click="disableInputs" color="neutral" variant="outline" size="lg" label="انصراف"
+          <UButton v-if="!isShow" @click="toggleInout" color="neutral" variant="outline" size="lg" label="انصراف"
             trailing-icon="material-symbols:close-rounded" />
         </div>
       </div>
@@ -27,56 +27,56 @@
         <div class="flex items-center gap-1">
           <UIcon name="ic:baseline-call" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">شماره تلفن:</span>
-          <span class="font-medium text-base mt-1">{{ master.data.phoneNumber }}</span>
+          <span class="font-medium text-base mt-1">{{ master?.data?.phoneNumber }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="iconoir:barcode" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">کدملی:</span>
-          <span class="font-medium text-base mt-1">{{ master.data.nationalCode }}</span>
+          <span class="font-medium text-base mt-1">{{ master?.data?.nationalCode }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">عضویت:</span>
-          <span class="font-medium text-base mt-1">{{ useJDate(master.data.createdAt) }}</span>
+          <span class="font-medium text-base mt-1">{{ useJDate(master?.data?.createdAt) }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="hugeicons:students" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">هنرجو:</span>
-          <span class="font-medium text-base mt-1">{{ master.data.students.length ?? 'هنرجو وجود ندارد' }}</span>
+          <span class="font-medium text-base mt-1">{{ master?.data?.students.length ?? 'هنرجو وجود ندارد' }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="ion:university" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">سابقه:</span>
           <span class="font-medium text-base mt-1">
-            {{ master.data.history ? `سال ${master.data.history}` : 'وجود ندارد' }}
+            {{ master?.data?.history ? `سال ${master?.data?.history}` : 'وجود ندارد' }}
           </span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="solar:medal-ribbons-star-bold" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">تخصص:</span>
-          <span class="font-medium text-base mt-1">{{ master.data.sport.name }}</span>
+          <span class="font-medium text-base mt-1">{{ master?.data?.sport.name }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="bxs:certification" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">مدرک و گواهینامه ها:</span>
           <span class="font-medium text-base mt-1">
-            {{ master.data.certificates ? master.data.certificates : 'وجود ندارد' }}
+            {{ master?.data?.certificates ? master?.data?.certificates : 'وجود ندارد' }}
           </span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="solar:planet-2-bold" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">پلن انتخاب شده:</span>
-          <span class="font-medium text-base mt-1">{{ master.data.masterPlan.name ?? 'پلن وجود ندارد' }}</span>
+          <span class="font-medium text-base mt-1">{{ master?.data?.masterPlan.name ?? 'پلن وجود ندارد' }}</span>
         </div>
       </div>
       <div class="flex gap-3 min-md:hidden">
-        <UButton v-if="isShow" @click="enableInputs" color="tertiary" variant="outline" size="lg" label="ویرایش"
+        <UButton v-if="isShow" @click="toggleInout" color="tertiary" variant="outline" size="lg" label="ویرایش"
           trailing-icon="material-symbols:edit-square-outline-rounded" />
-        <UButton v-if="!isShow" @click="disableInputs" color="neutral" variant="outline" size="lg" label="انصراف"
+        <UButton v-if="!isShow" @click="toggleInout" color="neutral" variant="outline" size="lg" label="انصراف"
           trailing-icon="material-symbols:close-rounded" />
       </div>
     </div>
-    <LazyBaseTabs :items="items" color="tertiary">
+    <BaseTabs :items="items" color="tertiary">
       <template #editData>
         <div class="w-full h-full bg-white rounded-lg p-4">
           <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
@@ -121,7 +121,7 @@
         </div>
       </template>
       <template #paymentStatus>
-        <div v-if="master.data.subscriptionPayments.length" class="flex flex-col gap-6 w-full h-full">
+        <div v-if="master?.data?.subscriptionPayments.length" class="flex flex-col gap-6 w-full h-full">
           <div class="bg-white flex flex-col gap-5 rounded-lg p-4 w-full">
             <div class="flex items-center gap-2">
               <UIcon name="solar:dollar-bold" class="size-6 text-black/70" />
@@ -161,38 +161,25 @@
               </div>
             </div>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 w-full bg-white rounded-lg p-4"
-            v-if="master.data.subscriptionPayments">
-            <!-- <div class="flex items-center gap-4 bg-muted p-3 rounded-xl">
-                    <div class="flex justify-center items-center">
-                      <UIcon name="clarity:success-standard-line" class="size-6 text-success" />
-                    </div>
-                    <div class="w-full flex justify-between items-center">
-                      <div class="flex flex-col gap-1">
-                        <span class="font-semibold text-lg">۲,۵۰۰,۰۰۰ تومان</span>
-                        <span class="font-medium text-sm flex items-center gap-1">
-                          ۱۴۰۳/۰۶/۰۱ - کارت
-                        </span>
-                      </div>
-                      <UBadge label="پراخت شده" color="primary" />
-                    </div>
-                  </div> -->
-            <div class="flex items-center gap-4 bg-muted p-3 rounded-xl"
-              v-for="payment in master.data.subscriptionPayments" :key="payment.id">
-              <div class="flex justify-center items-center">
-                <UIcon :name="paymentIcon[lastPayment?.status] || 'bi:emoji-neutral-fill'" class="size-6"
-                  :class="paymentIconColor[lastPayment?.status] || 'text-gray-400'" />
-              </div>
-              <div class="w-full flex justify-between items-center">
-                <div class="flex flex-col gap-1">
-                  <span class="font-semibold text-lg">
-                    {{ Number(payment.amount).toLocaleString('fa-IR') }} تومان
-                  </span>
-                  <span class="font-medium text-sm flex items-center gap-1">
-                    {{ gregorianToJalali(payment.paymentDate) }}
-                  </span>
+          <div class="overflow-hidden bg-white rounded-lg p-4" v-if="master.data.subscriptionPayments">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 overflow-y-auto h-72 w-full">
+              <div class="flex items-center gap-4 bg-muted p-3 rounded-xl"
+                v-for="payment in master.data.subscriptionPayments" :key="payment.id">
+                <div class="flex justify-center items-center">
+                  <UIcon :name="paymentIcon[lastPayment?.status] || 'bi:emoji-neutral-fill'" class="size-6"
+                    :class="paymentIconColor[lastPayment?.status] || 'text-gray-400'" />
                 </div>
-                <UBadge :label="paymentStatusText[payment.status]" :color="paymentIconBadge[payment.status]" />
+                <div class="w-full flex justify-between items-center">
+                  <div class="flex flex-col gap-1">
+                    <span class="font-semibold text-lg">
+                      {{ Number(payment.amount).toLocaleString('fa-IR') }} تومان
+                    </span>
+                    <span class="font-medium text-sm flex items-center gap-1">
+                      {{ gregorianToJalali(payment.paymentDate) }}
+                    </span>
+                  </div>
+                  <UBadge :label="paymentStatusText[payment.status]" :color="paymentIconBadge[payment.status]" />
+                </div>
               </div>
             </div>
           </div>
@@ -201,7 +188,7 @@
           <span class="text-black text-xl md:text-2xl font-bold">تاریخچه مالی وجود ندارد</span>
         </div>
       </template>
-    </LazyBaseTabs>
+    </BaseTabs>
   </section>
 </template>
 <script setup lang="ts">
@@ -220,20 +207,20 @@ const schema = v.object({
   fullName: v.pipe(
     v.string(),
     v.trim(),
-    v.nonEmpty('نام و نام خانوادگی الزامی است.')
+    v.nonEmpty('نام و نام خانوادگی الزامی است')
   ),
   nationalCode: v.pipe(
     v.string(),
     v.trim(),
-    v.nonEmpty('کد ملی الزامی است.'),
-    v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید.')
+    v.nonEmpty('کد ملی الزامی است'),
+    v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید')
   ),
   phoneNumber: v.pipe(
     v.string(),
     v.trim(),
-    v.nonEmpty('شماره تلفن الزامی است.'),
-    v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد.'),
-    v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد.')
+    v.nonEmpty('شماره تلفن الزامی است'),
+    v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
+    v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد')
   ),
   history: v.pipe(
     v.string(),
@@ -308,7 +295,7 @@ const lastPayment = computed(() => {
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
   try {
-    const payload = {
+    const payload: UpdateMaster = {
       ...event.data,
       birthDate: jalaliToGregorian(event.data.birthDate)
     }
@@ -319,17 +306,13 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       isShow.value = true
     }
   } catch (error: any) {
-    console.log(error)
+    console.log(error.message || error)
   } finally {
     isLoading.value = false
   }
 }
 
-function enableInputs(): void {
-  isShow.value = false
-}
-
-function disableInputs(): void {
-  isShow.value = true
+function toggleInout() {
+  isShow.value = !isShow.value
 }
 </script>

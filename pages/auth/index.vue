@@ -58,17 +58,15 @@ import { ar } from "#ui/locale";
 import * as v from "valibot";
 import type { FormSubmitEvent } from "@nuxt/ui";
 import { otpCodeService, registerUsersService, requestOtpService } from "~/services/auth.service";
-import { getAllSportService } from "~/services/sportBelt.service";
-import type { Sport } from "~/models/sportAndBelt/sport";
 
-const step: Ref<number> = ref(1)
-const isLoading: Ref<boolean> = ref(false)
-const toastStore = useToastStore()
-const accountStore = useAccountStore()
 const router = useRouter()
 const route = useRoute()
-const itemsSelect: Ref<any[]> = ref([])
-const formData: Ref<Sport[]> = ref([])
+const toastStore = useToastStore()
+const accountStore = useAccountStore()
+const gettingVariousDataStore = useGettingVariousDataStore()
+const step: Ref<number> = ref(1)
+const isLoading: Ref<boolean> = ref(false)
+const itemsSelect: Ref<{ label: string; value: string }[]> = ref([])
 
 const step1Schema = v.object({
   phoneNumber: v.pipe(
@@ -77,7 +75,7 @@ const step1Schema = v.object({
     v.nonEmpty('شماره تلفن الزامی است'),
     v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
     v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد'),
-    v.custom((value) => /^\d+$/.test(value), 'شماره تلفن فقط می‌تواند شامل اعداد باشد')
+    v.regex(/^09\d{9,10}$/, 'شماره تلفن باید با 09 شروع شود'),
   ),
 })
 const step2Schema = v.object({
@@ -92,19 +90,19 @@ const step3Schema = v.object({
   fullName: v.pipe(
     v.string(),
     v.trim(),
-    v.nonEmpty('نام و نام خانوادگی مربی الزامی است.')
+    v.nonEmpty('نام و نام خانوادگی الزامی است')
   ),
   nationalCode: v.pipe(
     v.string(),
     v.trim(),
-    v.nonEmpty('کد ملی الزامی است.'),
-    v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید.'),
-    v.custom((value) => /^\d+$/.test(value), 'کد ملی فقط می‌تواند شامل اعداد باشد')
+    v.nonEmpty('کد ملی الزامی است'),
+    v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
+    v.regex(/^\d+$/, 'کد ملی فقط می‌تواند شامل اعداد باشد'),
   ),
   selectSport: v.pipe(
     v.string(),
     v.trim(),
-    v.minLength(1, 'لطفا یک از موارد رشته انتخاب کنید.'),
+    v.minLength(1, 'لطفا یک از موارد رشته انتخاب کنید'),
   )
 })
 
@@ -141,8 +139,8 @@ async function onSubmitStep1(event: FormSubmitEvent<step1Schema>) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
       step.value = 2
     }
-  } catch (e: any) {
-    console.log(e)
+  } catch (error: any) {
+    console.log(error.message || error)
   } finally {
     isLoading.value = false
   }
@@ -163,8 +161,8 @@ async function onSubmitStep2(event: FormSubmitEvent<step2Schema>) {
     } else if (result.statusCode === 404) {
       step.value = 3
     }
-  } catch (e: any) {
-    console.log(e)
+  } catch (error: any) {
+    console.log(error.message || error)
   } finally {
     isLoading.value = false
   }
@@ -184,32 +182,23 @@ async function onSubmitStep3(event: FormSubmitEvent<step3Schema>) {
         router.push('/membership')
       }, 200)
     }
-  } catch (e: any) {
-    console.log(e)
+  } catch (error: any) {
+    console.log(error.message || error)
   } finally {
     isLoading.value = false
-  }
-}
-
-async function getSportAll() {
-  try {
-    const result = await getAllSportService()
-    if (result.statusCode === 200) {
-      formData.value = Array.isArray(result.data) ? result.data : [];
-      itemsSelect.value = formData.value.map(item => ({
-        label: item.name,
-        value: String(item.id)
-      }))
-    }
-  } catch (e: any) {
-    console.log(e)
   }
 }
 
 onMounted(() => {
   watch(step, (value) => {
     if (value === 3) {
-      getSportAll()
+      gettingVariousDataStore.fetchSports()
+      watchEffect(() => {
+        itemsSelect.value = gettingVariousDataStore.sportData.map(item => ({
+          label: item.name,
+          value: String(item.id)
+        }))
+      })
     }
   })
 })

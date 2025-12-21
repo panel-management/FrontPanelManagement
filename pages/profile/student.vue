@@ -1,25 +1,25 @@
 <template>
-  <section class="xl:container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-5 md:gap-10">
+  <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-5 md:gap-10">
     <div class="bg-white p-4 rounded-xl w-full flex flex-col lg:items-center gap-5">
       <div class="flex items-center justify-between w-full">
         <div class="flex gap-3">
           <div class="bg-black rounded-full size-16 flex justify-center items-center text-white">
-            {{ student?.data.fullName.slice(0, 1) }}
+            {{ student?.data?.fullName.slice(0, 1) }}
           </div>
           <div class="flex flex-col gap-2">
-            <span class="font-medium text-xl">{{ student?.data.fullName }}</span>
+            <span class="font-medium text-xl">{{ student?.data?.fullName }}</span>
             <div class="flex gap-3">
-              <UBadge color="tertiary" variant="subtle" :label="student?.data.sport.name" class="font-medium" />
-              <UBadge color="info" variant="solid" :label="student?.data.currentBelt.color" class="font-medium" />
-              <UBadge :color="student?.data.active === 'ENABLE' ? 'primary' : 'error'" variant="soft"
-                :label="student?.data.active === 'ENABLE' ? 'فعال' : 'غیر فعال'" class="font-semibold" />
+              <UBadge color="tertiary" variant="subtle" :label="student?.data?.sport.name" class="font-medium" />
+              <UBadge color="info" variant="solid" :label="student?.data?.currentBelt.color" class="font-medium" />
+              <UBadge :color="student?.data?.active === 'ENABLE' ? 'primary' : 'error'" variant="soft"
+                :label="student?.data?.active === 'ENABLE' ? 'فعال' : 'غیر فعال'" class="font-semibold" />
             </div>
           </div>
         </div>
         <div class="flex gap-3 max-md:hidden">
-          <UButton v-if="isShow" @click="enableInputs" color="tertiary" variant="outline" size="lg" label="ویرایش"
+          <UButton v-if="isShow" @click="toggleInout" color="tertiary" variant="outline" size="lg" label="ویرایش"
             trailing-icon="material-symbols:edit-square-outline-rounded" />
-          <UButton v-if="!isShow" @click="disableInputs" color="neutral" variant="outline" size="lg" label="انصراف"
+          <UButton v-if="!isShow" @click="toggleInout" color="neutral" variant="outline" size="lg" label="انصراف"
             trailing-icon="material-symbols:close-rounded" />
         </div>
       </div>
@@ -27,42 +27,42 @@
         <div class="flex items-center gap-1">
           <UIcon name="iconoir:barcode" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">کدملی:</span>
-          <span class="font-medium text-base mt-1">{{ student?.data.nationalCode }}</span>
+          <span class="font-medium text-base mt-1">{{ student?.data?.nationalCode }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="ic:baseline-call" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">شماره تلفن:</span>
-          <span class="font-medium text-base mt-1">{{ student?.data.phoneNumber }}</span>
+          <span class="font-medium text-base mt-1">{{ student?.data?.phoneNumber }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="ic:baseline-call" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">شماره تلفن:</span>
-          <span class="font-medium text-base mt-1">{{ student?.data.phoneNumberEmergency }}</span>
+          <span class="font-medium text-base mt-1">{{ student?.data?.phoneNumberEmergency }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">عضویت:</span>
-          <span class="font-medium text-base mt-1">{{ gregorianToJalali(student?.data.createdAt) }}</span>
+          <span class="font-medium text-base mt-1">{{ gregorianToJalali(student?.data?.createdAt) }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">تاریخ تولد:</span>
-          <span class="font-medium text-base mt-1">{{ useJDate(student?.data.birthDate) }}</span>
+          <span class="font-medium text-base mt-1">{{ useJDate(student?.data?.birthDate) }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="ic:round-person" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">سن:</span>
-          <span class="font-medium text-base mt-1">{{ student?.data.age }}</span>
+          <span class="font-medium text-base mt-1">{{ student?.data?.age }}</span>
         </div>
       </div>
       <div class="flex gap-3 min-md:hidden">
-        <UButton v-if="isShow" @click="enableInputs" color="tertiary" variant="outline" size="lg" label="ویرایش"
+        <UButton v-if="isShow" @click="toggleInout" color="tertiary" variant="outline" size="lg" label="ویرایش"
           trailing-icon="material-symbols:edit-square-outline-rounded" />
-        <UButton v-if="!isShow" @click="disableInputs" color="neutral" variant="outline" size="lg" label="انصراف"
+        <UButton v-if="!isShow" @click="toggleInout" color="neutral" variant="outline" size="lg" label="انصراف"
           trailing-icon="material-symbols:close-rounded" />
       </div>
     </div>
-    <LazyBaseTabs :items="items" color="tertiary">
+    <BaseTabs :items="items" color="tertiary">
       <template #editData>
         <div class="w-full h-full bg-white rounded-lg p-4">
           <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
@@ -125,7 +125,7 @@
                 </span>
               </div>
             </div> -->
-            <div class="flex items-center gap-4 bg-muted p-5 rounded-xl" v-for="data in student?.data.achievedBelts"
+            <div class="flex items-center gap-4 bg-muted p-5 rounded-xl" v-for="data in student?.data?.achievedBelts"
               :key="data?.id">
               <span class="text-lg" :class="[getBeltClass(data?.color)]">{{ data?.color }}</span>
               <div class="flex flex-col gap-1">
@@ -139,7 +139,7 @@
           </div>
         </div>
       </template>
-    </LazyBaseTabs>
+    </BaseTabs>
   </section>
 </template>
 <script setup lang="ts">
@@ -245,7 +245,7 @@ const state = reactive<UpdateStudent>({
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
   try {
-    const payload = {
+    const payload: UpdateStudent = {
       ...event.data,
       birthDate: jalaliToGregorian(event.data.birthDate),
     }
@@ -262,11 +262,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   }
 }
 
-function enableInputs(): void {
-  isShow.value = false
-}
-
-function disableInputs(): void {
-  isShow.value = true
+function toggleInout() {
+  isShow.value = !isShow.value
 }
 </script>

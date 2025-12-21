@@ -64,12 +64,12 @@ import { ar } from "#ui/locale";
 import * as v from "valibot";
 import type { FormSubmitEvent, StepperItem } from "@nuxt/ui";
 import { createClubProfileService } from "~/services/clubProfile.service";
+import type { ClubProfileData } from "~/models/clubProfile/ClubProfileData";
 
 const isLoading: Ref<boolean> = ref(false);
 const isActive: Ref<number> = ref(0)
 const toastStore = useToastStore()
 const { jalaliToGregorian } = useDateConverter()
-const dateRegex = /^\d{4}\/\d{2}\/\d{2}$/
 
 const items = [
   {
@@ -102,13 +102,13 @@ const schema = v.object({
     v.nonEmpty('شماره تلفن باشگاه الزامی است'),
     v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
     v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد'),
-    v.custom((value) => /^\d+$/.test(value), 'شماره تلفن فقط می‌تواند شامل اعداد باشد')
+    v.regex(/^\d+$/, 'شماره تلفن فقط می‌تواند شامل اعداد باشد')
   ),
   foundationDate: v.pipe(
     v.string(),
     v.trim(),
     v.nonEmpty('تاریخ تاسسیس باشگاه الزامی است'),
-    v.custom((value) => dateRegex.test(value), 'فرمت تاریخ باید 1380/01/30 باشد')
+    v.regex(/^\d{4}\/\d{2}\/\d{2}$/, 'فرمت تاریخ باید 1380/01/30 باشد')
   ),
   goal: v.pipe(
     v.string(),
@@ -129,7 +129,7 @@ const schema = v.object({
 
 type Schema = v.InferOutput<typeof schema>;
 
-const state = reactive({
+const state = reactive<ClubProfileData>({
   clubName: '',
   activityType: '',
   clubPhoneNumber: '',
@@ -148,7 +148,7 @@ const state = reactive({
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true;
   try {
-    const payload = {
+    const payload: ClubProfileData = {
       ...event.data,
       foundationDate: jalaliToGregorian(event.data.foundationDate)
     }
@@ -159,8 +159,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         isActive.value = 1
       }, 200)
     }
-  } catch (e: any) {
-    console.log(e)
+  } catch (error: any) {
+    console.log(error.message || error)
   } finally {
     isLoading.value = false
   }

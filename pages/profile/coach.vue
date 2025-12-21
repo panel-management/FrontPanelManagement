@@ -1,5 +1,5 @@
 <template>
-  <section class="xl:container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-5">
+  <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-5">
     <div class="bg-white p-4 md:p-6 rounded-xl w-full flex flex-col lg:items-center gap-5">
       <div class="flex items-center justify-between w-full">
         <div class="flex gap-3">
@@ -18,9 +18,9 @@
           </div>
         </div>
         <div class="flex gap-3 max-md:hidden">
-          <UButton v-if="isShow" @click="enableInputs" color="tertiary" variant="outline" size="lg" label="ویرایش"
+          <UButton v-if="isShow" @click="toggleInout" color="tertiary" variant="outline" size="lg" label="ویرایش"
             trailing-icon="material-symbols:edit-square-outline-rounded" />
-          <UButton v-if="!isShow" @click="disableInputs" color="neutral" variant="outline" size="lg" label="انصراف"
+          <UButton v-if="!isShow" @click="toggleInout" color="neutral" variant="outline" size="lg" label="انصراف"
             trailing-icon="material-symbols:close-rounded" />
         </div>
       </div>
@@ -54,9 +54,9 @@
         </div>
       </div>
       <div class="flex gap-3 min-md:hidden">
-        <UButton v-if="isShow" @click="enableInputs" color="tertiary" variant="outline" size="lg" label="ویرایش"
+        <UButton v-if="isShow" @click="toggleInout" color="tertiary" variant="outline" size="lg" label="ویرایش"
           trailing-icon="material-symbols:edit-square-outline-rounded" />
-        <UButton v-if="!isShow" @click="disableInputs" color="neutral" variant="outline" size="lg" label="انصراف"
+        <UButton v-if="!isShow" @click="toggleInout" color="neutral" variant="outline" size="lg" label="انصراف"
           trailing-icon="material-symbols:close-rounded" />
       </div>
     </div>
@@ -194,7 +194,7 @@ const state = reactive<UpdateCoach>({
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
   try {
-    const payload = {
+    const payload: UpdateCoach = {
       ...event.data,
       birthDate: jalaliToGregorian(event.data.birthDate)
     }
@@ -211,11 +211,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   }
 }
 
-function enableInputs(): void {
-  isShow.value = false
-}
-
-function disableInputs(): void {
-  isShow.value = true
+function toggleInout() {
+  isShow.value = !isShow.value
 }
 </script>

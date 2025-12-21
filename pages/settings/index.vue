@@ -1,10 +1,10 @@
 <template>
-  <section class="xl:container h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
+  <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
     <div class="w-full h-full flex flex-col gap-2 sm:p-2">
       <h2 class="text-lg sm:text-3xl font-bold">تنظیمات سیستم</h2>
       <span class="text-xs sm:text-sm font-medium">مدیریت و پیکربندی تنظیمات کلی سیستم</span>
     </div>
-    <LazyBaseTabs v-model="active" :items="items" color="tertiary">
+    <BaseTabs v-model="active" :items="items" color="tertiary">
       <template #public>
         <div class="flex flex-col gap-6 p-4 bg-white rounded-lg w-full h-full">
           <div class="flex flex-col gap-2">
@@ -49,7 +49,7 @@
                   <BaseFormTextArea required v-model="state.aboutClub" label="درباره باشگاه" name="aboutClub"
                     class="w-full" />
                 </div>
-                <div class="flex justify-start gap-2 pt-4">
+                <div class="flex justify-end gap-2 pt-4">
                   <UButton :loading="isLoading" type="submit" color="primary" class="flex justify-center text-base"
                     label="ثبت اطلاعات" />
                 </div>
@@ -157,8 +157,8 @@
             <UPagination v-model:page="page" show-edges :sibling-count="1" :total="50" />
           </div> -->
         </div>
-        <LazyWidgetModalPaymentAdd v-model:open="modalStore.modals.paymentAdd" @success="getPlanMasterByStudent" />
-        <LazyWidgetModalPaymentEdit v-model:open="modalStore.modals.paymentEdit" @success="getPlanMasterByStudent" />
+        <LazyWidgetModalPaymentAdd v-model:open="modalStore.modals.paymentAdd" @success="getPlanStudent" />
+        <LazyWidgetModalPaymentEdit v-model:open="modalStore.modals.paymentEdit" @updated="handleUpdate" />
       </template>
       <template #ranks>
         <div class="flex flex-col gap-6 p-4 bg-white rounded-lg w-full h-full">
@@ -168,25 +168,23 @@
               <p class="break-words font-medium text-sm">ترتیب و رنگ کمربندها یا رتبه ها را مدیریت کنید.</p>
             </div>
           </div>
-          <ClientOnly>
-            <div class="flex flex-col gap-5 w-full p-2">
-              <div class="flex items-center justify-between gap-2 w-full" v-for="items in data?.data" :key="items.id">
-                <div class="flex items-center gap-2">
-                  <div class="flex justify-center items-center bg-muted rounded-full size-10">{{ items.id }}</div>
-                  <div class="flex justify-center items-center rounded-full size-14"
-                    :class="[getBeltClass(items.color)]">
-                  </div>
-                  <div class="flex flex-col gap-1 mr-2">
-                    <span class="font-semibold text-xl">کمربند {{ items.color }}</span>
-                    <p class="font-medium text-muted text-sm">رنگ: {{ items.color }}</p>
-                  </div>
+          <div class="flex flex-col gap-5 w-full p-2">
+            <div class="flex items-center justify-between gap-2 w-full" v-for="item in gettingVariousDataStore.beltData"
+              :key="item.id">
+              <div class="flex items-center gap-2">
+                <div class="flex justify-center items-center bg-muted rounded-full size-10">{{ item.id }}</div>
+                <div class="flex justify-center items-center rounded-full size-14" :class="[getBeltClass(item.color)]">
+                </div>
+                <div class="flex flex-col gap-1 mr-2">
+                  <span class="font-semibold text-xl">کمربند {{ item.color }}</span>
+                  <p class="font-medium text-muted text-sm">رنگ: {{ item.color }}</p>
                 </div>
               </div>
             </div>
-          </ClientOnly>
+          </div>
         </div>
       </template>
-    </LazyBaseTabs>
+    </BaseTabs>
   </section>
 </template>
 <script setup lang="ts">
@@ -196,21 +194,18 @@ import type { ClubProfileData } from "~/models/clubProfile/ClubProfileData";
 import type { StudentPlanData } from "~/models/plan/studentPlan/StudentPlanData";
 import { getClubProfileService, updateClubProfileService } from "~/services/clubProfile.service";
 import { deletePlanMasterByStudentService, getPlanMasterByStudentService } from "~/services/masterPlan.service";
-import { getAllBeltService } from "~/services/sportBelt.service";
 
-const dateRegex = /^\d{4}\/\d{2}\/\d{2}$/
-const modalStore = useModalStore()
-const toastStore = useToastStore()
-const { showConfirmDialog } = useConfirmDialog()
 const route = useRoute()
 const router = useRouter()
-// const page = ref(5)
-const isLoading: Ref<boolean> = ref(false)
+const modalStore = useModalStore()
+const toastStore = useToastStore()
+const gettingVariousDataStore = useGettingVariousDataStore()
+const { showConfirmDialog } = useConfirmDialog()
+const { jalaliToGregorian, gregorianToJalali } = useDateConverter()
 const validTabs = ['public', 'mali', 'ranks']
-// const formData: Ref<StudentPlanData[]> = ref([])
 const formData = shallowRef<StudentPlanData[]>([])
 const clubProfile = ref<ClubProfileData | null>(null)
-const { jalaliToGregorian, gregorianToJalali } = useDateConverter()
+const isLoading: Ref<boolean> = ref(false)
 
 const active = computed({
   get() {
@@ -268,13 +263,13 @@ const schema = v.object({
     v.nonEmpty('شماره تلفن باشگاه الزامی است'),
     v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
     v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد'),
-    v.custom((value) => /^\d+$/.test(value), 'شماره تلفن فقط می‌تواند شامل اعداد باشد')
+    v.regex(/^\d+$/, 'شماره تلفن فقط می‌تواند شامل اعداد باشد')
   ),
   foundationDate: v.pipe(
     v.string(),
     v.trim(),
     v.nonEmpty('تاریخ تاسسیس باشگاه الزامی است'),
-    v.custom((value) => dateRegex.test(value), 'فرمت تاریخ باید 1380/01/30 باشد')
+    v.regex(/^\d{4}\/\d{2}\/\d{2}$/, "فرمت تاریخ باید 1380/01/30 باشد")
   ),
   goal: v.pipe(
     v.string(),
@@ -323,20 +318,7 @@ watch(clubProfile, (value) => {
   state.socialNetworks = { ...value.socialNetworks }
 })
 
-const { data, status } = await useAsyncData('beltData', () => getAllBeltService())
-if (!data.value || !data.value.data) {
-  if (import.meta.client) {
-    toastStore.setAlert(data.value?.message, '', 'error', 'bx:bxs-error')
-    router.push('/setting')
-  } else {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'پروفایل پیدا نشده لطف دوباره تلاش کنید'
-    })
-  }
-}
-
-async function getPlanMasterByStudent() {
+async function getPlanStudent() {
   try {
     const result = await getPlanMasterByStudentService()
     if (result.statusCode === 200) {
@@ -362,7 +344,7 @@ async function getClubProfile() {
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
   try {
-    const payload = {
+    const payload: ClubProfileData = {
       ...event.data,
       foundationDate: jalaliToGregorian(event.data.foundationDate)
     }
@@ -377,14 +359,22 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   }
 }
 
+function handleUpdate(updatedItem: StudentPlanData | undefined) {
+  if (!updatedItem) return
+  const index = formData.value.findIndex(u => u.id === updatedItem.id)
+  if (index !== -1) {
+    formData.value[index] = { ...formData.value[index], ...updatedItem }
+  }
+}
+
 async function deletePlanMasterByStudent(id: number) {
   showConfirmDialog("آیا از حذف این پلن اطمینان دارید؟ این عملیات قابل بازگشت نیست.", async () => {
     isLoading.value = true
     try {
       const result = await deletePlanMasterByStudentService(id)
       if (result.statusCode === 200) {
+        formData.value = formData.value.filter(user => user.id !== id)
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-        await getPlanMasterByStudent()
       }
     } catch (error: any) {
       console.error(error.message || error)
@@ -396,7 +386,8 @@ async function deletePlanMasterByStudent(id: number) {
 }
 
 onMounted(() => {
-  getPlanMasterByStudent()
   getClubProfile()
+  getPlanStudent()
+  gettingVariousDataStore.fetchBelts()
 })
 </script>
