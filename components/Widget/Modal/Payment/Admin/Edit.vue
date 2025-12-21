@@ -4,12 +4,12 @@ import type { FormSubmitEvent } from "@nuxt/ui"
 import type { UpdateMasterPlanData } from '~/models/plan/masterPlan/UpdateMasterPlanData';
 import { updateMasterPlanService } from '~/services/masterPlan.service';
 
-const isLoading: Ref<boolean> = ref(false)
 const modalStore = useModalStore()
 const toastStore = useToastStore()
 const { showConfirmDialog } = useConfirmDialog()
+const isLoading: Ref<boolean> = ref(false)
 
-const emit = defineEmits(['update:open', 'success']);
+const emit = defineEmits(['update:open', 'updated']);
 
 const props = defineProps({
   open: {
@@ -43,7 +43,7 @@ const schema = v.object({
   description: v.pipe(
     v.string(),
     v.trim(),
-    v.nonEmpty('توضیحات الزامی است.')
+    v.nonEmpty('توضیحات الزامی است')
   ),
   isActive: v.boolean(),
 })
@@ -63,24 +63,18 @@ watch(() => planData.value, (newData) => {
 }, { immediate: true, deep: true });
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  if (!planId.value) {
-    toastStore.setAlert('پلنی با ایدی یافت نشد', '', 'error', 'bx:bxs-error')
-    return;
-  }
-
   isLoading.value = true;
-
   try {
     await showConfirmDialog('آیا مطمئن هستید که وضعیت این پلن تغییر دهید؟', async () => {
       const result = await updateMasterPlanService(planId.value, event.data);
       if (result.statusCode === 200) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         localOpen.value = false;
-        emit('success')
+        emit('updated', result.data)
       }
     })
   } catch (error: any) {
-    console.error(error?.message || error);
+    console.error(error.message || error);
   } finally {
     isLoading.value = false;
   }

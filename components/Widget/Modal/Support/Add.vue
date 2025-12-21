@@ -20,13 +20,6 @@ const localOpen = computed({
   set: (Val) => emit('update:open', Val)
 });
 
-// const categorySelect = ref(['مشکل فنی', 'امور مالی', 'در خواست ویژگی', 'عمومی'])
-// const prioritySelect = ref(['کم', 'متوسط', 'زیاد'])
-// const categorySelect: Ref<TicketCategory[]> = ref(
-//   [TicketCategory.FEATURE_REQUEST, TicketCategory.FINANCIAL_AFFAIRS, TicketCategory.GENERAL, TicketCategory.TECHNICAL_ISSUE]
-// )
-// const prioritySelect: Ref<TicketPriority[]> = ref([TicketPriority.LOW, TicketPriority.MEDIUM, TicketPriority.HIGH])
-
 const schema = v.object({
   title: v.pipe(
     v.string(),

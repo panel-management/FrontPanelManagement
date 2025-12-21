@@ -4,9 +4,9 @@ import type { FormSubmitEvent } from "@nuxt/ui"
 import { TypePlan, type MasterPlanData } from '~/models/plan/masterPlan/MasterPlanData';
 import { createMasterPlanService } from '~/services/masterPlan.service';
 
-const isLoading: Ref<boolean> = ref(false)
 const emit = defineEmits(['update:open', 'success']);
 const toastStore = useToastStore()
+const isLoading: Ref<boolean> = ref(false)
 const itemsSelect = [
   { label: 'آزمایشی', value: TypePlan.TRIAL },
   { label: 'پولی', value: TypePlan.PAID }
@@ -28,7 +28,7 @@ const schema = v.object({
   name: v.pipe(
     v.string(),
     v.trim(),
-    v.nonEmpty('نام پلن الزامی است.')
+    v.nonEmpty('نام پلن الزامی است')
   ),
   description: v.pipe(
     v.string(),
@@ -47,20 +47,20 @@ const schema = v.object({
       v.pipe(
         v.string(),
         v.trim(),
-        v.nonEmpty('متن ویژگی نمی‌ تواند خالی باشد.')
+        v.nonEmpty('متن ویژگی نمی‌ تواند خالی باشد')
       )
     ),
-    v.minLength(1, 'حداقل یک ویژگی باید وارد شود.')
+    v.minLength(1, 'حداقل یک ویژگی باید وارد شود')
   ),
   type: v.pipe(
     v.string(),
     v.trim(),
-    v.nonEmpty('نوع پلن الزامی است.'),
+    v.nonEmpty('نوع پلن الزامی است'),
   ),
   durationInDays: v.pipe(
     v.string(),
     v.trim(),
-    v.nonEmpty('مدت زمان پلن الزامی است.'),
+    v.nonEmpty('مدت زمان پلن الزامی است'),
     v.regex(/^\d+$/, 'مدت زمان باید فقط شامل عدد باشد')
   )
 })
@@ -76,16 +76,16 @@ const state = reactive<MasterPlanData>({
   durationInDays: '',
 });
 
+const { displayPrice } = useFormattedPrice(toRef(state, 'price'))
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
   try {
     const payload: MasterPlanData = {
-      name: event.data.name,
-      description: event.data.description,
+      ...event.data,
       price: Number(event.data.price),
+      durationInDays: Number(event.data.durationInDays),
       features: event.data.features.filter(f => f.trim() !== ''),
-      type: event.data.type as TypePlan,
-      durationInDays: Number(event.data.durationInDays)
     }
     const result = await createMasterPlanService(payload);
     if (result.statusCode === 201) {
@@ -95,19 +95,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       emit('success')
     }
   } catch (error: any) {
-    console.log(error?.message || error);
+    console.log(error.message || error);
   } finally {
     isLoading.value = false
   }
-}
-
-function resetForm() {
-  state.name = '';
-  state.description = '';
-  state.price = '';
-  state.features = [''];
-  state.type = '';
-  state.durationInDays = '';
 }
 
 function addItem() {
@@ -118,6 +109,15 @@ function removeItem(index: number) {
   if (state.features.length > 1) {
     state.features.splice(index, 1)
   }
+}
+
+function resetForm() {
+  state.name = '';
+  state.description = '';
+  state.price = '';
+  state.features = [''];
+  state.type = '';
+  state.durationInDays = '';
 }
 </script>
 
@@ -136,7 +136,7 @@ function removeItem(index: number) {
               placeholder="توضیحات درباره این پلن" :required="false" class="w-full" />
           </div>
           <div class="w-full">
-            <BaseFormInput v-model="state.price" label="قیمت (تومان)" name="price" type="text" placeholder="1,500,000"
+            <BaseFormInput v-model="displayPrice" label="قیمت(تومان)" name="price" type="text" placeholder="1,500,000"
               :required="false" class="w-full" />
           </div>
           <div class="w-full flex flex-col">

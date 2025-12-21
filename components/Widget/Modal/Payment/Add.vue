@@ -7,7 +7,6 @@ import { createPlanMasterByStudentService } from '~/services/masterPlan.service'
 const emit = defineEmits(['update:open', 'success']);
 const toastStore = useToastStore()
 const isLoading: Ref<boolean> = ref(false)
-const displayPrice: Ref<string> = ref('')
 
 const props = defineProps({
   open: {
@@ -57,21 +56,12 @@ const state = reactive<CreatePlanStudent>({
   isDefault: false
 });
 
-const displayPriceComputed = computed({
-  get() {
-    return displayPrice.value
-  },
-  set(val: string) {
-    const numeric = val.replace(/[^\d]/g, '')
-    displayPrice.value = numeric ? Number(numeric).toLocaleString('en-US') : ''
-    state.price = numeric
-  }
-})
+const { displayPrice } = useFormattedPrice(toRef(state, 'price'))
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
   try {
-    const payload = {
+    const payload: CreatePlanStudent = {
       ...event.data,
       price: Number(event.data.price),
       durationInDays: Number(event.data.durationInDays)
@@ -84,7 +74,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       resetForm();
     }
   } catch (error: any) {
-    console.log(error?.message || error);
+    console.log(error.message || error);
   } finally {
     isLoading.value = false
   }
@@ -114,7 +104,7 @@ function resetForm() {
               placeholder="توضیح کوتاه درباره طرح" required class="w-full" />
           </div>
           <div class="w-full">
-            <BaseFormInput v-model="displayPriceComputed" label="قیمت (تومان)" name="price" type="text"
+            <BaseFormInput v-model="displayPrice" label="قیمت (تومان)" name="price" type="text"
               placeholder="2,500,000" required class="w-full" />
           </div>
           <div class="w-full">

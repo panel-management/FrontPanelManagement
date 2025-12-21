@@ -4,11 +4,10 @@ import type { FormSubmitEvent } from "@nuxt/ui"
 import type { UpdatePlanStudent } from '~/models/plan/studentPlan/UpdatePlanStudent';
 import { updatePlanMasterByStudentService } from '~/services/masterPlan.service';
 
-const emit = defineEmits(['update:open', 'success']);
+const emit = defineEmits(['update:open', 'updated']);
 const toastStore = useToastStore()
-const isLoading: Ref<boolean> = ref(false)
 const modalStore = useModalStore()
-const displayPrice: Ref<string> = ref('')
+const isLoading: Ref<boolean> = ref(false)
 
 const props = defineProps({
   open: {
@@ -72,6 +71,8 @@ const state = reactive<UpdatePlanStudent>({
   durationInDays: '',
 });
 
+const { displayPrice } = useFormattedPrice(toRef(state, 'price'))
+
 watch(() => planData.value, (newData) => {
   if (newData) {
     state.name = newData.name || '';
@@ -81,21 +82,10 @@ watch(() => planData.value, (newData) => {
   }
 }, { immediate: true, deep: true });
 
-const displayPriceComputed = computed({
-  get() {
-    return displayPrice.value
-  },
-  set(val: string) {
-    const numeric = val.replace(/[^\d]/g, '')
-    displayPrice.value = numeric ? Number(numeric).toLocaleString('en-US') : ''
-    state.price = numeric
-  }
-})
-
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
   try {
-    const payload = {
+    const payload: UpdatePlanStudent = {
       ...event.data,
       price: Number(event.data.price),
       durationInDays: Number(event.data.durationInDays)
@@ -106,7 +96,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       console.log(event.data)
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
       localOpen.value = false
-      emit('success')
+      emit('updated', result.data)
       resetForm()
     }
   } catch (error: any) {
@@ -139,8 +129,8 @@ function resetForm() {
               placeholder="توضیح کوتاه درباره طرح" required class="w-full" />
           </div>
           <div class="w-full">
-            <BaseFormInput v-model="displayPriceComputed" label="قیمت (تومان)" name="price" type="text"
-              placeholder="2,500,000" required class="w-full" />
+            <BaseFormInput v-model="displayPrice" label="قیمت (تومان)" name="price" type="text" placeholder="2,500,000"
+              required class="w-full" />
           </div>
           <div class="w-full">
             <BaseFormInput v-model="state.durationInDays" label="مدت زمان" name="durationInDays" type="text"

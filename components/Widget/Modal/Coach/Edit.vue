@@ -6,12 +6,12 @@ import { getCoachByIdService, updateCoachService } from '~/services/coach.servic
 import type { UpdateCoach } from '~/models/users/coach/UpdateCoach';
 
 const emit = defineEmits(['update:open', 'updated'])
-const isShow: Ref<boolean> = ref(true)
-const isLoading: Ref<boolean> = ref(false)
 const modalStore = useModalStore()
 const toastStore = useToastStore()
-const formData = ref<CoachListData | null>(null)
 const { gregorianToDate, gregorianToJalali } = useDateConverter()
+const formData = ref<CoachListData | null>(null)
+const isShow: Ref<boolean> = ref(true)
+const isLoading: Ref<boolean> = ref(false)
 
 const userId = computed(() => modalStore.modals.coachesEdit)
 
@@ -26,38 +26,6 @@ const localOpen = computed({
   get: () => !!props.open,
   set: (val: boolean) => {
     if (!val) emit('update:open', null)
-  }
-})
-
-async function loadCoach() {
-  if (!userId.value) {
-    formData.value = null
-    return
-  }
-  try {
-    const result = await getCoachByIdService(userId.value)
-    if (result.statusCode === 200) {
-      console.log(result.data);
-
-      formData.value = result.data as CoachListData
-    }
-  } catch (error: any) {
-    console.log(error.message || error)
-    formData.value = null
-  }
-}
-
-onMounted(() => {
-  if (userId.value) {
-    nextTick(loadCoach)
-  }
-})
-
-watch(userId, (id) => {
-  if (id) {
-    loadCoach()
-  } else {
-    formData.value = null
   }
 })
 
@@ -147,6 +115,19 @@ watch(formData, (data) => {
   state.imageUrl = data.image ?? ''
 })
 
+async function loadCoach() {
+  try {
+    const result = await getCoachByIdService(userId.value)
+    if (result.statusCode === 200) {
+      console.log(result.data);
+      formData.value = result.data as CoachListData
+    }
+  } catch (error: any) {
+    console.log(error.message || error)
+    formData.value = null
+  }
+}
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
   try {
@@ -160,19 +141,28 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     }
   } catch (error: any) {
     console.log(error.message || error);
-
   } finally {
     isLoading.value = false
   }
 }
 
-function enableInputs(): void {
-  isShow.value = false
+function toggleInput() {
+  isShow.value = !isShow.value
 }
 
-function disableInputs(): void {
-  isShow.value = true
-}
+watch(userId, (id) => {
+  if (id) {
+    loadCoach()
+  } else {
+    formData.value = null
+  }
+})
+
+onMounted(() => {
+  if (userId.value) {
+    nextTick(loadCoach)
+  }
+})
 </script>
 
 <template>
@@ -201,9 +191,9 @@ function disableInputs(): void {
               </div>
             </div>
             <div class="flex gap-3 max-md:hidden">
-              <UButton v-if="isShow" @click="enableInputs" color="tertiary" variant="outline" size="lg" label="ویرایش"
+              <UButton v-if="isShow" @click="toggleInput" color="tertiary" variant="outline" size="lg" label="ویرایش"
                 trailing-icon="material-symbols:edit-square-outline-rounded" />
-              <UButton v-if="!isShow" @click="disableInputs" color="neutral" variant="outline" size="lg" label="انصراف"
+              <UButton v-if="!isShow" @click="toggleInput" color="neutral" variant="outline" size="lg" label="انصراف"
                 trailing-icon="material-symbols:close-rounded" />
             </div>
           </div>
@@ -242,9 +232,9 @@ function disableInputs(): void {
             </div>
           </div>
           <div class="flex gap-3 min-md:hidden">
-            <UButton v-if="isShow" @click="enableInputs" color="tertiary" variant="outline" size="lg" label="ویرایش"
+            <UButton v-if="isShow" @click="toggleInput" color="tertiary" variant="outline" size="lg" label="ویرایش"
               trailing-icon="material-symbols:edit-square-outline-rounded" />
-            <UButton v-if="!isShow" @click="disableInputs" color="neutral" variant="outline" size="lg" label="انصراف"
+            <UButton v-if="!isShow" @click="toggleInput" color="neutral" variant="outline" size="lg" label="انصراف"
               trailing-icon="material-symbols:close-rounded" />
           </div>
         </div>

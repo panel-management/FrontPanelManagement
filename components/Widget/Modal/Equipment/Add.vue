@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import * as v from 'valibot'
 import type { FormSubmitEvent } from "@nuxt/ui"
-import { getAllStudentService } from '~/services/student.service';
+import { getStudentForEquipmentService } from '~/services/student.service';
 import type { StudentData } from '~/models/users/student/StudentData';
 import type { CreateTransactionEquipment } from '~/models/transactions/CreateTransactionEquipment';
 import { createTransactionEquipmentService } from '~/services/transactions.service';
 
 const emit = defineEmits(['update:open', 'success']);
 const toastStore = useToastStore()
-const isLoading: Ref<boolean> = ref(false)
-const displayAmount: Ref<string> = ref('')
-const itemsSelect: Ref<any> = ref([])
 const studentData: Ref<StudentData[]> = ref([])
+const itemsSelect: Ref<any> = ref([])
+const isLoading: Ref<boolean> = ref(false)
 
 const props = defineProps({
   open: {
@@ -48,7 +47,7 @@ type Schema = v.InferOutput<typeof schema>;
 
 async function getListStudent() {
   try {
-    const result = await getAllStudentService()
+    const result = await getStudentForEquipmentService();
     console.log(result.data);
     if (result.statusCode === 200) {
       studentData.value = Array.isArray(result.data) ? result.data : [];
@@ -68,30 +67,19 @@ const state = reactive<CreateTransactionEquipment>({
   description: '',
 });
 
-const displayAmountComputed = computed({
-  get() {
-    return displayAmount.value
-  },
-  set(val: string) {
-    const numeric = val.replace(/[^\d]/g, '')
-    displayAmount.value = numeric ? Number(numeric).toLocaleString('en-US') : ''
-    state.amount = numeric
-  }
-})
+const { displayPrice } = useFormattedPrice(toRef(state, 'amount'))
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true;
   try {
     const result = await createTransactionEquipmentService(event.data);
-    console.log(result);
-    console.log(event.data)
     if (result.statusCode === 201) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-      emit('success')
       localOpen.value = false
+      emit('success')
     }
-  } catch (error) {
-
+  } catch (error: any) {
+    console.log(error.message || error);
   } finally {
     isLoading.value = false;
   }
@@ -111,7 +99,7 @@ onMounted(getListStudent)
               placeholder="انتخاب نام هنرجو" label="انتخاب هنرجو" />
           </div>
           <div class="w-full">
-            <BaseFormInput v-model="displayAmountComputed" label="مبلغ محصول(تومان)" name="amount" type="text"
+            <BaseFormInput v-model="displayPrice" label="مبلغ محصول(تومان)" name="amount" type="text"
               placeholder="1,000,000" required class="w-full" />
           </div>
           <div class="w-full">

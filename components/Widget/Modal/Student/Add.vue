@@ -1,20 +1,17 @@
 <script setup lang="ts">
 import * as v from 'valibot'
 import type { FormSubmitEvent } from "@nuxt/ui"
-import { getAllBeltService } from '~/services/sportBelt.service';
-import { getPlanMasterByStudentService } from '~/services/masterPlan.service';
-import type { StudentPlanData } from '~/models/plan/studentPlan/StudentPlanData';
-import type { Belt } from '~/models/sportAndBelt/belt';
 import { createStudentService } from '~/services/student.service';
+import type { StudentPlanData } from '~/models/plan/studentPlan/StudentPlanData';
+import { getPlanMasterByStudentService } from '~/services/masterPlan.service';
 
 const emit = defineEmits(['update:open', 'success']);
-const isLoading: Ref<boolean> = ref(false)
-const beltSelect: Ref<any[]> = ref([])
-const planSelect: Ref<any[]> = ref([])
-const beltData: Ref<Belt[]> = ref([])
-const planData: Ref<StudentPlanData[]> = ref([])
 const toastStore = useToastStore()
-// const itemsSelect = ref(['سفید', 'نارنجی', 'ابی', 'زرد', 'سبز', 'قهوه ای', 'مشکی'])
+const gettingVariousDataStore = useGettingVariousDataStore()
+const planData: Ref<StudentPlanData[]> = ref([]);
+const beltSelect = ref<{ label: string; value: string }[]>([])
+const planSelect = ref<{ label: string; value: string }[]>([])
+const isLoading: Ref<boolean> = ref(false)
 
 const props = defineProps({
   open: {
@@ -37,7 +34,7 @@ const schema = v.object({
   nationalCode: v.pipe(
     v.string(),
     v.trim(),
-    v.nonEmpty('کد ملی الزامی است.'),
+    v.nonEmpty('کد ملی الزامی است'),
     v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید')
   ),
   age: v.pipe(
@@ -104,35 +101,19 @@ const state = reactive({
   diseaseRecords: false
 });
 
-async function getAllBelt() {
+async function fetchPlanStudent() {
   try {
-    const result = await getAllBeltService()
+    const result = await getPlanMasterByStudentService();
+    console.log(result.data);
     if (result.statusCode === 200) {
-      console.log(result.data);
-      beltData.value = Array.isArray(result.data) ? result.data : []
-      beltSelect.value = beltData.value.map(item => ({
-        label: item.color,
+      planData.value = Array.isArray(result.data) ? result.data : [];
+      planSelect.value = planData.value.map(item => ({
+        label: item.name,
         value: String(item.id)
-      }))
+      }));
     }
   } catch (error: any) {
-    console.log(error.message || error);
-  }
-}
-
-async function getAllPlanStudent() {
-  try {
-    const result = await getPlanMasterByStudentService()
-    if (result.statusCode === 200) {
-      console.log(result.data);
-      planData.value = Array.isArray(result.data) ? result.data : []
-      planSelect.value = planData.value.map(items => ({
-        label: items.name,
-        value: String(items.id),
-      }))
-    }
-  } catch (error: any) {
-    console.log(error.message || error);
+    console.error(error.message || error);
   }
 }
 
@@ -173,9 +154,16 @@ function resetForm() {
   state.diseaseRecords = false;
 }
 
+watch(gettingVariousDataStore, (value) => {
+  beltSelect.value = value.beltData.map(item => ({
+    label: item.color,
+    value: String(item.id)
+  }))
+})
+
 onMounted(() => {
-  getAllBelt()
-  getAllPlanStudent()
+  fetchPlanStudent()
+  gettingVariousDataStore.fetchBelts()
 })
 </script>
 

@@ -5,8 +5,8 @@ import type { CreateCoach } from '~/models/users/coach/CreateCoach';
 import { createCoachService } from '~/services/coach.service';
 
 const emit = defineEmits(['update:open', 'success']);
-const isLoading: Ref<boolean> = ref(false)
 const toastStore = useToastStore()
+const isLoading: Ref<boolean> = ref(false)
 
 const props = defineProps({
   open: {

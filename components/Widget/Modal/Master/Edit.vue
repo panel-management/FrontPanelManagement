@@ -4,20 +4,17 @@ import type { FormSubmitEvent } from "@nuxt/ui"
 import type { TabsItem } from '@nuxt/ui'
 import { getMasterByIdForAdminService, updateProfileMasterJustAdminService } from '~/services/master.service';
 import type { MasterListData } from '~/models/users/master/MasterListData';
-import { getAllSportService } from '~/services/sportBelt.service';
-import type { Sport } from '~/models/sportAndBelt/sport';
 import type { UpdateMaster } from '~/models/users/master/UpdateMaster';
-import { PaymentStatus } from '~/models/PaymentStatus';
 
-const emit = defineEmits(['update:open', 'refresh']);
-const isShow: Ref<boolean> = ref(true)
-const isLoading: Ref<boolean> = ref(false)
+const emit = defineEmits(['update:open', 'updated']);
 const modalStore = useModalStore()
 const toastStore = useToastStore()
+const gettingVariousDataStore = useGettingVariousDataStore()
 const { gregorianToDate, gregorianToJalali } = useDateConverter()
 const formData = ref<MasterListData | null>(null)
-const sportItems = ref<Sport[]>([])
 const itemsSelect = ref<{ label: string; value: string }[]>([])
+const isShow: Ref<boolean> = ref(true)
+const isLoading: Ref<boolean> = ref(false)
 
 const userId = computed(() => modalStore.modals.masterEdit)
 
@@ -50,74 +47,24 @@ const items = [
   }
 ] satisfies TabsItem[]
 
-async function loadMaster() {
-  if (!userId.value) {
-    formData.value = null
-    return
-  }
-  try {
-    const result = await getMasterByIdForAdminService(userId.value)
-    if (result.statusCode === 200) {
-      console.log(result.data);
-
-      formData.value = result.data as MasterListData
-    }
-  } catch (error: any) {
-    console.log(error.message || error)
-    formData.value = null
-  }
-}
-
-async function loadSports() {
-  try {
-    const result = await getAllSportService()
-    if (result.statusCode === 200) {
-      sportItems.value = Array.isArray(result.data) ? result.data : []
-      itemsSelect.value = sportItems.value.map(items => ({
-        label: items.name,
-        value: String(items.id)
-      }))
-    }
-  } catch (err: any) {
-    console.error('Error loadSports:', err)
-  }
-}
-
-onMounted(() => {
-  loadSports()
-  if (userId.value) {
-    nextTick(loadMaster)
-  }
-})
-
-// open modal just yourself master id
-watch(userId, (id) => {
-  if (id) {
-    loadMaster()
-  } else {
-    formData.value = null
-  }
-})
-
-// schema valibot
 const schema = v.object({
   fullName: v.pipe(
     v.string(),
     v.trim(),
-    v.nonEmpty('نام و نام خانوادگی الزامی است.')
+    v.nonEmpty('نام و نام خانوادگی الزامی است')
   ),
   nationalCode: v.pipe(
     v.string(),
     v.trim(),
     v.nonEmpty('کد ملی الزامی است.'),
-    v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید.')
+    v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید')
   ),
   phoneNumber: v.pipe(
     v.string(),
     v.trim(),
-    v.nonEmpty('شماره تلفن الزامی است.'),
-    v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد.'),
-    v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد.')
+    v.nonEmpty('شماره تلفن الزامی است'),
+    v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
+    v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد')
   ),
   birthDate: v.pipe(
     v.string(),
@@ -140,7 +87,6 @@ const schema = v.object({
 
 type Schema = v.InferOutput<typeof schema>
 
-// state form data
 const state = reactive<UpdateMaster>({
   fullName: '',
   phoneNumber: '',
@@ -154,7 +100,6 @@ const state = reactive<UpdateMaster>({
   imageUrl: undefined,
 })
 
-// view data and updated data
 watch(formData, (data) => {
   if (!data) {
     state.fullName = ''
@@ -180,37 +125,22 @@ watch(formData, (data) => {
     state.imageUrl = data.image ?? ''
 })
 
-const paymentStatusText: Record<PaymentStatus, string> = {
-  NO_PAYMENT: 'پرداخت وجود ندارد',
-  CONFIRMED: 'پرداخت شده',
-  PENDING: 'در انتظار پرداخت',
-  REJECTED: 'پرداخت نشده'
-}
-
 const lastPayment = computed(() => {
   const arr = formData.value?.subscriptionPayments
   return Array.isArray(arr) && arr.length > 0 ? arr[0] : null
 })
 
-const paymentIcon = {
-  CONFIRMED: 'clarity:success-standard-line',
-  PENDING: 'solar:shield-warning-bold',
-  REJECTED: 'codicon:error',
-  NO_PAYMENT: 'bi:emoji-neutral-fill',
-}
-
-const paymentIconColor = {
-  CONFIRMED: 'text-success',
-  PENDING: 'text-warning',
-  REJECTED: 'text-error',
-  NO_PAYMENT: 'text-gray-500',
-}
-
-const paymentIconBadge = {
-  CONFIRMED: 'primary',
-  PENDING: 'warning',
-  REJECTED: 'error',
-  NO_PAYMENT: 'neutral',
+async function loadMaster() {
+  try {
+    const result = await getMasterByIdForAdminService(userId.value)
+    if (result.statusCode === 200) {
+      console.log(result.data);
+      formData.value = result.data as MasterListData
+    }
+  } catch (error: any) {
+    console.log(error.message || error)
+    formData.value = null
+  }
 }
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
@@ -222,7 +152,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
       isShow.value = true
       localOpen.value = false
-      emit('refresh')
+      emit('updated', result.data)
     }
   } catch (err: any) {
     console.error('onSubmit error:', err)
@@ -231,34 +161,30 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   }
 }
 
-function getBeltClass(color: string) {
-  const colorMap: Record<string, string> = {
-    'سفید': 'belt-white',
-    'خاکستری': 'belt-gray',
-    'زرد': 'belt-yellow',
-    'نارنجی': 'belt-orange',
-    'سبز': 'belt-green',
-    'آبی': 'belt-blue',
-    'بنفش': 'belt-purple',
-    'قهوه‌ای': 'belt-brown',
-    'قرمز': 'belt-red',
-    'قرمز/سیاه': 'belt-red-black',
-    'قرمز/سفید': 'belt-red-white',
-    'مشکی': 'belt-black',
-    'صورتی': 'belt-pink',
-    'طلایی': 'belt-gold',
-    'نقره‌ای': 'belt-silver'
+function toggleInput() {
+  isShow.value = !isShow.value
+}
+
+watch(gettingVariousDataStore, (value) => {
+  itemsSelect.value = value.sportData.map(item => ({
+    label: item.name,
+    value: String(item.id)
+  }))
+})
+
+watch(userId, (id) => {
+  if (id) {
+    loadMaster()
+  } else {
+    formData.value = null
   }
-  return colorMap[color]
-}
+})
 
-function enableInputs() {
-  isShow.value = false
-}
-
-function disableInputs() {
-  isShow.value = true
-}
+onMounted(() => {
+  if (userId.value) {
+    nextTick(loadMaster)
+  }
+})
 </script>
 
 <template>
@@ -287,9 +213,9 @@ function disableInputs() {
               </div>
             </div>
             <div class="flex gap-3 max-md:hidden">
-              <UButton v-if="isShow" @click="enableInputs" color="tertiary" variant="outline" size="lg" label="ویرایش"
+              <UButton v-if="isShow" @click="toggleInput" color="tertiary" variant="outline" size="lg" label="ویرایش"
                 trailing-icon="material-symbols:edit-square-outline-rounded" />
-              <UButton v-if="!isShow" @click="disableInputs" color="neutral" variant="outline" size="lg" label="انصراف"
+              <UButton v-if="!isShow" @click="toggleInput" color="neutral" variant="outline" size="lg" label="انصراف"
                 trailing-icon="material-symbols:close-rounded" />
             </div>
           </div>
@@ -340,9 +266,9 @@ function disableInputs() {
             </div>
           </div>
           <div class="flex gap-3 min-md:hidden">
-            <UButton v-if="isShow" @click="enableInputs" color="tertiary" variant="outline" size="lg" label="ویرایش"
+            <UButton v-if="isShow" @click="toggleInput" color="tertiary" variant="outline" size="lg" label="ویرایش"
               trailing-icon="material-symbols:edit-square-outline-rounded" />
-            <UButton v-if="!isShow" @click="disableInputs" color="neutral" variant="outline" size="lg" label="انصراف"
+            <UButton v-if="!isShow" @click="toggleInput" color="neutral" variant="outline" size="lg" label="انصراف"
               trailing-icon="material-symbols:close-rounded" />
           </div>
         </div>
@@ -370,7 +296,7 @@ function disableInputs() {
           </div>
         </div>
         <div class="bg-muted p-4 rounded-xl w-full flex items-center gap-5">
-          <LazyBaseTabs :items="items" color="tertiary">
+          <BaseTabs :items="items" color="tertiary">
             <template #editData>
               <div class="w-full h-full bg-white rounded-lg p-4">
                 <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
@@ -424,29 +350,32 @@ function disableInputs() {
                 <div class="flex flex-col gap-2">
                   <div class="flex items-center gap-2">
                     <UIcon name="ph:users-three-bold" class="size-6 text-black/70" />
-                    <span class="font-medium text-lg md:text-2xl">هنرجویان تحت نظر ({{ formData.students.length }}
-                      نفر)</span>
+                    <span class="font-medium text-lg md:text-2xl">
+                      هنرجویان تحت نظر ({{ formData.students.length }} نفر)</span>
                   </div>
-                  <p class="break-words font-medium text-sm md:text-base">لیست هنرجویانی که تحت نظر این مربی هستند</p>
+                  <p class="break-words font-medium text-sm md:text-base">
+                    لیست هنرجویان و مربی که تحت نظر این استاد هستند
+                  </p>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 w-full">
-                  <div class="w-full rounded-lg bg-muted p-4" v-for="data in formData.students" :key="data.user_id">
-                    <div class="flex flex-col items-center gap-3 w-full">
-                      <div class="rounded-full bg-white size-14 flex items-center justify-center text-lg font-bold">
-                        {{ data.fullName.slice(0, 1) }}
+                <div class="w-full h-80 overflow-hidden">
+                  <div
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 w-full h-full overflow-y-auto">
+                    <div class="w-full rounded-lg bg-muted p-4" v-for="data in formData.students" :key="data.user_id">
+                      <div class="flex flex-col items-center gap-3 w-full">
+                        <div class="rounded-full bg-white size-14 flex items-center justify-center text-lg font-bold">
+                          {{ data.fullName.slice(0, 1) }}
+                        </div>
+                        <div class="flex justify-between gap-4 w-full">
+                          <span class="font-medium text-lg">{{ data.fullName }}</span>
+                          <span class="text-sm" v-if="data.currentBelt" :class="[getBeltClass(data.currentBelt.color)]">
+                            کمربند {{ data.currentBelt.color }}
+                          </span>
+                        </div>
+                        <div class="flex items-center justify-between gap-4 w-full">
+                          <span class="font-medium">عضویت </span>
+                          <span class="font-medium">{{ gregorianToJalali(data.createdAt) }}</span>
+                        </div>
                       </div>
-                      <div class="flex justify-between gap-4 w-full">
-                        <span class="font-medium text-lg">{{ data.fullName }}</span>
-                        <span class="text-sm" :class="[getBeltClass(data.currentBelt.color)]">کمربند {{
-                          data.currentBelt.color }}</span>
-                      </div>
-                      <div class="flex items-center justify-between gap-4 w-full">
-                        <span class="font-medium">عضویت </span>
-                        <span class="font-medium">{{ gregorianToJalali(data.createdAt) }}</span>
-                      </div>
-                      <!-- <div class="flex justify-between items-center gap-4">
-                        <UBadge color="success" label="پرداخت شده" />
-                      </div> -->
                     </div>
                   </div>
                 </div>
@@ -519,7 +448,7 @@ function disableInputs() {
                 <span v-else>هیچ دیتا پرداختی وجود ندارد</span>
               </div>
             </template>
-          </LazyBaseTabs>
+          </BaseTabs>
         </div>
       </div>
     </template>

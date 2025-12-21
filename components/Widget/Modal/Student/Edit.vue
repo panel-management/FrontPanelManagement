@@ -5,20 +5,21 @@ import type { TabsItem } from '@nuxt/ui'
 import { getStudentByIdService, updateStudentService } from '~/services/student.service';
 import type { StudentListData } from '~/models/users/student/StudentListData';
 import type { UpdateStudent } from '~/models/users/student/UpdateStudent';
-import type { Belt } from '~/models/sportAndBelt/belt';
-import { getAllBeltService } from '~/services/sportBelt.service';
 import type { TransactionStatus } from '~/models/transactions/TransactionStatus';
+import type { StudentPlanData } from '~/models/plan/studentPlan/StudentPlanData';
+import { getPlanMasterByStudentService } from '~/services/masterPlan.service';
 
-const emit = defineEmits(['update:open', 'success']);
-const isShow: Ref<boolean> = ref(true)
-const isLoading: Ref<boolean> = ref(false)
+const emit = defineEmits(['update:open', 'updated']);
 const modalStore = useModalStore()
 const toastStore = useToastStore()
+const gettingVariousDataStore = useGettingVariousDataStore()
 const { gregorianToJalali, gregorianToDate } = useDateConverter()
 const formData = ref<StudentListData | null>(null)
-const beltItems = ref<Belt[]>([])
-const itemsSelect = ref<{ label: string; value: string }[]>([])
-// const itemsSelect = ref(['سفید', 'نارنجی', 'ابی', 'زرد', 'سبز', 'قهوه ای', 'مشکی'])
+const planData: Ref<StudentPlanData[]> = ref([]);
+const itemsSelectBelt = ref<{ label: string; value: string }[]>([])
+const itemsSelectPlan = ref<{ label: string; value: string }[]>([])
+const isShow: Ref<boolean> = ref(true)
+const isLoading: Ref<boolean> = ref(false)
 
 const userId = computed(() => modalStore.modals.studentEdit)
 
@@ -50,55 +51,6 @@ const items = [
     slot: 'paymentStatus' as const
   }
 ] satisfies TabsItem[]
-
-async function loadStudent() {
-  if (!userId.value) {
-    formData.value = null
-    return
-  }
-  try {
-    const result = await getStudentByIdService(userId.value)
-    console.log(result.data);
-
-    if (result.statusCode === 200) {
-      formData.value = result.data as StudentListData
-    }
-  } catch (error: any) {
-    console.log(error.message || error)
-    formData.value = null
-  }
-}
-
-async function loadBelt() {
-  try {
-    const result = await getAllBeltService()
-    if (result.statusCode === 200) {
-      beltItems.value = Array.isArray(result.data) ? result.data : []
-      itemsSelect.value = beltItems.value.map(item => ({
-        label: item.color,
-        value: String(item.id)
-      }))
-    }
-  } catch (error: any) {
-    console.error('Error loadSports:', error.message || error)
-  }
-}
-
-onMounted(() => {
-  loadBelt()
-  if (userId.value) {
-    nextTick(loadStudent)
-  }
-})
-
-// open modal just yourself master id
-watch(userId, (id) => {
-  if (id) {
-    loadStudent()
-  } else {
-    formData.value = null
-  }
-})
 
 const schema = v.object({
   fullName: v.pipe(
@@ -145,13 +97,13 @@ const schema = v.object({
     v.regex(/^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/, 'فرمت تاریخ میلادی صحیح نیست. مثال: 2000-04-20')
   ),
   beltIds: v.pipe(v.string(), v.trim()),
+  planId: v.pipe(v.string(), v.trim()),
   underSupervisionDoctor: v.boolean(),
   diseaseRecords: v.boolean()
 })
 
 type Schema = v.InferOutput<typeof schema>;
 
-// state form data
 const state = reactive<UpdateStudent>({
   fullName: '',
   nationalCode: '',
@@ -163,9 +115,9 @@ const state = reactive<UpdateStudent>({
   birthDate: '',
   age: '',
   beltIds: '',
+  planId: ''
 })
 
-// view data and updated data
 watch(formData, (data) => {
   if (!data) {
     state.fullName = ''
@@ -178,6 +130,7 @@ watch(formData, (data) => {
     state.birthDate = ''
     state.age = ''
     state.beltIds = ''
+    state.planId = ''
     return
   }
   state.fullName = data.fullName ?? ''
@@ -188,8 +141,9 @@ watch(formData, (data) => {
   state.diseaseRecords = data.diseaseRecords ?? ''
   state.underSupervisionDoctor = data.underSupervisionDoctor ?? ''
   state.birthDate = gregorianToDate(data.birthDate) ?? ''
-  state.age = data.age.toString() ?? ''
-  state.beltIds = data.currentBelt?.id?.toString() ?? ''
+  state.age = data.age?.toString() ?? ''
+  state.beltIds = data.currentBelt?.id.toString() ?? ''
+  state.planId = data.assignedPlan?.id.toString() ?? ''
 })
 
 const transactionStatusText: Record<TransactionStatus, string> = {
@@ -225,20 +179,51 @@ const transactionIconBadge = {
   UPCOMING: 'neutral',
 }
 
+async function loadStudent() {
+  try {
+    const result = await getStudentByIdService(userId.value)
+    console.log(result.data);
+
+    if (result.statusCode === 200) {
+      formData.value = result.data as StudentListData
+    }
+  } catch (error: any) {
+    console.log(error.message || error)
+    formData.value = null
+  }
+}
+
+async function fetchPlanStudent() {
+  try {
+    const result = await getPlanMasterByStudentService();
+    console.log(result.data);
+    if (result.statusCode === 200) {
+      planData.value = Array.isArray(result.data) ? result.data : [];
+      itemsSelectPlan.value = planData.value.map(item => ({
+        label: item.name,
+        value: String(item.id)
+      }));
+    }
+  } catch (error: any) {
+    console.error(error.message || error);
+  }
+}
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
   try {
-    const payload = {
+    const payload: UpdateStudent = {
       ...event.data,
       age: Number(event.data.age),
-      beltIds: [Number(event.data.beltIds)]
+      beltIds: [Number(event.data.beltIds)],
+      planId: Number(event.data.planId)
     }
     const result = await updateStudentService(userId.value, payload)
     if (result.statusCode === 200) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-      emit('success')
       isShow.value = true
       localOpen.value = false
+      emit('updated', result.data)
     }
   } catch (error: any) {
     console.log(error.message || error);
@@ -247,34 +232,33 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   }
 }
 
-function getBeltClass(color: string) {
-  const colorMap: Record<string, string> = {
-    'سفید': 'belt-white',
-    'خاکستری': 'belt-gray',
-    'زرد': 'belt-yellow',
-    'نارنجی': 'belt-orange',
-    'سبز': 'belt-green',
-    'آبی': 'belt-blue',
-    'بنفش': 'belt-purple',
-    'قهوه‌ای': 'belt-brown',
-    'قرمز': 'belt-red',
-    'قرمز/سیاه': 'belt-red-black',
-    'قرمز/سفید': 'belt-red-white',
-    'مشکی': 'belt-black',
-    'صورتی': 'belt-pink',
-    'طلایی': 'belt-gold',
-    'نقره‌ای': 'belt-silver'
+function toggleInput() {
+  isShow.value = !isShow.value
+}
+
+watch(gettingVariousDataStore, (value) => {
+  itemsSelectBelt.value = value.beltData.map(item => ({
+    label: item.color,
+    value: String(item.id)
+  }))
+})
+
+
+watch(userId, (id) => {
+  if (id) {
+    loadStudent()
+  } else {
+    formData.value = null
   }
-  return colorMap[color]
-}
+})
 
-function enableInputs(): void {
-  isShow.value = false
-}
-
-function disableInputs(): void {
-  isShow.value = true
-}
+onMounted(() => {
+  fetchPlanStudent()
+  gettingVariousDataStore.fetchBelts()
+  if (userId.value) {
+    nextTick(loadStudent)
+  }
+})
 </script>
 
 <template>
@@ -296,9 +280,9 @@ function disableInputs(): void {
               </div>
             </div>
             <div class="flex gap-3 max-md:hidden">
-              <UButton v-if="isShow" @click="enableInputs" color="tertiary" variant="outline" size="lg" label="ویرایش"
+              <UButton v-if="isShow" @click="toggleInput" color="tertiary" variant="outline" size="lg" label="ویرایش"
                 trailing-icon="material-symbols:edit-square-outline-rounded" />
-              <UButton v-if="!isShow" @click="disableInputs" color="neutral" variant="outline" size="lg" label="انصراف"
+              <UButton v-if="!isShow" @click="toggleInput" color="neutral" variant="outline" size="lg" label="انصراف"
                 trailing-icon="material-symbols:close-rounded" />
             </div>
           </div>
@@ -335,14 +319,14 @@ function disableInputs(): void {
             </div>
           </div>
           <div class="flex gap-3 min-md:hidden">
-            <UButton v-if="isShow" @click="enableInputs" color="tertiary" variant="outline" size="lg" label="ویرایش"
+            <UButton v-if="isShow" @click="toggleInput" color="tertiary" variant="outline" size="lg" label="ویرایش"
               trailing-icon="material-symbols:edit-square-outline-rounded" />
-            <UButton v-if="!isShow" @click="disableInputs" color="neutral" variant="outline" size="lg" label="انصراف"
+            <UButton v-if="!isShow" @click="toggleInput" color="neutral" variant="outline" size="lg" label="انصراف"
               trailing-icon="material-symbols:close-rounded" />
           </div>
         </div>
         <div class="bg-muted p-4 rounded-xl w-full flex items-center gap-5">
-          <LazyBaseTabs :items="items" color="tertiary">
+          <BaseTabs :items="items" color="tertiary">
             <template #editData>
               <div class="w-full h-full bg-white rounded-lg p-4">
                 <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
@@ -380,9 +364,11 @@ function disableInputs(): void {
                         label="سوابق بیماری یا آسیب‌دیدگی؟" :disable="isShow" />
                     </div>
                     <USeparator />
-                    <div class="w-full">
-                      <BaseFormSelect :required="false" v-model="state.beltIds" :items="itemsSelect" name="beltIds"
+                    <div class="flex flex-col gap-4 w-full">
+                      <BaseFormSelect :required="false" v-model="state.beltIds" :items="itemsSelectBelt" name="beltIds"
                         label="انتخاب کمربند" :disable="isShow" />
+                      <BaseFormSelect v-if="state.planId" :required="false" v-model="state.planId"
+                        :items="itemsSelectPlan" name="planId" label="انتخاب پلن" :disable="isShow" />
                     </div>
                     <div class="flex justify-end gap-2 pt-4">
                       <UButton v-if="!isShow" :loading="isLoading" label="اعمال تغییرات" color="primary" type="submit"
@@ -441,7 +427,8 @@ function disableInputs(): void {
                           class="size-7" :class="transactionIconColor[lastTransaction?.status] || 'text-gray-400'" />
                       </div>
                       <span class="text-xl font-medium">
-                        {{ lastTransaction ? transactionStatusText[lastTransaction?.status] : 'هیچ پرداختی موجود نیست' }}
+                        {{ lastTransaction ? transactionStatusText[lastTransaction?.status] : 'هیچ پرداختی موجود نیست'
+                        }}
                       </span>
                       <span class="text-sm">وضعیت فعلی</span>
                     </div>
@@ -469,7 +456,7 @@ function disableInputs(): void {
                 </div>
                 <div class="bg-white w-full h-72 p-4 rounded-lg overflow-hidden" v-if="formData.studentTransactions">
                   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 overflow-auto h-full w-full">
-                    <div class="flex items-center gap-4 bg-muted p-3 rounded-xl"
+                    <div class="flex items-center gap-4 bg-muted p-3 rounded-xl h-fit"
                       v-for="transaction in formData.studentTransactions" :key="transaction.id">
                       <div class="flex justify-center items-center">
                         <UIcon :name="transactionIcon[lastTransaction?.status] || 'bi:emoji-neutral-fill'"
@@ -481,7 +468,7 @@ function disableInputs(): void {
                             {{ Number(transaction.amount).toLocaleString('fa-IR') }}
                             تومان
                           </span>
-                          <span class="font-medium text-sm flex items-center gap-1">
+                          <span class="font-medium text-sm flex items-center gap-1" v-if="transaction.paymentDate">
                             {{ gregorianToJalali(transaction.paymentDate) }}
                           </span>
                         </div>
@@ -494,7 +481,7 @@ function disableInputs(): void {
                 <span v-else>هیچ دیتا پرداختی وجود ندارد</span>
               </div>
             </template>
-          </LazyBaseTabs>
+          </BaseTabs>
         </div>
       </div>
     </template>
