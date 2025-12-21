@@ -20,12 +20,12 @@
       }))" label="ستون ها" class="w-full" />
       <BaseDropdownMenu :items="PeriodOptions.map(date => (
         {
-          label: attendancePeriodLabels[date], type: 'checkbox' as const, checked: selectedPeriod.includes(date),
+          label: attendancePeriodLabels[date], type: 'checkbox' as const, checked: selectedPeriod === date,
           onUpdateChecked(checked: boolean) {
             if (checked) {
-              selectedPeriod.push(date)
+              selectedPeriod = date
             } else {
-              selectedPeriod = selectedPeriod.filter(b => b !== date)
+              selectedPeriod = null
             }
           },
           onSelect(e?: Event) { e?.preventDefault() }
@@ -94,7 +94,7 @@
   </div>
   <div class="w-full h-full p-5 rounded-xl bg-white flex flex-col gap-5">
     <div class="flex flex-col gap-2">
-      <span class="text-2xl font-bold"> ({{ reportData.length }})گزارش حضور و غیاب</span>
+      <span class="text-2xl font-bold">گزارش حضور و غیاب</span>
       <p class="break-words font-medium text-sm">تاریخچه حضور و غیاب کلاس‌ ها</p>
     </div>
     <UTable ref="table" :data="filteredData" :loading="isLoading" loading-color="neutral" :columns="columns"
@@ -123,7 +123,7 @@ const sessionsData = shallowRef<AttendanceSessions | null>(null)
 const isLoading: Ref<boolean> = ref(false)
 const hasMore: Ref<boolean> = ref(true)
 const page = ref(1)
-const limit = ref(10)
+const limit = ref(15)
 const totalPages = ref(0)
 
 const attendanceStatusLabels: Record<AttendanceStatus, string> = {
@@ -139,7 +139,7 @@ const attendancePeriodLabels: Record<AttendancePeriod, string> = {
   [AttendancePeriod.month]: 'این ماه',
 }
 
-const selectedPeriod = ref<AttendancePeriod[]>([])
+const selectedPeriod = ref<AttendancePeriod | null>(null)
 const selectedAttendance = ref<AttendanceStatus[]>([])
 const PeriodOptions = ref(
   [AttendancePeriod.today, AttendancePeriod.week, AttendancePeriod.month]
@@ -161,8 +161,8 @@ const filteredData = computed(() => {
     const rowDate = dayjs(row.date);
     const statusMatch = selectedAttendance.value.length === 0 ||
       selectedAttendance.value.includes(row.status);
-    const dateMatch = selectedPeriod.value.length === 0 ||
-      selectedPeriod.value.some(p => rowDate.isSame(now, periodMapping[p]));
+    const dateMatch = selectedPeriod.value === null ||
+      rowDate.isSame(now, periodMapping[selectedPeriod.value]);
     return statusMatch && dateMatch;
   });
 });
@@ -170,7 +170,7 @@ const filteredData = computed(() => {
 async function getAttendanceReport() {
   isLoading.value = true
   try {
-    const periodParam = selectedPeriod.value.length > 0 ? selectedPeriod.value.join(',') : undefined
+    const periodParam = selectedPeriod.value || undefined
     const result = await getAttendanceReportService(page.value, limit.value, periodParam)
     console.log(result);
     if (result.statusCode === 200) {
@@ -198,7 +198,13 @@ async function getAttendanceReport() {
   }
 }
 
-watch([page, limit, selectedPeriod], getAttendanceReport)
+watch(selectedPeriod, () => {
+  page.value = 1
+  hasMore.value = true
+  reportData.value = []
+  getAttendanceReport()
+})
+
 onMounted(async () => {
   await getAttendanceReport()
 
