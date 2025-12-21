@@ -1,5 +1,4 @@
 import type { AcceptAttendance } from "~/models/attendance/AcceptAttendance";
-import type { AttendancePeriod } from "~/models/attendance/AttendanceListData";
 
 export const acceptListAttendanceService = (data: AcceptAttendance) => {
   return FetchApi(`/attendance/mark`, {
@@ -12,10 +11,25 @@ export const getListAttendanceService = (page: number, limit: number) => {
   return FetchApi(`/attendance/list?page=${page}&limit=${limit}`);
 };
 
-export const getAttendanceReportService = (page: number, limit: number, period?: AttendancePeriod) => {
-  let url = `/attendance/report?page=${page}&limit=${limit}`;
+// export const getAttendanceReportService = (page: number, limit: number, period?: AttendancePeriod) => {
+//   let url = `/attendance/report?page=${page}&limit=${limit}`;
+//   if (period) {
+//     url += `&period=${period}`;
+//   }
+//   return FetchApi(url);
+// };
+
+export const getAttendanceReportService = (
+  page: number,
+  limit: number,
+  period?: string
+) => {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+  });
   if (period) {
-    url += `&period=${period}`;
+    params.append("period", period);
   }
-  return FetchApi(url);
+  return FetchApi(`/attendance/report?${params.toString()}`);
 };
