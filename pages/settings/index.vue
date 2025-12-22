@@ -261,8 +261,6 @@ const schema = v.object({
     v.string(),
     v.trim(),
     v.nonEmpty('شماره تلفن باشگاه الزامی است'),
-    v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
-    v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد'),
     v.regex(/^\d+$/, 'شماره تلفن فقط می‌تواند شامل اعداد باشد')
   ),
   foundationDate: v.pipe(
