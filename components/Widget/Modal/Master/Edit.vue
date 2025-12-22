@@ -57,19 +57,28 @@ const schema = v.object({
     v.string(),
     v.trim(),
     v.nonEmpty('کد ملی الزامی است.'),
-    v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید')
+    v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
+    v.regex(/^\d+$/, 'کد ملی فقط می‌تواند شامل اعداد باشد')
   ),
   phoneNumber: v.pipe(
     v.string(),
     v.trim(),
     v.nonEmpty('شماره تلفن الزامی است'),
     v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
-    v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد')
+    v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد'),
+    v.regex(/^09\d{9,10}$/, 'شماره تلفن باید با 09 شروع شود')
   ),
   birthDate: v.pipe(
     v.string(),
     v.trim(),
     v.regex(/^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/, 'فرمت تاریخ میلادی صحیح نیست. مثال: 2000-04-20')
+  ),
+  age: v.pipe(
+    v.string(),
+    v.trim(),
+    v.minLength(1, 'سن نمی‌تواند خالی باشد'),
+    v.maxLength(2, 'سن باید حداکثر ۲ رقم باشد'),
+    v.regex(/^\d+$/, 'سن باید عدد باشد')
   ),
   imageFile: v.optional(
     v.pipe(
@@ -81,7 +90,6 @@ const schema = v.object({
   ),
   history: v.pipe(v.string(), v.trim()),
   certificates: v.pipe(v.string(), v.trim()),
-  age: v.pipe(v.string(), v.trim()),
   sportId: v.pipe(v.string(), v.trim()),
 })
 

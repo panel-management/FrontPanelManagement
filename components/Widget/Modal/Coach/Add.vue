@@ -30,19 +30,23 @@ const schema = v.object({
     v.string(),
     v.trim(),
     v.nonEmpty('کد ملی الزامی است'),
-    v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید')
+    v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
+    v.regex(/^\d+$/, 'کد ملی فقط می‌تواند شامل اعداد باشد')
   ),
   phoneNumber: v.pipe(
     v.string(),
     v.trim(),
     v.nonEmpty('شماره تلفن الزامی است'),
     v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
-    v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد')
+    v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد'),
+    v.regex(/^09\d{9,10}$/, 'شماره تلفن باید با 09 شروع شود')
   ),
   history: v.pipe(
     v.string(),
     v.trim(),
     v.nonEmpty('سابقه تدریس الزامی است'),
+    v.maxLength(2, 'سابقه تدریس باید حداکثر ۲ رقم باشد'),
+    v.regex(/^\d+$/, 'سابقه تدریس باید عدد باشد')
   ),
   certificates: v.pipe(
     v.string(),
@@ -59,6 +63,9 @@ const schema = v.object({
     v.string(),
     v.trim(),
     v.nonEmpty('سن مربی الزامی است'),
+    v.minLength(1, 'سن مربی نمی‌تواند خالی باشد'),
+    v.maxLength(2, 'سن مربی باید حداکثر ۲ رقم باشد'),
+    v.regex(/^\d+$/, 'سن باید عدد باشد')
   ),
   imageFile: v.optional(
     v.pipe(
