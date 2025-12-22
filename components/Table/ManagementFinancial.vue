@@ -197,16 +197,20 @@ async function getTransactionStudent() {
     if (result.statusCode === 200) {
       const newItems = Array.isArray(result.data?.transactions) ? result.data?.transactions : [];
       generalSum.value = result.data?.generalSum as GeneralSum
-
       if (page.value === 1) {
         formData.value = newItems;
       } else {
         formData.value.push(...newItems);
       }
-
       if (result.pagination) {
         totalPages.value = result.pagination.totalPages;
         if (page.value >= totalPages.value) {
+          hasMore.value = false;
+        } else {
+          page.value++;
+        }
+      } else {
+        if (newItems.length < limit.value) {
           hasMore.value = false;
         } else {
           page.value++;
@@ -274,11 +278,13 @@ onMounted(async () => {
     useInfiniteScroll(
       table.value.$el,
       () => {
-        getTransactionStudent();
+        if (!isLoading.value && hasMore.value) {
+          getTransactionStudent();
+        }
       },
       {
-        distance: 10,
-        interval: 1000,
+        distance: 100,
+        interval: 500,
         canLoadMore: () => !isLoading.value && hasMore.value
       }
     )

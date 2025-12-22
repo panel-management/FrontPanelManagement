@@ -189,6 +189,12 @@ async function getAttendanceReport() {
         } else {
           page.value++;
         }
+      } else {
+        if (newItems.length < limit.value) {
+          hasMore.value = false;
+        } else {
+          page.value++;
+        }
       }
     }
   } catch (error: any) {
@@ -214,11 +220,13 @@ onMounted(async () => {
     useInfiniteScroll(
       table.value.$el,
       () => {
-        getAttendanceReport()
+        if (!isLoading.value && hasMore.value) {
+          getAttendanceReport()
+        }
       },
       {
-        distance: 10,
-        interval: 1000,
+        distance: 100,
+        interval: 500,
         canLoadMore: () => !isLoading.value && hasMore.value
       }
     )

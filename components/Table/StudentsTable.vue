@@ -69,6 +69,9 @@ const loadingModel = defineModel<boolean>('loading', { required: true })
 const props = defineProps<{
   items: StudentData[],
 }>()
+defineExpose({
+  $el: table
+})
 
 const selectedBelts = ref<string[]>([])
 const selectedTransactionStatus = ref<TransactionStatus[]>([])
