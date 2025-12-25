@@ -1,11 +1,13 @@
 import { defineStore } from "pinia";
 import { getStatusPlanService } from "~/services/users.service";
 
-type PlanStatus = {
+export type PlanStatus = {
   isActive: boolean;
   isAdmin: boolean;
-  needsPayment: boolean;
   isPending: boolean;
+  isExpired: boolean;
+  noPlan: boolean;
+  needsPayment: boolean;
   userType: string;
   message: string;
   statusCode: number;
@@ -13,33 +15,24 @@ type PlanStatus = {
 
 export const useUsersStore = defineStore("users", {
   state: () => ({
-    planStatus: {
-      isActive: false,
-      isAdmin: false,
-      needsPayment: false,
-      isPending: false,
-      userType: "",
-      message: "",
-      statusCode: 0,
-    } as PlanStatus,
+    planStatus: null as PlanStatus | null,
+    planStatusLoaded: false,
   }),
+  getters: {
+    hasFullAccess: (state) => state.planStatus?.isActive === true,
+  },
   actions: {
-    async getStatusPlanUsers(): Promise<PlanStatus> {
+    async getStatusPlanUsers() {
       try {
         const result = await getStatusPlanService();
-        this.planStatus = {
-          isActive: result?.isActive,
-          isAdmin: result?.isAdmin,
-          needsPayment: result?.needsPayment,
-          isPending: result?.isPending,
-          userType: result?.userType,
-          message: result.message,
-          statusCode: result.statusCode,
-        };
+        this.planStatus = result;
+        this.planStatusLoaded = true;
+        return result;
       } catch (error: any) {
-        console.error("getStatusPlanUsers failed:", error);
+        console.log(error.message || error);
+        this.planStatusLoaded = true;
+        return null;
       }
-      return this.planStatus;
     },
   },
 });
