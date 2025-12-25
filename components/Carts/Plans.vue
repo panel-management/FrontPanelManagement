@@ -1,5 +1,5 @@
 <template>
-  <div class="container w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:pt-6 max-lg:px-2 lg:px-2">
+  <section class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:pt-6 max-lg:px-2 lg:px-2">
     <div v-for="data in activePlanDataMaster" :key="data.id"
       class="relative w-full md:max-w-sm bg-white rounded-2xl p-8 text-center border-2 border-sky-200 flex flex-col gap-10 transition-all duration-300 md:hover:-translate-y-2 hover:shadow-xl">
       <div class="flex flex-col gap-3">
@@ -30,32 +30,39 @@
       <!-- <button class="w-full py-4 px-5 bg-[#457b9d] text-white rounded-xl text-lg font-bold cursor-pointer transition-all duration-300 hover:bg-[#1d3557] hover:-translate-y-1"></button> -->
       <UButton :loading="isLoading[data.id]" @click="selectPlanMaster(data.id)"
         class="py-3 font-medium text-lg flex place-content-center" color="tertiary" variant="solid"
-        :label="data.type === 'TRIAL' ? 'شروع دوره آزمایشی' : 'خرید پلن'" />
+        :label="data.type === 'TRIAL' ? 'شروع دوره آزمایشی' : 'انتخاب'" />
     </div>
-  </div>
+  </section>
 </template>
 <script setup lang="ts">
 import type { MasterPlanData } from '~/models/plan/masterPlan/MasterPlanData';
 import { selectPlanYourSelfMasterService } from '~/services/master.service';
 import { getPlanMasterOrAdminService } from '~/services/masterPlan.service';
 
-const isLoading = reactive<Record<number, boolean>>({})
 const formData: Ref<MasterPlanData[]> = ref([])
+const isLoading = reactive<Record<number, boolean>>({})
 const toastStore = useToastStore();
-const router = useRouter()
 const userStore = useUsersStore()
 
 async function selectPlanMaster(id: number) {
   isLoading[id] = true
   try {
     const result = await selectPlanYourSelfMasterService(id);
+    console.log(result);
+
     if (result.statusCode === 200) {
       toastStore.setAlert(result.data?.message, '', 'success', 'ep:success-filled')
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-      setInterval(async () => {
-        router.push('/dashboard')
-        await userStore.getStatusPlanUsers()
-      }, 200);
+      await userStore.getStatusPlanUsers()
+      const plan = userStore.planStatus
+      if (plan?.needsPayment) {
+        await navigateTo('/payment')
+        return
+      }
+      if (plan?.isActive) {
+        await navigateTo('/dashboard')
+        return
+      }
     }
   } catch (error: any) {
     console.log(error.message || error)
@@ -78,7 +85,5 @@ async function getPlanMaster() {
 
 const activePlanDataMaster = computed(() => formData.value.filter(item => item.isActive))
 
-onMounted(() => {
-  nextTick(() => getPlanMaster())
-})
+onMounted(getPlanMaster)
 </script>

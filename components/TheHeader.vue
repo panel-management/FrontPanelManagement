@@ -1,13 +1,23 @@
 <template>
   <div class="flex justify-between items-center-safe">
     <LazyTheSlider />
-    <div class="flex justify-center items-center-safe gap-5">
-      <span class="text-lg">{{ useJDate(new Date()) }} ساعت {{ currentTime }}</span>
-      <UIcon name="ant-design:fullscreen-outlined" mode="svg" class="size-7 text-black cursor-pointer  max-lg:hidden"
-        @click="toggleFullScreen" />
+    <div class="flex justify-center items-center-safe gap-4">
+      <ClientOnly>
+        <span class="text-lg">
+          {{ jDate }} ساعت {{ currentTime }}
+        </span>
+        <template #fallback>
+          <div class="bg-muted h-6 w-44 rounded animate-pulse"></div>
+        </template>
+      </ClientOnly>
+      <UIcon v-if="isFullscreen" name="garden:minimize-stroke-12" mode="svg"
+        class="size-[22px] text-black cursor-pointer  max-lg:hidden" @click="toggle" />
+      <UIcon v-else name="garden:maximize-stroke-12" mode="svg"
+        class="size-[22px] text-black cursor-pointer  max-lg:hidden" @click="toggle" />
       <UDropdownMenu v-model:open="isOpen" :items="dropDownMenu"
         :content="{ align: 'end', side: 'bottom', sideOffset: 8 }" :ui="{ content: 'w-48' }">
-        <UIcon name="material-symbols:account-circle-full" mode="svg" class="size-7 text-black cursor-pointer" />
+        <!-- <UIcon name="material-symbols:account-circle-full" mode="svg" class="size-7 text-black cursor-pointer" /> -->
+        <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" />
       </UDropdownMenu>
     </div>
   </div>
@@ -18,34 +28,22 @@ import { useJDate } from "../composables/useJdate";
 import type { DataUsers } from "~/models/users/dataUsers";
 import { getDataUserService } from '~/services/users.service';
 
-const dropDownMenu = ref<DropdownMenuItem[][]>([])
-const isFullScreen: Ref<boolean> = ref(false);
-const currentTime: Ref<string> = ref('');
-const isOpen: Ref<boolean> = ref(false)
-const formData: Ref<DataUsers | null> = ref(null)
 const route = useRoute()
 const accountStore = useAccountStore()
-let timerId = ref(null);
+const { isFullscreen, toggle } = useFullscreen();
+const now = useNow()
+const dropDownMenu = ref<DropdownMenuItem[][]>([])
+const formData: Ref<DataUsers | null> = ref(null)
+const isOpen: Ref<boolean> = ref(false)
 
-const toggleFullScreen = () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen();
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    }
-  }
-};
-
-const updateFullScreenStatus = () => {
-  isFullScreen.value = !!document.fullscreenElement;
-};
-
-const updateTime = () => {
-  const now = new Date();
-  const options = { hour: 'numeric', minute: 'numeric' };
-  currentTime.value = now.toLocaleTimeString('fa-IR', options);
-};
+const jDate = computed(() => useJDate(now.value))
+const currentTime = computed(() =>
+  now.value.toLocaleTimeString('fa-IR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  })
+)
 
 async function viewDataUser() {
   try {
@@ -60,22 +58,7 @@ async function viewDataUser() {
   }
 }
 
-onMounted(() => {
-  document.addEventListener('fullscreenchange', updateFullScreenStatus);
-
-  updateTime();
-  timerId = setInterval(updateTime, 1000);
-
-  viewDataUser()
-});
-
-onUnmounted(() => {
-  clearInterval(timerId);
-});
-
-onBeforeUnmount(() => {
-  document.removeEventListener('fullscreenchange', updateFullScreenStatus);
-});
+onMounted(viewDataUser);
 
 defineShortcuts({
   o: () => isOpen.value = !isOpen.value,
@@ -92,7 +75,7 @@ watch(formData, (value) => {
       {
         label: value?.fullName,
         avatar: {
-          src: 'https://github.com/benjamincanac.png'
+          src: 'https://avatars.githubusercontent.com/u/739984?v=4'
         },
         type: 'label'
       }
@@ -108,7 +91,7 @@ watch(formData, (value) => {
         label: 'پروفایل مربی',
         icon: 'i-lucide-user',
         kbds: ['p'],
-        to: '/profile/coaches',
+        to: '/profile/coach',
       },
       {
         label: 'تیکت ها',
