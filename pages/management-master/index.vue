@@ -13,54 +13,60 @@
       </div>
       <TableMasterTable :items="formData" v-model:loading="isLoading" @deleted="handleDelete" />
     </div>
-    <LazyWidgetModalMasterEdit v-model:open="modalStore.modals.masterEdit" @updated="handleUpdate" />
+    <LazyWidgetModalMasterEdit
+      v-model:open="modalStore.modals.masterEdit"
+      @updated="handleUpdate"
+    />
   </section>
 </template>
 <script setup lang="ts">
-import type { MasterData } from '~/models/users/master/MasterData';
-import { getAllMasterService } from '~/services/master.service';
+  import type { MasterData } from '~/models/users/master/MasterData'
+  import { getAllMasterService } from '~/services/master.service'
 
-const formData: Ref<MasterData[]> = ref([])
-const isLoading: Ref<boolean> = ref(false)
-const modalStore = useModalStore()
+  const formData: Ref<MasterData[]> = ref([])
+  const isLoading: Ref<boolean> = ref(false)
+  const modalStore = useModalStore()
 
-async function getMasterData() {
-  isLoading.value = true
-  try {
-    const result = await getAllMasterService()
-    if (result.statusCode === 200) {
-      console.log(result.data);
-      formData.value = Array.isArray(result.data) ? result.data : [];
+  async function getMasterData() {
+    isLoading.value = true
+    try {
+      const result = await getAllMasterService()
+      if (result.statusCode === 200) {
+        console.log(result.data)
+        formData.value = Array.isArray(result.data) ? result.data : []
+      }
+    } catch (error: any) {
+      console.log(error.message || error)
+    } finally {
+      isLoading.value = false
     }
-  } catch (error: any) {
-    console.log(error.message || error)
-  } finally {
-    isLoading.value = false
   }
-}
 
-function handleUpdate(updatedItem: MasterData | undefined) {
-  if (!updatedItem) return
-  const index = formData.value.findIndex(u => u.user_id === updatedItem.user_id)
-  if (index !== -1) {
-    formData.value[index] = { ...formData.value[index], ...updatedItem }
+  function handleUpdate(updatedItem: MasterData | undefined) {
+    if (!updatedItem) return
+    const index = formData.value.findIndex((u) => u.user_id === updatedItem.user_id)
+    if (index !== -1) {
+      formData.value[index] = { ...formData.value[index], ...updatedItem }
+    }
   }
-}
 
-function handleDelete(id: number) {
-  formData.value = formData.value.filter(user => user.user_id !== id)
-}
+  function handleDelete(id: number) {
+    formData.value = formData.value.filter((user) => user.user_id !== id)
+  }
 
-onMounted(getMasterData)
+  onMounted(getMasterData)
 
-definePageMeta({
-  middleware: ["role-guard", "plan-guard"],
-})
+  definePageMeta({
+    middleware: ['role-guard', 'plan-guard'],
+  })
 
-useHead({
-  title: "مدیریت اساتید",
-  meta: [
-    { name: "description", content: "مدیریت اطلاعات اساتید، برنامه کلاس‌ ها و وضعیت فعالیت آن‌ها در باشگاه." }
-  ]
-})
+  useHead({
+    title: 'مدیریت اساتید',
+    meta: [
+      {
+        name: 'description',
+        content: 'مدیریت اطلاعات اساتید، برنامه کلاس‌ ها و وضعیت فعالیت آن‌ها در باشگاه.',
+      },
+    ],
+  })
 </script>

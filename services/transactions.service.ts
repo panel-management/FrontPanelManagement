@@ -1,33 +1,28 @@
-import type { CreateTransactionEquipment } from "~/models/transactions/CreateTransactionEquipment";
-import type { RejectTransaction } from "~/models/transactions/RejectTransaction";
+import type { CreateTransactionEquipment } from '~/models/transactions/CreateTransactionEquipment'
+import type { RejectTransaction } from '~/models/transactions/RejectTransaction'
 
 export const getHistoryTransactionMasterService = (page: number, limit: number) => {
-  return FetchApi(`/financials/transactions/master/history?page=${page}&limit=${limit}`);
-};
+  return FetchApi(`/financials/transactions/master/history?page=${page}&limit=${limit}`)
+}
 
 export const getHistoryTransactionStudentService = (page: number, limit: number) => {
-  return FetchApi(`/financials/transactions/student/history?page=${page}&limit=${limit}`);
-};
+  return FetchApi(`/financials/transactions/student/history?page=${page}&limit=${limit}`)
+}
 
-export const createTransactionEquipmentService = (
-  data: CreateTransactionEquipment
-) => {
-  return FetchApi("/financials/transactions/equipment", {
-    method: "POST",
+export const createTransactionEquipmentService = (data: CreateTransactionEquipment) => {
+  return FetchApi('/financials/transactions/equipment', {
+    method: 'POST',
     body: data,
-  });
-};
+  })
+}
 
 export const confirmTransactionService = (id: number) => {
-  return FetchApi(`/financials/transactions/${id}/confirm`, { method: "PUT" });
-};
+  return FetchApi(`/financials/transactions/${id}/confirm`, { method: 'PUT' })
+}
 
-export const rejectTransactionService = (
-  id: number,
-  reject: RejectTransaction
-) => {
+export const rejectTransactionService = (id: number, reject: RejectTransaction) => {
   return FetchApi(`/financials/transactions/${id}/reject`, {
-    method: "POST",
+    method: 'POST',
     body: reject,
-  });
-};
+  })
+}

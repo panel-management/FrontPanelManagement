@@ -1,4 +1,4 @@
 export enum Active {
-    ENABLE = 'ENABLE',
-    DISABLE = 'DISABLE'
+  ENABLE = 'ENABLE',
+  DISABLE = 'DISABLE',
 }

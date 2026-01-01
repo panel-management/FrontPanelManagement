@@ -1,5 +1,5 @@
 export enum TransactionType {
-  FEE = "FEE",
-  EQUIPMENT = "EQUIPMENT",
-  OTHER = "OTHER",
+  FEE = 'FEE',
+  EQUIPMENT = 'EQUIPMENT',
+  OTHER = 'OTHER',
 }

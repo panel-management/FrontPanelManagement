@@ -1,3 +1,3 @@
 export interface RejectTransaction {
-  reason: string;
+  reason: string
 }

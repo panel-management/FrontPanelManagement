@@ -1,5 +1,5 @@
 export interface CreateTransactionEquipment {
-  studentId: number;
-  amount: number;
-  description: string;
+  studentId: number
+  amount: number
+  description: string
 }

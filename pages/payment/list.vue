@@ -10,14 +10,17 @@
   </section>
 </template>
 <script setup lang="ts">
-definePageMeta({
-  middleware: ["role-guard", "plan-guard"],
-})
+  definePageMeta({
+    middleware: ['role-guard', 'plan-guard'],
+  })
 
-useHead({
-  title: "مدیریت مالی",
-  meta: [
-    { name: "description", content: "مشاهده و مدیریت پرداخت‌ های اعضا، وضعیت تسویه و تاریخچه تراکنش‌ ها." }
-  ]
-})
+  useHead({
+    title: 'مدیریت مالی',
+    meta: [
+      {
+        name: 'description',
+        content: 'مشاهده و مدیریت پرداخت‌ های اعضا، وضعیت تسویه و تاریخچه تراکنش‌ ها.',
+      },
+    ],
+  })
 </script>

@@ -12,11 +12,11 @@
   </UApp>
 </template>
 <script setup lang="ts">
-import { ar } from '@nuxt/ui/locale'
+  import { ar } from '@nuxt/ui/locale'
 
-useHead({
-  titleTemplate: (titleChunk) => {
-    return titleChunk ? `${titleChunk} - سامانه مدیریت هوشمند` : 'سامانه مدیریت';
-  }
-})
+  useHead({
+    titleTemplate: (titleChunk) => {
+      return titleChunk ? `${titleChunk} - سامانه مدیریت هوشمند` : 'سامانه مدیریت'
+    },
+  })
 </script>

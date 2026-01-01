@@ -1,3 +1,3 @@
 export interface SendMassage {
-  text: string;
+  text: string
 }

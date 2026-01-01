@@ -1,6 +1,6 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
-export const useModalStore = defineStore("modal", () => {
+export const useModalStore = defineStore('modal', () => {
   const modals = ref<Record<string, any>>({
     paymentAdd: false,
     paymentAdminAdd: false,
@@ -13,7 +13,7 @@ export const useModalStore = defineStore("modal", () => {
     equipmentAdd: false,
     masterEdit: false,
     supportAdd: false,
-  });
+  })
 
   // function toggleModal(name: string, payload: any = null) {
   //   if (typeof modals.value[name] === "boolean") {
@@ -38,15 +38,15 @@ export const useModalStore = defineStore("modal", () => {
   // }
 
   function toggleModal(name: string, payload?: any) {
-    if (typeof modals.value[name] === "boolean") {
-      modals.value[name] = payload ?? !modals.value[name];
+    if (typeof modals.value[name] === 'boolean') {
+      modals.value[name] = payload ?? !modals.value[name]
     } else {
-      modals.value[name] = payload ?? null;
+      modals.value[name] = payload ?? null
     }
   }
 
   return {
     modals,
     toggleModal,
-  };
-});
+  }
+})

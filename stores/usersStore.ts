@@ -1,19 +1,19 @@
-import { defineStore } from "pinia";
-import { getStatusPlanService } from "~/services/users.service";
+import { defineStore } from 'pinia'
+import { getStatusPlanService } from '~/services/users.service'
 
 export type PlanStatus = {
-  isActive: boolean;
-  isAdmin: boolean;
-  isPending: boolean;
-  isExpired: boolean;
-  noPlan: boolean;
-  needsPayment: boolean;
-  userType: string;
-  message: string;
-  statusCode: number;
-};
+  isActive: boolean
+  isAdmin: boolean
+  isPending: boolean
+  isExpired: boolean
+  noPlan: boolean
+  needsPayment: boolean
+  userType: string
+  message: string
+  statusCode: number
+}
 
-export const useUsersStore = defineStore("users", {
+export const useUsersStore = defineStore('users', {
   state: () => ({
     planStatus: null as PlanStatus | null,
     planStatusLoaded: false,
@@ -24,15 +24,15 @@ export const useUsersStore = defineStore("users", {
   actions: {
     async getStatusPlanUsers() {
       try {
-        const result = await getStatusPlanService();
-        this.planStatus = result;
-        this.planStatusLoaded = true;
-        return result;
+        const result = await getStatusPlanService()
+        this.planStatus = result
+        this.planStatusLoaded = true
+        return result
       } catch (error: any) {
-        console.log(error.message || error);
-        this.planStatusLoaded = true;
-        return null;
+        console.log(error.message || error)
+        this.planStatusLoaded = true
+        return null
       }
     },
   },
-});
+})

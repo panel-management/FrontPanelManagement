@@ -1,55 +1,52 @@
-import type { MasterPlanData } from "~/models/plan/masterPlan/MasterPlanData";
-import type { UpdateMasterPlanData } from "~/models/plan/masterPlan/UpdateMasterPlanData";
-import type { CreatePlanStudent } from "~/models/plan/studentPlan/CreatePlanStudent";
-import type { UpdatePlanStudent } from "~/models/plan/studentPlan/UpdatePlanStudent";
+import type { MasterPlanData } from '~/models/plan/masterPlan/MasterPlanData'
+import type { UpdateMasterPlanData } from '~/models/plan/masterPlan/UpdateMasterPlanData'
+import type { CreatePlanStudent } from '~/models/plan/studentPlan/CreatePlanStudent'
+import type { UpdatePlanStudent } from '~/models/plan/studentPlan/UpdatePlanStudent'
 
 export const getPlanMasterOrAdminService = () => {
-  return FetchApi("/financials/master-plans");
-};
+  return FetchApi('/financials/master-plans')
+}
 
 export const getPlanMasterByStudentService = () => {
-  return FetchApi("/financials/plans");
-};
+  return FetchApi('/financials/plans')
+}
 
 export const createMasterPlanService = (master: MasterPlanData) => {
-  return FetchApi("/financials/master-plans", {
-    method: "POST",
+  return FetchApi('/financials/master-plans', {
+    method: 'POST',
     body: master,
-  });
-};
+  })
+}
 
 export const createPlanMasterByStudentService = (data: CreatePlanStudent) => {
-  return FetchApi("/financials/plans", {
-    method: "POST",
+  return FetchApi('/financials/plans', {
+    method: 'POST',
     body: data,
-  });
-};
+  })
+}
 
 export const updatePlanMasterByStudentService = (id: number, data: UpdatePlanStudent) => {
   return FetchApi(`/financials/plans/${id}`, {
-    method: "PUT",
-    body: data
+    method: 'PUT',
+    body: data,
   })
-};
+}
 
-export const updateMasterPlanService = (
-  id: number,
-  master: UpdateMasterPlanData
-) => {
+export const updateMasterPlanService = (id: number, master: UpdateMasterPlanData) => {
   return FetchApi(`/financials/master-plans/${id}`, {
-    method: "PUT",
+    method: 'PUT',
     body: master,
-  });
-};
+  })
+}
 
 export const deleteMasterPlanService = (id: number) => {
   return FetchApi(`/financials/master-plans/${id}`, {
-    method: "DELETE",
-  });
-};
+    method: 'DELETE',
+  })
+}
 
 export const deletePlanMasterByStudentService = (id: number) => {
   return FetchApi(`/financials/plans/${id}`, {
-    method: "DELETE",
-  });
-};
+    method: 'DELETE',
+  })
+}

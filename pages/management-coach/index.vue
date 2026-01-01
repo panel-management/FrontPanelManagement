@@ -6,8 +6,13 @@
         <span class="text-xs sm:text-sm font-medium">مشاهده و مدیریت اطلاعات مربیان باشگاه</span>
       </div>
       <div class="sm:p-2">
-        <UButton @click="modalStore.toggleModal('coachesAdd')" trailing-icon="material-symbols:person-add" size="lg"
-          color="primary" variant="subtle">
+        <UButton
+          @click="modalStore.toggleModal('coachesAdd')"
+          trailing-icon="material-symbols:person-add"
+          size="lg"
+          color="primary"
+          variant="subtle"
+        >
           افزودن مربی جدید
         </UButton>
       </div>
@@ -20,54 +25,60 @@
       <TableCoachTable :items="formData" v-model:loading="isLoading" @delete="handleDelete" />
     </div>
     <LazyWidgetModalCoachAdd v-model:open="modalStore.modals.coachesAdd" @success="getCoachData" />
-    <LazyWidgetModalCoachEdit v-model:open="modalStore.modals.coachesEdit" @updated="handleUpdate" />
+    <LazyWidgetModalCoachEdit
+      v-model:open="modalStore.modals.coachesEdit"
+      @updated="handleUpdate"
+    />
   </section>
 </template>
 <script setup lang="ts">
-import type { CoachData } from '~/models/users/coach/CoachData';
-import { getAllCoachService } from '~/services/coach.service';
+  import type { CoachData } from '~/models/users/coach/CoachData'
+  import { getAllCoachService } from '~/services/coach.service'
 
-const formData: Ref<CoachData[]> = ref([])
-const isLoading: Ref<boolean> = ref(false)
-const modalStore = useModalStore()
+  const formData: Ref<CoachData[]> = ref([])
+  const isLoading: Ref<boolean> = ref(false)
+  const modalStore = useModalStore()
 
-async function getCoachData() {
-  isLoading.value = true
-  try {
-    const result = await getAllCoachService()
-    if (result.statusCode === 200) {
-      console.log(result.data);
-      formData.value = Array.isArray(result.data) ? result.data : []
+  async function getCoachData() {
+    isLoading.value = true
+    try {
+      const result = await getAllCoachService()
+      if (result.statusCode === 200) {
+        console.log(result.data)
+        formData.value = Array.isArray(result.data) ? result.data : []
+      }
+    } catch (error: any) {
+      console.log(error.message || error)
+    } finally {
+      isLoading.value = false
     }
-  } catch (error: any) {
-    console.log(error.message || error);
-  } finally {
-    isLoading.value = false
   }
-}
 
-function handleUpdate(updatedItem: CoachData | undefined) {
-  if (!updatedItem) return
-  const index = formData.value.findIndex(u => u.user_id === updatedItem.user_id)
-  if (index !== -1) {
-    formData.value[index] = { ...formData.value[index], ...updatedItem }
+  function handleUpdate(updatedItem: CoachData | undefined) {
+    if (!updatedItem) return
+    const index = formData.value.findIndex((u) => u.user_id === updatedItem.user_id)
+    if (index !== -1) {
+      formData.value[index] = { ...formData.value[index], ...updatedItem }
+    }
   }
-}
 
-function handleDelete(id: number) {
-  formData.value = formData.value.filter(user => user.user_id !== id)
-}
+  function handleDelete(id: number) {
+    formData.value = formData.value.filter((user) => user.user_id !== id)
+  }
 
-onMounted(getCoachData)
+  onMounted(getCoachData)
 
-definePageMeta({
-  middleware: ["role-guard", "plan-guard"],
-})
+  definePageMeta({
+    middleware: ['role-guard', 'plan-guard'],
+  })
 
-useHead({
-  title: "مدیریت مربیان",
-  meta: [
-    { name: "description", content: "مشاهده اطلاعات مربیان و برنامه‌های آموزشی مرتبط با کلاس‌های شما." }
-  ]
-})
+  useHead({
+    title: 'مدیریت مربیان',
+    meta: [
+      {
+        name: 'description',
+        content: 'مشاهده اطلاعات مربیان و برنامه‌های آموزشی مرتبط با کلاس‌های شما.',
+      },
+    ],
+  })
 </script>

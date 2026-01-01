@@ -1,4 +1,4 @@
 export interface UpdateMasterPlanData {
-  description: string;
-  isActive: boolean;
+  description: string
+  isActive: boolean
 }

@@ -1,9 +1,9 @@
 export interface confirmSubscriptionsMaster {
-  status: statusConfirmSubscriptionsMaster;
-  adminNotes?: string;
+  status: statusConfirmSubscriptionsMaster
+  adminNotes?: string
 }
 
 export enum statusConfirmSubscriptionsMaster {
-  CONFIRMED = "CONFIRMED",
-  REJECTED = "REJECTED",
+  CONFIRMED = 'CONFIRMED',
+  REJECTED = 'REJECTED',
 }

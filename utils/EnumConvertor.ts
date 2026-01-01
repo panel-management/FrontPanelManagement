@@ -1,12 +1,12 @@
-import { TypePlan } from "~/models/plan/masterPlan/MasterPlanData";
+import { TypePlan } from '~/models/plan/masterPlan/MasterPlanData'
 
 export const GetTypePlanMaster = (position: TypePlan) => {
   switch (position) {
     case TypePlan.PAID:
-      return "پولی";
+      return 'پولی'
     case TypePlan.TRIAL:
-      return "رایگان";
+      return 'رایگان'
     default:
-      return "";
+      return ''
   }
-};
+}
