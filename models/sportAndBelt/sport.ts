@@ -1,6 +1,5 @@
 export interface Sport {
-    id: number;
-    name: string;
-    hasBeltSystem: boolean;
-    users: any[];
+  id: number;
+  name: string;
+  hasBeltSystem: boolean;
 }
