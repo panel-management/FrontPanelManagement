@@ -30,7 +30,7 @@ const { planStatus, planStatusLoaded } = storeToRefs(userStore)
 
 const shouldShow = computed(() => {
   if (!planStatusLoaded.value) return false
-  return !planStatus.value?.isActive && !['/memberShip/plans', '/payment'].includes(route.path)
+  return !planStatus.value?.isActive && !['/membership/plans', '/payment'].includes(route.path)
 })
 
 const displayMessage = computed(() => {
@@ -42,7 +42,7 @@ const displayMessage = computed(() => {
 
 const targetLink = computed(() => {
   if (planStatus.value?.needsPayment) return '/payment'
-  return '/memberShip/plans'
+  return '/membership/plans'
 })
 
 const buttonLabel = computed(() => {

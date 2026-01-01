@@ -9,11 +9,10 @@
     </template>
     <template #footer>
       <UButton label="انصراف" color="neutral" variant="outline" @click="close" />
-      <UButton label="ارسال پیام" color="primary" variant="subtle" @click="confirm" />
+      <UButton v-if="localDescription.trim()" label="ارسال پیام" color="primary" variant="soft" @click="confirm" />
     </template>
   </UModal>
 </template>
-
 <script setup lang="ts">
 const props = defineProps<{ title: string }>();
 
