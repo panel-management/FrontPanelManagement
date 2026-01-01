@@ -25,15 +25,13 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
 import { useJDate } from "../composables/useJdate";
-import type { DataUsers } from "~/models/users/dataUsers";
-import { getDataUserService } from '~/services/users.service';
+import { Role } from '~/models/Role';
 
-const route = useRoute()
+const router = useRouter()
 const accountStore = useAccountStore()
+const roleStore = useRolesStore()
 const { isFullscreen, toggle } = useFullscreen();
 const now = useNow()
-const dropDownMenu = ref<DropdownMenuItem[][]>([])
-const formData: Ref<DataUsers | null> = ref(null)
 const isOpen: Ref<boolean> = ref(false)
 
 const jDate = computed(() => useJDate(now.value))
@@ -45,59 +43,57 @@ const currentTime = computed(() =>
   })
 )
 
-async function viewDataUser() {
-  try {
-    const result = await getDataUserService()
-    if (result.statusCode === 200) {
-      formData.value = result.data as DataUsers
-    } else if (result.statusCode === 401) {
-      accountStore.isLogout();
+onMounted(roleStore.getDetailUser)
+
+// defineShortcuts({
+//   o: () => isOpen.value = !isOpen.value,
+//   m: () => navigateTo("/profile/master", { replace: true }),
+//   c: () => navigateTo("/profile/coach", { replace: true }),
+//   u: () => navigateTo("/profile/student", { replace: true }),
+//   g: () => navigateTo("/setting/master", { replace: true }),
+//   a: () => navigateTo("/setting/admin", { replace: true }),
+//   t: () => navigateTo("/supports", { replace: true }),
+//   s: () => navigateTo("/supports/ticket", { replace: true }),
+// })
+
+const dropDownMenu = computed<DropdownMenuItem[][]>(() => {
+  const user = roleStore.detailUser
+  const role = user?.type
+
+  const sectionHeader: DropdownMenuItem[] = [
+    {
+      label: user?.fullName || 'کاربر سیستم',
+      avatar: {
+        src: 'https://avatars.githubusercontent.com/u/739984?v=4'
+      },
+      type: 'label'
     }
-  } catch (e: any) {
-    console.log(e)
-  }
-}
+  ]
 
-onMounted(viewDataUser);
+  const sectionActions: DropdownMenuItem[] = []
 
-defineShortcuts({
-  o: () => isOpen.value = !isOpen.value,
-  p: () => navigateTo("/profile", { replace: true }),
-  f: () => navigateTo("/settings", { replace: true }),
-  'alt_t': () => navigateTo("/supports", { replace: true }),
-  s: () => navigateTo("/supports/ticket", { replace: true }),
-  'shift_q': () => navigateTo("/", { replace: true }),
-})
-
-watch(formData, (value) => {
-  dropDownMenu.value = [
-    [
-      {
-        label: value?.fullName,
-        avatar: {
-          src: 'https://avatars.githubusercontent.com/u/739984?v=4'
-        },
-        type: 'label'
-      }
-    ],
-    [
-      {
-        label: 'پروفایل هنرجو',
-        icon: 'i-lucide-user',
-        kbds: ['p'],
-        to: '/profile/student',
-      },
-      {
-        label: 'پروفایل مربی',
-        icon: 'i-lucide-user',
-        kbds: ['p'],
-        to: '/profile/coach',
-      },
+  if (role === Role.Admin) {
+    sectionActions.push(
       {
         label: 'تیکت ها',
         icon: 'bi:patch-question-fll',
         kbds: ['t'],
         to: '/supports',
+      },
+      {
+        label: 'تنظیمات',
+        icon: 'i-lucide-cog',
+        kbds: ['f'],
+        to: '/setting/admin',
+      },
+    )
+  } else if (role === Role.Master) {
+    sectionActions.push(
+      {
+        label: 'پروفایل',
+        icon: 'i-lucide-user',
+        kbds: ['p'],
+        to: '/profile/master',
       },
       {
         label: 'پشتیبانی',
@@ -109,23 +105,40 @@ watch(formData, (value) => {
         label: 'تنظیمات',
         icon: 'i-lucide-cog',
         kbds: ['f'],
-        to: '/settings',
+        to: '/setting/master',
+      },
+    )
+  } else if (role === Role.Coach) {
+    sectionActions.push({
+      label: 'پروفایل',
+      icon: 'i-lucide-user',
+      kbds: ['p'],
+      to: '/profile/coach',
+    })
+  } else if (role === Role.Student) {
+    sectionActions.push({
+      label: 'پروفایل',
+      icon: 'i-lucide-user',
+      kbds: ['p'],
+      to: '/profile/student',
+    })
+  }
+
+  sectionActions.push(
+    {
+      label: 'خروج',
+      icon: 'i-lucide-log-out',
+      color: "error",
+      kbds: ['shift', 'q'],
+      onSelect() {
+        accountStore.isLogout()
+        setTimeout(() => {
+          router.push('/auth')
+        }, 200)
       }
-    ],
-    [
-      {
-        label: 'خروج',
-        icon: 'i-lucide-log-out',
-        color: "error",
-        kbds: ['shift', 'q'],
-        onSelect() {
-          accountStore.isLogout()
-          setTimeout(() => {
-            navigateTo(`/auth?redirectTo=${encodeURIComponent(route.fullPath)}`, { replace: true })
-          }, 200)
-        }
-      }
-    ]
-  ]
+    }
+  )
+
+  return [sectionHeader, sectionActions]
 })
 </script>
