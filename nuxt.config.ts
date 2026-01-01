@@ -1,22 +1,40 @@
-import tailwindcss from "@tailwindcss/vite";
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  compatibilityDate: "2025-05-15",
-  devtools: { enabled: process.env.APP_DEBUG?.toLocaleLowerCase() === "true" },
-  modules: ["@nuxt/ui", "@pinia/nuxt", "@vueuse/nuxt"],
-  css: ["~/assets/css/main.css"],
+  compatibilityDate: '2025-05-15',
+  devtools: {
+    enabled: import.meta.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
+  },
+  ssr: false,
+  modules: ['@nuxt/ui', '@pinia/nuxt', '@vueuse/nuxt'],
+  css: ['~/assets/css/main.css'],
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: !import.meta.env.APP_DEBUG,
+          drop_debugger: true,
+        },
+      },
+      sourcemap: import.meta.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
+      rollupOptions: {
+        output: {
+          manualChunks: undefined,
+        },
+      },
+    },
   },
   app: {
     head: {
-      charset: "utf-8",
-      viewport: "width=device-width, initial-scale=1",
-      meta: [{ "http-equiv": "X-UA-Compatible", content: "IE=edge" }],
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
+      meta: [{ 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' }],
       htmlAttrs: {
-        dir: "rtl",
-        lang: "fa",
-        translate: "no",
+        dir: 'rtl',
+        lang: 'fa',
+        translate: 'no',
       },
     },
   },
@@ -24,26 +42,18 @@ export default defineNuxtConfig({
     fonts: false,
     colorMode: false,
     theme: {
-      colors: [
-        "primary",
-        "secondary",
-        "tertiary",
-        "info",
-        "success",
-        "warning",
-        "error",
-      ],
+      colors: ['primary', 'secondary', 'tertiary', 'info', 'success', 'warning', 'error'],
     },
   },
   runtimeConfig: {
     public: {
-      APP_NAME: process.env.APP_NAME,
-      APP_ENV: process.env.APP_ENV,
-      APP_URL: process.env.APP_URL ?? "http://localhost:3000",
-      API_URL: process.env.API_URL,
-      PAYMENT_NAME: process.env.NUXT_PAYMENT_NAME,
-      PAYMENT_CARD: process.env.NUXT_PAYMENT_CARD,
-      PAYMENT_SHABA: process.env.NUXT_PAYMENT_SHABA,
+      APP_NAME: import.meta.env.APP_NAME,
+      APP_ENV: import.meta.env.APP_ENV,
+      APP_URL: import.meta.env.APP_URL ?? 'http://localhost:3000',
+      API_URL: import.meta.env.API_URL,
+      PAYMENT_NAME: import.meta.env.NUXT_PAYMENT_NAME,
+      PAYMENT_CARD: import.meta.env.NUXT_PAYMENT_CARD,
+      PAYMENT_SHABA: import.meta.env.NUXT_PAYMENT_SHABA,
     },
   },
-});
+})
