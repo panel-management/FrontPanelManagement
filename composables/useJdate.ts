@@ -1,7 +1,9 @@
 import dayjs from "dayjs";
 import "dayjs/locale/fa";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.locale("fa");
+dayjs.extend(relativeTime);
 
 export const useJDate = (
   date: any,
@@ -48,4 +50,28 @@ export const useFormatPeriod = (dateString: string) => {
   }
 
   return d.format("YYYY/MM/DD");
+};
+
+export const useTimeAgoFarsi = (dateString: string) => {
+  const then = dayjs(dateString);
+  const now = dayjs();
+
+  const diffDays = now.diff(then, "day");
+  const diffWeeks = Math.floor(diffDays / 7);
+  const diffMonths = now.diff(then, "month");
+  const diffYears = now.diff(then, "year");
+
+  if (diffYears >= 1) {
+    return `${diffYears} سال پیش`;
+  }
+
+  if (diffMonths >= 1) {
+    return `${diffMonths} ماه پیش`;
+  }
+
+  if (diffWeeks >= 1) {
+    return `${diffWeeks} هفته پیش`;
+  }
+
+  return then.fromNow();
 };
