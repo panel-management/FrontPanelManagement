@@ -12,6 +12,7 @@ node_modules
 # Logs
 logs
 *.log
+pnpm-debug.log
 
 # Misc
 .DS_Store
@@ -19,9 +20,8 @@ logs
 .idea
 
 # Local env files
-.env.*
+.env
 !.env.example
 
 # package
 package-lock.json
-pnpm-lock.yaml
