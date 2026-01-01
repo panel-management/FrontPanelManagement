@@ -143,9 +143,8 @@ async function deleteAccountUser(id: number) {
   }
 }
 
-watchEffect(() => {
-  statusSportOptions.value = gettingVariousDataStore.sportData
-  itemsSelect.value = statusSportOptions.value.map(item => item.name)
+watch(gettingVariousDataStore, (value)=>{
+  itemsSelect.value = value.sportData.map(item => item.name)
 })
 
 onMounted(gettingVariousDataStore.fetchSports)

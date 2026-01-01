@@ -111,8 +111,8 @@
   </div>
   <div class="w-full h-full p-5 rounded-xl bg-white flex flex-col gap-5">
     <div class="flex flex-col gap-2">
-      <span class="text-lg md:text-2xl font-bold">همه تراکنش های مالی ({{ formData.length }} مورد)</span>
-      <p class="break-words font-medium text-sm">تمام تراکنش‌های مالی باشگاه</p>
+      <span class="text-lg md:text-2xl font-bold">لیست تراکنش های مالی ({{ formData.length }} مورد)</span>
+      <p class="break-words font-medium text-sm">تمامی لیست تراکنش‌ های مالی باشگاه</p>
     </div>
     <UTable ref="table" :loading="isLoading" loading-color="neutral" :data="filteredData" :columns="columns"
       empty="هیچ اطلاعاتی برای نمایش وجود ندارد" sticky class="h-96 lg:h-svh no-scrollbar">

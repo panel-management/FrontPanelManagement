@@ -15,7 +15,7 @@
             e?.preventDefault()
           }
         }))" label="ستون ها" />
-        <BaseDropdownMenu :content="{ align: 'end', class: 'max-h-64 md:max-h-70' }" :items="itemsSelect.map(belt => ({
+        <BaseDropdownMenu v-if="hasSystemBelt" :content="{ align: 'end', class: 'max-h-64 md:max-h-70' }" :items="itemsSelect.map(belt => ({
           label: belt, type: 'checkbox' as const, checked: selectedBelts.includes(belt),
           onUpdateChecked(checked: boolean) {
             if (checked) {
@@ -49,7 +49,6 @@
 </template>
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-import type { Belt } from '~/models/sportAndBelt/belt'
 import { TransactionStatus } from '~/models/transactions/TransactionStatus'
 import type { StudentData } from '~/models/users/student/StudentData'
 import { deleteStudentService } from '~/services/student.service'
@@ -62,6 +61,7 @@ const modalStore = useModalStore()
 const toastStore = useToastStore()
 const { showConfirmDialog } = useConfirmDialog()
 const gettingVariousDataStore = useGettingVariousDataStore()
+const hasSystemBelt = computed(() => gettingVariousDataStore.hasBeltSystem)
 const itemsSelect: Ref<any[]> = ref([])
 
 const emit = defineEmits(['deleted'])
@@ -75,7 +75,7 @@ defineExpose({
 
 const selectedBelts = ref<string[]>([])
 const selectedTransactionStatus = ref<TransactionStatus[]>([])
-const beltOptions: Ref<Belt[]> = ref([])
+// const beltOptions: Ref<Belt[]> = ref([])
 const statusTransactionOption: Ref<TransactionStatus[]> = ref(
   [TransactionStatus.PAID, TransactionStatus.PENDING, TransactionStatus.UNPAID, TransactionStatus.UPCOMING]
 )
@@ -104,12 +104,18 @@ async function deleteAccountStudent(id: number) {
   }
 }
 
-watchEffect(() => {
-  beltOptions.value = gettingVariousDataStore.beltData
-  itemsSelect.value = beltOptions.value.map(item => item.color)
-})
+onMounted(gettingVariousDataStore.fetchSports)
 
-onMounted(gettingVariousDataStore.fetchBelts)
+watch(() => hasSystemBelt.value, (value) => {
+  if (value) {
+    gettingVariousDataStore.fetchBelts()
+  }
+}, { immediate: true })
+
+watch(() => gettingVariousDataStore.beltData, (value) => {
+  if (!value) return;
+  itemsSelect.value = value.map(item => item.color)
+}, { immediate: true })
 
 // type Payment = {
 //   id: string
@@ -142,171 +148,344 @@ const columnLabels: Record<string, string> = {
   updatedAt: 'تاریخ بروزرسانی'
 }
 
-const columns: TableColumn<StudentData>[] = [
-  {
-    accessorKey: 'fullName',
-    header: 'نام کامل',
-    cell: ({ row }) => {
-      return row.getValue('fullName')
-    }
-  },
-  {
-    accessorKey: 'phoneNumber',
-    header: 'شماره تلفن',
-    cell: ({ row }) => {
-      return row.getValue('phoneNumber')
-    }
-  },
-  {
-    accessorKey: 'currentBelt',
-    header: 'کمربند ها',
-    cell: ({ row }) => {
-      const belt = row.getValue('currentBelt')?.color as string
+// const columns: TableColumn<StudentData>[] = [
+//   {
+//     accessorKey: 'fullName',
+//     header: 'نام کامل',
+//     cell: ({ row }) => {
+//       return row.getValue('fullName')
+//     }
+//   },
+//   {
+//     accessorKey: 'phoneNumber',
+//     header: 'شماره تلفن',
+//     cell: ({ row }) => {
+//       return row.getValue('phoneNumber')
+//     }
+//   },
+//   {
+//     accessorKey: 'currentBelt',
+//     header: 'کمربند ها',
+//     cell: ({ row }) => {
+//       const belt = row.getValue('currentBelt')?.color as string
 
-      const color = ({
-        'سفید': 'belt-white border' as const,
-        'خاکستری': 'belt-gray' as const,
-        'زرد': 'belt-yellow' as const,
-        'نارنجی': 'belt-orange' as const,
-        'سبز': 'belt-green' as const,
-        'آبی': 'belt-blue' as const,
-        'بنفش': 'belt-purple' as const,
-        'قهوه‌ای': 'belt-brown' as const,
-        'قرمز': 'belt-red' as const,
-        'قرمز/سیاه': 'belt-red-black' as const,
-        'قرمز/سفید': 'belt-red-white' as const,
-        'مشکی': 'belt-black' as const,
-        'صورتی': 'belt-pink' as const,
-        'طلایی': 'belt-gold' as const,
-        'نقره‌ای': 'belt-silver' as const
-      })[belt]
+//       const color = ({
+//         'سفید': 'belt-white border' as const,
+//         'خاکستری': 'belt-gray' as const,
+//         'زرد': 'belt-yellow' as const,
+//         'نارنجی': 'belt-orange' as const,
+//         'سبز': 'belt-green' as const,
+//         'آبی': 'belt-blue' as const,
+//         'بنفش': 'belt-purple' as const,
+//         'قهوه‌ای': 'belt-brown' as const,
+//         'قرمز': 'belt-red' as const,
+//         'قرمز/سیاه': 'belt-red-black' as const,
+//         'قرمز/سفید': 'belt-red-white' as const,
+//         'مشکی': 'belt-black' as const,
+//         'صورتی': 'belt-pink' as const,
+//         'طلایی': 'belt-gold' as const,
+//         'نقره‌ای': 'belt-silver' as const
+//       })[belt]
 
-      return h("span", { class: `px-2  py-1 rounded-lg font-medium text-xs ${color}` }, belt)
-    }
-  },
-  {
-    accessorKey: 'studentTransactions',
-    header: 'وضعیت شهریه',
-    cell: ({ row }) => {
-      const transactions = row.getValue('studentTransactions') as string
-      const color = ({
-        'PAID': 'success' as const,
-        'UNPAID': 'error' as const,
-        'PENDING': 'warning' as const,
-        'UPCOMING': 'error' as const,
-      })[transactions]
-      let text = transactions
-      switch (transactions) {
-        case 'UPCOMING':
-          text = 'پرداخت در اینده'
-          break;
-        case 'PAID':
-          text = 'پرداخت شده'
-          break;
-        case 'PENDING':
-          text = 'در انتظار پرداخت'
-          break;
-        case 'UNPAID':
-          text = 'پرداخت نشده'
-          break;
+//       return h("span", { class: `px-2  py-1 rounded-lg font-medium text-xs ${color}` }, belt)
+//     }
+//   },
+//   {
+//     accessorKey: 'studentTransactions',
+//     header: 'وضعیت شهریه',
+//     cell: ({ row }) => {
+//       const transactions = row.getValue('studentTransactions') as string
+//       const color = ({
+//         'PAID': 'success' as const,
+//         'UNPAID': 'error' as const,
+//         'PENDING': 'warning' as const,
+//         'UPCOMING': 'error' as const,
+//       })[transactions]
+//       let text = transactions
+//       switch (transactions) {
+//         case 'UPCOMING':
+//           text = 'پرداخت در اینده'
+//           break;
+//         case 'PAID':
+//           text = 'پرداخت شده'
+//           break;
+//         case 'PENDING':
+//           text = 'در انتظار پرداخت'
+//           break;
+//         case 'UNPAID':
+//           text = 'پرداخت نشده'
+//           break;
+//       }
+//       return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => text)
+//     }
+//   },
+//   {
+//     accessorKey: 'active',
+//     header: 'وضعیت',
+//     cell: ({ row }) => {
+//       const activeValue = row.getValue('active') as string
+//       const color = ({
+//         'ENABLE': 'success' as const,
+//         'DISABLE': 'error' as const,
+//       })[activeValue]
+//       const statusText = activeValue === 'ENABLE' ? 'فعال' : 'غیر فعال'
+//       return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => statusText)
+//     }
+//   },
+//   {
+//     accessorKey: 'sport',
+//     header: ({ column }) => {
+//       const isSorted = column.getIsSorted()
+//       return h(UButton, {
+//         color: 'neutral',
+//         variant: 'ghost',
+//         label: 'رشته',
+//         icon: isSorted ? (isSorted === 'asc' ? 'i-lucide-arrow-up-narrow-wide' : 'i-lucide-arrow-down-wide-narrow') : 'i-lucide-arrow-up-down',
+//         class: '-mx-2.5',
+//         onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
+//       })
+//     },
+//     cell: ({ row }) => h('div', { class: 'lowercase' }, row.getValue('sport')?.name)
+//   },
+//   {
+//     accessorKey: 'createdAt',
+//     header: 'تاریخ ایجاد',
+//     cell: ({ row }) => {
+//       return new Date(row.getValue('createdAt')).toLocaleString('fa-IR', {
+//         day: 'numeric',
+//         month: 'short',
+//         hour: '2-digit',
+//         minute: '2-digit',
+//         hour12: false
+//       })
+//     }
+//   },
+//   {
+//     accessorKey: 'updatedAt',
+//     header: 'تاریخ بروزرسانی',
+//     cell: ({ row }) => {
+//       return new Date(row.getValue('updatedAt')).toLocaleString('fa-IR', {
+//         day: 'numeric',
+//         month: 'short',
+//         hour: '2-digit',
+//         minute: '2-digit',
+//         hour12: false
+//       })
+//     }
+//   },
+//   {
+//     id: 'actions',
+//     header: 'عملیات',
+//     enableHiding: false,
+//     cell: ({ row }) => {
+//       const items = [{
+//         type: 'label',
+//         label: 'عملیات'
+//       }, {
+//         type: 'separator'
+//       }, {
+//         label: 'مشاهده پروفایل',
+//         icon: 'material-symbols:person',
+//         onSelect() {
+//           modalStore.toggleModal('studentEdit', row.original.user_id)
+//         }
+//       }, {
+//         label: 'حذف هنرجو',
+//         icon: 'ic:sharp-delete',
+//         color: 'error',
+//         onSelect() {
+//           showConfirmDialog(`آیا میخواهید هنرجو ${row.original.fullName} را حذف کنید؟`, () => {
+//             deleteAccountStudent(row.original.user_id)
+//           })
+//         },
+//       }]
+//       return h('div', { class: 'text-right' }, h(UDropdownMenu, {
+//         'content': {
+//           align: 'end'
+//         },
+//         items,
+//         'aria-label': 'Actions dropdown'
+//       }, () => h(UButton, {
+//         'icon': 'i-lucide-ellipsis-vertical',
+//         'color': 'neutral',
+//         'variant': 'ghost',
+//         'class': 'ml-auto',
+//         'aria-label': 'Actions dropdown'
+//       })))
+//     }
+//   }
+// ];
+
+const columns = computed<TableColumn<StudentData>[]>(() => {
+  const cols: TableColumn<StudentData>[] = [
+    {
+      accessorKey: 'fullName',
+      header: 'نام کامل',
+      cell: ({ row }) => {
+        return row.getValue('fullName')
       }
-      return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => text)
-    }
-  },
-  {
-    accessorKey: 'active',
-    header: 'وضعیت',
-    cell: ({ row }) => {
-      const activeValue = row.getValue('active') as string
-      const color = ({
-        'ENABLE': 'success' as const,
-        'DISABLE': 'error' as const,
-      })[activeValue]
-      const statusText = activeValue === 'ENABLE' ? 'فعال' : 'غیر فعال'
-      return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => statusText)
-    }
-  },
-  {
-    accessorKey: 'sport',
-    header: ({ column }) => {
-      const isSorted = column.getIsSorted()
-      return h(UButton, {
-        color: 'neutral',
-        variant: 'ghost',
-        label: 'رشته',
-        icon: isSorted ? (isSorted === 'asc' ? 'i-lucide-arrow-up-narrow-wide' : 'i-lucide-arrow-down-wide-narrow') : 'i-lucide-arrow-up-down',
-        class: '-mx-2.5',
-        onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-      })
     },
-    cell: ({ row }) => h('div', { class: 'lowercase' }, row.getValue('sport')?.name)
-  },
-  {
-    accessorKey: 'createdAt',
-    header: 'تاریخ ایجاد',
-    cell: ({ row }) => {
-      return new Date(row.getValue('createdAt')).toLocaleString('fa-IR', {
-        day: 'numeric',
-        month: 'short',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      })
-    }
-  },
-  {
-    accessorKey: 'updatedAt',
-    header: 'تاریخ بروزرسانی',
-    cell: ({ row }) => {
-      return new Date(row.getValue('updatedAt')).toLocaleString('fa-IR', {
-        day: 'numeric',
-        month: 'short',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      })
-    }
-  },
-  {
-    id: 'actions',
-    header: 'عملیات',
-    enableHiding: false,
-    cell: ({ row }) => {
-      const items = [{
-        type: 'label',
-        label: 'عملیات'
-      }, {
-        type: 'separator'
-      }, {
-        label: 'مشاهده پروفایل',
-        icon: 'material-symbols:person',
-        onSelect() {
-          modalStore.toggleModal('studentEdit', row.original.user_id)
+    {
+      accessorKey: 'phoneNumber',
+      header: 'شماره تلفن',
+      cell: ({ row }) => {
+        return row.getValue('phoneNumber')
+      }
+    },
+    ...(hasSystemBelt.value ? [
+      {
+        accessorKey: 'currentBelt',
+        header: 'کمربند ها',
+        cell: ({ row }) => {
+          const belt = row.getValue('currentBelt')?.color as string
+
+          const color = ({
+            'سفید': 'belt-white border' as const,
+            'خاکستری': 'belt-gray' as const,
+            'زرد': 'belt-yellow' as const,
+            'نارنجی': 'belt-orange' as const,
+            'سبز': 'belt-green' as const,
+            'آبی': 'belt-blue' as const,
+            'بنفش': 'belt-purple' as const,
+            'قهوه‌ای': 'belt-brown' as const,
+            'قرمز': 'belt-red' as const,
+            'قرمز/سیاه': 'belt-red-black' as const,
+            'قرمز/سفید': 'belt-red-white' as const,
+            'مشکی': 'belt-black' as const,
+            'صورتی': 'belt-pink' as const,
+            'طلایی': 'belt-gold' as const,
+            'نقره‌ای': 'belt-silver' as const
+          })[belt]
+
+          return h("span", { class: `px-2  py-1 rounded-lg font-medium text-xs ${color}` }, belt)
         }
-      }, {
-        label: 'حذف هنرجو',
-        icon: 'ic:sharp-delete',
-        color: 'error',
-        onSelect() {
-          showConfirmDialog(`آیا میخواهید هنرجو ${row.original.fullName} را حذف کنید؟`, () => {
-            deleteAccountStudent(row.original.user_id)
-          })
-        },
-      }]
-      return h('div', { class: 'text-right' }, h(UDropdownMenu, {
-        'content': {
-          align: 'end'
-        },
-        items,
-        'aria-label': 'Actions dropdown'
-      }, () => h(UButton, {
-        'icon': 'i-lucide-ellipsis-vertical',
-        'color': 'neutral',
-        'variant': 'ghost',
-        'class': 'ml-auto',
-        'aria-label': 'Actions dropdown'
-      })))
+      },
+    ] : []),
+    {
+      accessorKey: 'studentTransactions',
+      header: 'وضعیت شهریه',
+      cell: ({ row }) => {
+        const transactions = row.getValue('studentTransactions') as string
+        const color = ({
+          'PAID': 'success' as const,
+          'UNPAID': 'error' as const,
+          'PENDING': 'warning' as const,
+          'UPCOMING': 'error' as const,
+        })[transactions]
+        let text = transactions
+        switch (transactions) {
+          case 'UPCOMING':
+            text = 'پرداخت در اینده'
+            break;
+          case 'PAID':
+            text = 'پرداخت شده'
+            break;
+          case 'PENDING':
+            text = 'در انتظار پرداخت'
+            break;
+          case 'UNPAID':
+            text = 'پرداخت نشده'
+            break;
+        }
+        return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => text)
+      }
+    },
+    {
+      accessorKey: 'active',
+      header: 'وضعیت',
+      cell: ({ row }) => {
+        const activeValue = row.getValue('active') as string
+        const color = ({
+          'ENABLE': 'success' as const,
+          'DISABLE': 'error' as const,
+        })[activeValue]
+        const statusText = activeValue === 'ENABLE' ? 'فعال' : 'غیر فعال'
+        return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => statusText)
+      }
+    },
+    {
+      accessorKey: 'sport',
+      header: ({ column }) => {
+        const isSorted = column.getIsSorted()
+        return h(UButton, {
+          color: 'neutral',
+          variant: 'ghost',
+          label: 'رشته',
+          icon: isSorted ? (isSorted === 'asc' ? 'i-lucide-arrow-up-narrow-wide' : 'i-lucide-arrow-down-wide-narrow') : 'i-lucide-arrow-up-down',
+          class: '-mx-2.5',
+          onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
+        })
+      },
+      cell: ({ row }) => h('div', { class: 'lowercase' }, row.getValue('sport')?.name)
+    },
+    {
+      accessorKey: 'createdAt',
+      header: 'تاریخ ایجاد',
+      cell: ({ row }) => {
+        return new Date(row.getValue('createdAt')).toLocaleString('fa-IR', {
+          day: 'numeric',
+          month: 'short',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        })
+      }
+    },
+    {
+      accessorKey: 'updatedAt',
+      header: 'تاریخ بروزرسانی',
+      cell: ({ row }) => {
+        return new Date(row.getValue('updatedAt')).toLocaleString('fa-IR', {
+          day: 'numeric',
+          month: 'short',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        })
+      }
+    },
+    {
+      id: 'actions',
+      header: 'عملیات',
+      enableHiding: false,
+      cell: ({ row }) => {
+        const items = [{
+          type: 'label',
+          label: 'عملیات'
+        }, {
+          type: 'separator'
+        }, {
+          label: 'مشاهده پروفایل',
+          icon: 'material-symbols:person',
+          onSelect() {
+            modalStore.toggleModal('studentEdit', row.original.user_id)
+          }
+        }, {
+          label: 'حذف هنرجو',
+          icon: 'ic:sharp-delete',
+          color: 'error',
+          onSelect() {
+            showConfirmDialog(`آیا میخواهید هنرجو ${row.original.fullName} را حذف کنید؟`, () => {
+              deleteAccountStudent(row.original.user_id)
+            })
+          },
+        }]
+        return h('div', { class: 'text-right' }, h(UDropdownMenu, {
+          'content': {
+            align: 'end'
+          },
+          items,
+          'aria-label': 'Actions dropdown'
+        }, () => h(UButton, {
+          'icon': 'i-lucide-ellipsis-vertical',
+          'color': 'neutral',
+          'variant': 'ghost',
+          'class': 'ml-auto',
+          'aria-label': 'Actions dropdown'
+        })))
+      }
     }
-  }
-];
+  ]
+  return cols;
+})
 </script>

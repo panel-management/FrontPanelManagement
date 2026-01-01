@@ -70,8 +70,7 @@
   </div> -->
   <div class="w-full h-full p-5 rounded-xl bg-white flex flex-col gap-5">
     <div class="flex flex-col gap-2">
-      <span class="text-lg md:text-2xl font-bold">همه تراکنش های مالی ({{ formData.length }} مورد)</span>
-      <p class="break-words font-medium text-sm">تمام تراکنش‌ های</p>
+      <span class="text-lg md:text-2xl font-bold">لیست تراکنش های مالی ({{ formData.length }} مورد)</span>
     </div>
     <UTable ref="table" :loading="isLoading" loading-color="neutral" :data="filteredData" :columns="columns"
       empty="هیچ اطلاعاتی برای نمایش وجود ندارد" sticky class="h-96 lg:h-svh no-scrollbar">
@@ -163,6 +162,7 @@ onMounted(getSubscriptionListMaster)
 
 const columnLabels: Record<string, string> = {
   fullName: 'نام مدیر باشگاه',
+  phoneNumber: 'شماره تلفن مدیر باشگاه',
   amount: 'مبلغ',
   name: 'نام پلن',
   paymentDate: 'تاریخ پرداخت',
