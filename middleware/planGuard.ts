@@ -1,7 +1,7 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const userStore = useUsersStore();
 
-  const publicPaths = ["/memberShip/plans", "/payment"];
+  const publicPaths = ["/membership/plans", "/payment"];
 
   if (publicPaths.includes(to.path)) return;
 
@@ -22,7 +22,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   }
 
   if (plan.noPlan || plan.isExpired) {
-    return navigateTo("/memberShip/plans");
+    return navigateTo("/membership/plans");
   }
 
   if (plan.isPending) return;
