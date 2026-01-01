@@ -2,7 +2,7 @@
   <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
     <div class="w-full flex justify-between items-center">
       <div class="flex flex-col gap-2 sm:p-2">
-        <h2 class="text-lg sm:text-3xl font-bold">لیست هنرجویان</h2>
+        <h2 class="text-lg sm:text-3xl font-bold">مدیریت هنرجویان</h2>
         <span class="text-xs sm:text-sm font-medium">مشاهده و مدیریت اطلاعات هنرجویان باشگاه</span>
       </div>
       <div class="sm:p-2">
@@ -108,5 +108,16 @@ onMounted(async () => {
       }
     )
   }
+})
+
+definePageMeta({
+  middleware: ["role-guard", "plan-guard"],
+})
+
+useHead({
+  title: "مدیریت هنرجویان",
+  meta: [
+    { name: "description", content: "مدیریت اطلاعات هنرجویان شامل اضافه کردن و ویرایش داده‌ ها." }
+  ]
 })
 </script>

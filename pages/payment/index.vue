@@ -128,4 +128,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     isLoading.value = false
   }
 }
+
+definePageMeta({
+  middleware: ["role-guard", "plan-guard"],
+})
+
+useHead({
+  title: "ثبت پرداخت",
+  meta: [
+    { name: "description", content: "ارسال اطلاعات پرداخت و فیش واریزی." }
+  ]
+})
 </script>

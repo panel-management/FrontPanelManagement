@@ -1,7 +1,7 @@
 <template>
   <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
     <div class="w-full h-full flex flex-col gap-2 sm:p-2">
-      <h2 class="text-lg sm:text-3xl font-bold">پشتیبانی</h2>
+      <h2 class="text-lg sm:text-3xl font-bold">مدیریت پشتیبانی</h2>
       <span class="text-xs sm:text-sm font-medium">مدیریت تیکت ‌ها</span>
     </div>
     <div
@@ -13,7 +13,12 @@
       <UButton @click="modalStore.toggleModal('supportAdd')" class="max-sm:flex max-sm:justify-center" color="primary"
         variant="solid" size="xl" label="ثبت تیکت جدید" icon="material-symbols-light:add-comment-outline" />
     </div>
-    <div class="w-full h-full flex flex-col gap-3">
+    <div v-if="formData.length === 0" class="text-center text-xl py-10 text-gray-500">
+      <UIcon name="material-symbols:chat-bubble-outline" class="size-16 opacity-50" />
+      <p>تیکتی وجود ندارد.</p>
+      <p>می‌توانید یک تیکت جدید ایجاد کنید.</p>
+    </div>
+    <div v-else class="w-full h-full flex flex-col gap-3">
       <NuxtLink v-for="data in formData" :key="data.id" :to="`/supports/chat-${data.id}`"
         class="w-full p-4 rounded-xl bg-white flex justify-between">
         <div class="flex flex-col gap-2">
@@ -79,4 +84,15 @@ async function getTicketMaster() {
 
 watch(page, getTicketMaster)
 onMounted(getTicketMaster)
+
+definePageMeta({
+  middleware: ["role-guard", "plan-guard"],
+})
+
+useHead({
+  title: "پشتیبانی",
+  meta: [
+    { name: "description", content: "مشاهده و مدیریت تیکت‌ ها و پیام‌های پشتیبانی." }
+  ]
+})
 </script>

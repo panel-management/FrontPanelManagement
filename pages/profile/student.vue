@@ -10,7 +10,7 @@
             <span class="font-medium text-xl">{{ student?.data?.fullName }}</span>
             <div class="flex gap-3">
               <UBadge color="tertiary" variant="subtle" :label="student?.data?.sport.name" class="font-medium" />
-              <UBadge color="info" variant="solid" :label="student?.data?.currentBelt.color" class="font-medium" />
+              <UBadge v-if="hasSystemBelt" color="info" variant="solid" :label="student?.data?.currentBelt.color" class="font-medium" />
               <UBadge :color="student?.data?.active === 'ENABLE' ? 'primary' : 'error'" variant="soft"
                 :label="student?.data?.active === 'ENABLE' ? 'فعال' : 'غیر فعال'" class="font-semibold" />
             </div>
@@ -139,6 +139,11 @@
           </div>
         </div>
       </template>
+      <template #statusPlan>
+         <div class="bg-white w-full h-full rounded-lg p-4">
+           <WidgetProgressBar/>
+         </div>
+      </template>
     </BaseTabs>
   </section>
 </template>
@@ -149,11 +154,14 @@ import type { TabsItem } from '@nuxt/ui'
 import { getStudentJustStudentByIdService, updateStudentJustStudentByIdService } from '~/services/student.service'
 import type { UpdateStudent } from '~/models/users/student/UpdateStudent'
 
-const isShow: Ref<boolean> = ref(true)
-const isLoading: Ref<boolean> = ref(false)
 const router = useRouter()
 const toastStore = useToastStore()
+const gettingVariousDataStore = useGettingVariousDataStore()
 const { gregorianToJalali, jalaliToGregorian } = useDateConverter()
+const isShow: Ref<boolean> = ref(true)
+const isLoading: Ref<boolean> = ref(false)
+
+const hasSystemBelt = computed(() => gettingVariousDataStore.hasBeltSystem)
 
 const schema = v.object({
   fullName: v.pipe(
@@ -209,16 +217,22 @@ const schema = v.object({
 
 type Schema = v.InferOutput<typeof schema>;
 
-const items = [
-  {
-    label: 'ویرایش اطلاعات',
-    slot: 'editData' as const
-  },
-  {
-    label: 'تاریخچه کمربند',
-    slot: 'dateBelt' as const
-  }
-] satisfies TabsItem[]
+const items = computed(() => {
+  return [
+    {
+      label: 'ویرایش اطلاعات',
+      slot: 'editData' as const
+    },
+    ...(hasSystemBelt.value ? [{
+      label: 'تاریخچه کمربند',
+      slot: 'dateBelt' as const
+    }] : []),
+    {
+      label: 'وضعیت پلن',
+      slot: 'statusPlan' as const
+    }
+  ] satisfies TabsItem[]
+})
 
 const { data: student, refresh } = await useAsyncData('current-student-profile', () => getStudentJustStudentByIdService());
 console.log(student.value?.data);
@@ -233,6 +247,8 @@ if (!student.value || !student.value?.data) {
     })
   }
 }
+
+onMounted(gettingVariousDataStore.fetchSports)
 
 const state = reactive<UpdateStudent>({
   fullName: student.value?.data?.fullName ?? '',
@@ -269,4 +285,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 function toggleInout() {
   isShow.value = !isShow.value
 }
+
+definePageMeta({
+  middleware: ["role-guard", "plan-guard"],
+})
+
+useHead({
+  title: `پروفایل ${student.value?.data?.fullName}`,
+  meta: [
+    { name: "description", content: "مشاهده و ویرایش اطلاعات حساب کاربری و تنظیمات شخصی." }
+  ]
+})
 </script>

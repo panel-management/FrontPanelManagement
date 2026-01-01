@@ -160,7 +160,7 @@
         </div>
       </div>
     </div>
-    <div class="w-full h-full flex justify-center items-center" v-if="formData.length">
+    <div class="w-full h-full flex justify-center items-center" v-if="formData.length > 1">
       <UPagination v-model:page="page" :total="total" :items-per-page="limit" show-edges :sibling-count="1" size="xl" />
     </div>
     <div class="w-full h-full flex max-sm:flex-col gap-5 p-4 rounded-lg bg-white">
@@ -187,6 +187,27 @@ import { TransactionStatus } from '~/models/transactions/TransactionStatus';
 import { TransactionType } from '~/models/transactions/TransactionType';
 import { getHistoryTransactionStudentService } from '~/services/transactions.service';
 
+const transactionStatusColor: Record<TransactionStatus, string> = {
+  [TransactionStatus.PAID]: 'bg-teal-50',
+  [TransactionStatus.PENDING]: 'bg-yellow-50',
+  [TransactionStatus.UNPAID]: 'bg-error-50',
+  [TransactionStatus.UPCOMING]: 'bg-neutral-50',
+}
+
+const transactionStatusIcon: Record<TransactionStatus, string> = {
+  [TransactionStatus.PAID]: 'clarity:success-line',
+  [TransactionStatus.PENDING]: 'ic:baseline-watch-later',
+  [TransactionStatus.UNPAID]: 'material-symbols:close-rounded',
+  [TransactionStatus.UPCOMING]: 'streamline:computer-webcam-webcam-camera-future-tech-chat-skype-technology-video',
+}
+
+const transactionStatus: Record<TransactionStatus, string> = {
+  [TransactionStatus.PAID]: 'success',
+  [TransactionStatus.PENDING]: 'warning',
+  [TransactionStatus.UNPAID]: 'error',
+  [TransactionStatus.UPCOMING]: 'tertiary',
+}
+
 const formData = shallowRef<TransactionData[]>([])
 const page = ref(1)
 const limit = ref(9)
@@ -210,24 +231,14 @@ async function getTransactionStudent() {
 watch(page, getTransactionStudent)
 onMounted(getTransactionStudent)
 
-const transactionStatusColor: Record<TransactionStatus, string> = {
-  [TransactionStatus.PAID]: 'bg-teal-50',
-  [TransactionStatus.PENDING]: 'bg-yellow-50',
-  [TransactionStatus.UNPAID]: 'bg-error-50',
-  [TransactionStatus.UPCOMING]: 'bg-neutral-50',
-}
+definePageMeta({
+  middleware: ["role-guard", "plan-guard"],
+})
 
-const transactionStatusIcon: Record<TransactionStatus, string> = {
-  [TransactionStatus.PAID]: 'clarity:success-line',
-  [TransactionStatus.PENDING]: 'ic:baseline-watch-later',
-  [TransactionStatus.UNPAID]: 'material-symbols:close-rounded',
-  [TransactionStatus.UPCOMING]: 'streamline:computer-webcam-webcam-camera-future-tech-chat-skype-technology-video',
-}
-
-const transactionStatus: Record<TransactionStatus, string> = {
-  [TransactionStatus.PAID]: 'success',
-  [TransactionStatus.PENDING]: 'warning',
-  [TransactionStatus.UNPAID]: 'error',
-  [TransactionStatus.UPCOMING]: 'tertiary',
-}
+useHead({
+  title: "امور مالی",
+  meta: [
+    { name: "description", content: "مشاهده وضعیت مالی، پرداخت‌ها و بدهی‌های مربوط به حساب کاربری شما." }
+  ]
+})
 </script>

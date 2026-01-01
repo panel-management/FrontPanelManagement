@@ -206,4 +206,11 @@ onMounted(() => {
 definePageMeta({
   layout: false
 })
+
+useHead({
+  title: "ورود / ثبت‌ نام",
+  meta: [
+    { name: "description", content: "ورود به حساب کاربری یا ایجاد حساب جدید." }
+  ]
+})
 </script>

@@ -131,14 +131,14 @@ const active = computed({
   get() {
     const currentTab = route.query.tab as string || 'mali'
     if (!validTabs.includes(currentTab)) {
-      navigateTo({ path: '/settings/admin', query: { tab: 'mali' } }, { replace: true })
+      navigateTo({ path: '/setting/admin', query: { tab: 'mali' } }, { replace: true })
     }
     return currentTab
   },
   set(tab) {
     if (validTabs.includes(tab)) {
       router.push({
-        path: '/settings/admin',
+        path: '/setting/admin',
         query: { tab }
       })
     }
@@ -191,4 +191,15 @@ async function deletePlanMaster(id: number) {
 }
 
 onMounted(getPlanMaster)
+
+definePageMeta({
+  middleware: ["role-guard", "plan-guard"],
+})
+
+useHead({
+  title: "مدیریت تنظیمات سیستم",
+  meta: [
+    { name: "description", content: "مدیریت تنظیمات سیستم، دسترسی‌ها و پیکربندی‌های کلیدی پنل مدیریت." }
+  ]
+})
 </script>

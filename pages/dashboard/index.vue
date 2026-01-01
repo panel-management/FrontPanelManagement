@@ -14,7 +14,7 @@
         <LazyChartsPaymentChart />
       </div>
       <div v-if="showWidget" class="bg-white p-4 rounded-lg w-full h-full">
-        <LazyWidgetProgressBar v-if="showWidget"  @delete="handleDelete" />
+        <LazyWidgetProgressBar v-if="showWidget" @delete="handleDelete" />
       </div>
     </div>
     <div class="w-full h-full">
@@ -85,4 +85,15 @@ const itemsCard = ref([
 function handleDelete() {
   showWidget.value = false
 }
+
+definePageMeta({
+  middleware: ["role-guard", "plan-guard"],
+})
+
+useHead({
+  title: "پنل مدیریت",
+  meta: [
+    { name: "description", content: "خلاصه‌ای از اطلاعات کلیدی باشگاه شامل اعضا، برنامه کلاس‌ ها و وضعیت مالی." }
+  ]
+})
 </script>

@@ -9,7 +9,7 @@
           <div class="flex flex-col gap-2">
             <span class="font-medium text-xl">{{ master?.data?.fullName }}</span>
             <div class="flex flex-wrap gap-2 sm:gap-3">
-              <UBadge v-if="master?.data?.type === 1" color="secondary" variant="solid" label="استاد"
+              <UBadge v-if="master?.data?.type === Role.Master" color="secondary" variant="solid" label="استاد"
                 class="font-medium" />
               <UBadge :color="master?.data?.active === 'ENABLE' ? 'primary' : 'error'" variant="soft"
                 :label="master?.data?.active === 'ENABLE' ? 'فعال' : 'غیر فعال'" class="font-semibold" />
@@ -163,7 +163,7 @@
           </div>
           <div class="overflow-hidden bg-white rounded-lg p-4" v-if="master.data.subscriptionPayments">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 overflow-y-auto h-72 w-full">
-              <div class="flex items-center gap-4 bg-muted p-3 rounded-xl"
+              <div class="flex items-center gap-4 bg-muted p-3 rounded-xl h-fit"
                 v-for="payment in master.data.subscriptionPayments" :key="payment.id">
                 <div class="flex justify-center items-center">
                   <UIcon :name="paymentIcon[lastPayment?.status] || 'bi:emoji-neutral-fill'" class="size-6"
@@ -196,6 +196,7 @@ import * as v from 'valibot'
 import type { FormSubmitEvent, TabsItem } from "@nuxt/ui"
 import { getMasterByIdService, updateProfileMasterService } from '~/services/master.service'
 import type { UpdateMaster } from '~/models/users/master/UpdateMaster'
+import { Role } from '~/models/Role'
 
 const isShow: Ref<boolean> = ref(true)
 const isLoading: Ref<boolean> = ref(false)
@@ -322,4 +323,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 function toggleInout() {
   isShow.value = !isShow.value
 }
+
+definePageMeta({
+  middleware: ["role-guard", "plan-guard"],
+})
+
+useHead({
+  title: `پروفایل ${master.value?.data?.fullName}`,
+  meta: [
+    { name: "description", content: "مشاهده و ویرایش اطلاعات حساب کاربری و تنظیمات شخصی." }
+  ]
+})
 </script>

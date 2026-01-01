@@ -1,7 +1,7 @@
 <template>
   <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
     <div class="w-full h-full flex flex-col gap-2 sm:p-2">
-      <h2 class="text-lg sm:text-3xl font-bold">سیستم پشتیبانی</h2>
+      <h2 class="text-lg sm:text-3xl font-bold">پشتیبانی کاربران</h2>
       <span class="text-xs sm:text-sm font-medium">مدیریت تیکت‌ها و پشتیبانی کاربران</span>
     </div>
     <div class="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -147,4 +147,15 @@ const filterData = computed(() => {
 
 watch(page, getTicketAdmin)
 onMounted(getTicketAdmin)
+
+definePageMeta({
+  middleware: ["role-guard", "plan-guard"],
+})
+
+useHead({
+  title: "پشتیبانی سیستم",
+  meta: [
+    { name: "description", content: "بررسی، اولویت‌ بندی و پیگیری تیکت‌ ها پشتیبانی در سیستم." }
+  ]
+})
 </script>

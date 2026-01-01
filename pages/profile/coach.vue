@@ -9,7 +9,7 @@
           <div class="flex flex-col gap-2">
             <span class="font-medium text-xl">{{ coach?.data?.fullName }}</span>
             <div class="flex flex-wrap gap-2 sm:gap-3">
-              <UBadge v-if="coach?.data?.type === 2" color="secondary" variant="solid" label="مربی"
+              <UBadge v-if="coach?.data?.type === Role.Coach" color="secondary" variant="solid" label="مربی"
                 class="font-medium" />
               <UBadge color="neutral" variant="soft" :label="coach?.data?.sport.name" class="font-semibold w-fit" />
               <UBadge :color="coach?.data?.active === 'ENABLE' ? 'primary' : 'error'" variant="soft"
@@ -107,6 +107,7 @@ import * as v from 'valibot'
 import type { FormSubmitEvent } from "@nuxt/ui"
 import type { UpdateCoach } from '~/models/users/coach/UpdateCoach';
 import { getCoachProfileService, updateCoachProfileService } from '~/services/coach.service';
+import { Role } from '~/models/Role';
 
 const isShow: Ref<boolean> = ref(true)
 const isLoading: Ref<boolean> = ref(false)
@@ -221,4 +222,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 function toggleInout() {
   isShow.value = !isShow.value
 }
+
+definePageMeta({
+  middleware: ["role-guard", "plan-guard"],
+})
+
+useHead({
+  title: `پروفایل ${coach.value?.data?.fullName}`,
+  meta: [
+    { name: "description", content: "مشاهده و ویرایش اطلاعات حساب کاربری و تنظیمات شخصی." }
+  ]
+})
 </script>

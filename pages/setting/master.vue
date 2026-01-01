@@ -1,8 +1,8 @@
 <template>
   <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
     <div class="w-full h-full flex flex-col gap-2 sm:p-2">
-      <h2 class="text-lg sm:text-3xl font-bold">تنظیمات سیستم</h2>
-      <span class="text-xs sm:text-sm font-medium">مدیریت و پیکربندی تنظیمات کلی سیستم</span>
+      <h2 class="text-lg sm:text-3xl font-bold">تنظیمات باشگاه</h2>
+      <span class="text-xs sm:text-sm font-medium">مدیریت و پیکربندی تنظیمات کلی سیستم باشگاه</span>
     </div>
     <BaseTabs v-model="active" :items="items" color="tertiary">
       <template #public>
@@ -207,44 +207,48 @@ const formData = shallowRef<StudentPlanData[]>([])
 const clubProfile = ref<ClubProfileData | null>(null)
 const isLoading: Ref<boolean> = ref(false)
 
+const hasSystemBelt = computed(() => gettingVariousDataStore.hasBeltSystem)
+
 const active = computed({
   get() {
     const currentTab = route.query.tab as string || 'public'
     if (!validTabs.includes(currentTab)) {
-      navigateTo({ path: '/settings', query: { tab: 'public' } }, { replace: true })
+      navigateTo({ path: '/setting/master', query: { tab: 'public' } }, { replace: true })
     }
     return currentTab
   },
   set(tab) {
     if (validTabs.includes(tab)) {
       router.push({
-        path: '/settings',
+        path: '/setting/master',
         query: { tab }
       })
     }
   }
 })
 
-const items = [
-  {
-    label: 'عمومی',
-    icon: 'hugeicons:setting-07',
-    value: 'public',
-    slot: 'public' as const
-  },
-  {
-    label: 'مالی',
-    icon: 'solar:dollar-minimalistic-line-duotone',
-    value: 'mali',
-    slot: 'mali' as const
-  },
-  {
-    label: 'رتبه ها',
-    icon: 'solar:pallete-2-linear',
-    value: 'ranks',
-    slot: 'ranks' as const
-  }
-] satisfies TabsItem[]
+const items = computed(() => {
+  return [
+    {
+      label: 'عمومی',
+      icon: 'hugeicons:setting-07',
+      value: 'public',
+      slot: 'public' as const
+    },
+    {
+      label: 'مالی',
+      icon: 'solar:dollar-minimalistic-line-duotone',
+      value: 'mali',
+      slot: 'mali' as const
+    },
+    ...(hasSystemBelt.value ? [{
+      label: 'رتبه ها',
+      icon: 'solar:pallete-2-linear',
+      value: 'ranks',
+      slot: 'ranks' as const
+    }] : [])
+  ] satisfies TabsItem[]
+})
 
 const schema = v.object({
   clubName: v.pipe(
@@ -386,6 +390,23 @@ async function deletePlanMasterByStudent(id: number) {
 onMounted(() => {
   getClubProfile()
   getPlanStudent()
-  gettingVariousDataStore.fetchBelts()
+  gettingVariousDataStore.fetchSports()
+})
+
+watch(() => hasSystemBelt.value, (value) => {
+  if (value) {
+    gettingVariousDataStore.fetchBelts()
+  }
+}, { immediate: true })
+
+definePageMeta({
+  middleware: ["role-guard", "plan-guard"],
+})
+
+useHead({
+  title: "مدیریت تنظیمات باشگاه",
+  meta: [
+    { name: "description", content: "مدیریت تنظیمات شخصی، برنامه‌ها و پیکربندی‌های کلیدی باشگاه." }
+  ]
 })
 </script>

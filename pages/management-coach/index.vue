@@ -59,4 +59,15 @@ function handleDelete(id: number) {
 }
 
 onMounted(getCoachData)
+
+definePageMeta({
+  middleware: ["role-guard", "plan-guard"],
+})
+
+useHead({
+  title: "مدیریت مربیان",
+  meta: [
+    { name: "description", content: "مشاهده اطلاعات مربیان و برنامه‌های آموزشی مرتبط با کلاس‌های شما." }
+  ]
+})
 </script>

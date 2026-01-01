@@ -5,11 +5,12 @@
         <span class="text-2xl font-medium">
           {{ ticketData?.title }}
         </span>
-        <span class="text-sm font-medium flex items-center gap-1">
+        <span class="text-sm font-medium text-balance flex items-center gap-1">
           تیکت #{{ ticketData?.id }} • ایجاد شده توسط {{ ticketData?.user?.fullName }}
         </span>
-        <div v-if="ticketData?.status !== TicketStatus.CLOSED">
+        <div v-if="ticketData?.status !== TicketStatus.CLOSED" class="flex items-center gap-1">
           <UButton @click="closeTicket" :loading="isLoading" color="neutral" variant="solid" label="بستن تیکت" />
+          <UButton @click="refresh()" color="info" variant="ghost" icon="i-heroicons-arrow-path" label="بروزرسانی" />
         </div>
       </div>
       <div v-if="ticketData" class="flex flex-col items-end gap-2">
@@ -21,17 +22,18 @@
     <div class="bg-white h-full w-full rounded-xl p-4 flex flex-col gap-3 overflow-hidden">
       <div ref="messageContainer" class="overflow-y-auto w-full h-full p-1 space-y-3 scroll-smooth">
         <div v-for="message in messages" :key="message.id"
-          :class="message.sender?.type === 1 ? 'flex justify-end' : 'flex justify-start'">
+          :class="message.sender?.type === Role.Master ? 'flex justify-end' : 'flex justify-start'">
           <UCard class="w-[14rem] md:w-1/2 lg:w-1/3 xl:w-1/4">
             <template #header>
-              <span class="font-medium text-sm" :class="message.sender?.type === 1 ? 'text-primary' : 'text-tertiary'">
-                {{ message.sender?.type === 1 ? message.sender?.fullName : 'پشتیبانی' }}
+              <span class="font-medium text-sm"
+                :class="message.sender?.type === Role.Master ? 'text-primary' : 'text-tertiary'">
+                {{ message.sender?.type === Role.Master ? message.sender?.fullName : 'پشتیبانی' }}
               </span>
             </template>
             <div class="flex flex-col gap-3">
               <p class="text-sm text-black whitespace-pre-wrap leading-6">{{ message.text }}</p>
               <span class="text-xs text-muted text-end">
-                {{ useJDateTime(message.createdAt) }}
+                {{ useTimeAgoFarsi(message.createdAt) }}
               </span>
             </div>
           </UCard>
@@ -50,8 +52,8 @@
     </div>
   </section>
 </template>
-
 <script setup lang="ts">
+import { Role } from '~/models/Role'
 import type { SendMassage } from '~/models/ticket/SendMassage'
 import { TicketStatus } from '~/models/ticket/TicketData'
 import type { TicketListData } from '~/models/ticket/TicketListData'
@@ -60,53 +62,27 @@ import { changeStatusTicketService, getTicketByIdService, sendMessageService } f
 const route = useRoute()
 const toastStore = useToastStore()
 const id = Number(route.params.id)
-const invalidId = ref(!id || isNaN(id))
-let interval: any = null
-
-if (invalidId.value) {
-  showError({ statusCode: 404, message: 'شناسه تیکت نامعتبر است' })
-}
 
 const messageContainer = ref<HTMLElement | null>(null)
 const isLoading: Ref<boolean> = ref(false)
 const newMessage = ref('')
 
-const { data: ticket, refresh } = await useAsyncData(
+const { data: ticket, error, refresh } = await useAsyncData(
   `ticket-${id}`,
-  () => getTicketByIdService(id),
-  {
-    transform: (res) => {
-      if (!res) {
-        showError({ statusCode: 500, message: 'پاسخی از سرور دریافت نشد' })
-      }
-
-      if (!res.data) {
-        showError({ statusCode: 404, message: 'شناسه تیکت نامعتبر است' })
-      }
-
-      if (res.statusCode !== 200) {
-        showError({ statusCode: 404, message: 'شناسه تیکت نامعتبر است' })
-      }
-
-      return res.data
-    }
-  }
+  () => getTicketByIdService(id)
 )
 
-onMounted(() => {
-  scrollToBottom()
-  interval = setInterval(() => {
-    refresh()
-  }, 10000);
-})
+if (error.value) {
+  showError({ statusCode: 500, message: 'خطای اتصال به سرور' })
+} else if (!id || isNaN(id)) {
+  showError({ statusCode: 404, message: 'شناسه تیکت نامعتبر است' })
+} else if (!ticket.value || !ticket.value.data) {
+  showError({ statusCode: 404, message: 'شناسه تیکت نامعتبر است' })
+} else if (ticket.value.statusCode !== 200) {
+  showError({ statusCode: ticket.value.statusCode, message: ticket.value.message || 'خطایی رخ داده است' })
+}
 
-onUnmounted(() => {
-  if (interval) {
-    clearInterval(interval)
-  }
-})
-
-const ticketData = computed(() => ticket.value as TicketListData | null)
+const ticketData = computed(() => ticket.value?.data as TicketListData | null)
 const messages = computed(() => ticketData.value?.messages || [])
 
 async function sendMessage() {
@@ -158,4 +134,15 @@ const scrollToBottom = async () => {
 watch(messages, () => {
   scrollToBottom()
 }, { deep: true })
+
+definePageMeta({
+  middleware: ["role-guard", "plan-guard"],
+})
+
+useHead({
+  title: "چت پشتیبانی",
+  meta: [
+    { name: "description", content: "مشاهده و مدیریت پیام‌ ها و تیکت‌ های کاربران در سیستم پشتیبانی" }
+  ]
+})
 </script>

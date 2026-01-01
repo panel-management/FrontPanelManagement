@@ -2,7 +2,7 @@
   <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
     <div class="flex flex-col gap-2 sm:p-2">
       <h2 class="text-lg sm:text-3xl font-bold">حضور و غیاب</h2>
-      <span class="text-xs sm:text-sm font-medium">مدیریت و ثبت حضور و غیاب هنرجویان</span>
+      <span class="text-xs sm:text-sm font-medium">مدیریت و ثبت حضور و غیاب اعضای باشگاه</span>
     </div>
     <BaseTabs :items="items" color="tertiary">
       <template #reports>
@@ -92,7 +92,7 @@ const items = [
     slot: 'reports' as const
   },
   {
-    label: 'ثبت حضور',
+    label: 'ثبت حضور و غیاب',
     slot: 'attendanceRecord' as const
   }
 ] satisfies TabsItem[]
@@ -145,4 +145,15 @@ async function handleInstantUpdate(studentId: number, status: AttendanceStatus) 
 
 watch(page, getListAttendance)
 onMounted(getListAttendance)
+
+definePageMeta({
+  middleware: ["role-guard", "plan-guard"],
+})
+
+useHead({
+  title: "مدیریت حضور و غیاب",
+  meta: [
+    { name: "description", content: "ثبت، مشاهده و مدیریت وضعیت حضور و غیاب اعضا در کلاس‌ ها." }
+  ]
+})
 </script>

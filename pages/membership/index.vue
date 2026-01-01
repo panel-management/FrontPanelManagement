@@ -49,10 +49,13 @@
         </div>
       </template>
       <template #memberShip>
-        <div class="w-full h-full flex flex-col gap-4 py-3 pt-5">
-          <span class="text-2xl md:text-4xl font-extrabold text-black text-center">
+        <div class="w-full h-full flex flex-col gap-4 py-3 pt-5 text-center">
+          <span class="text-2xl md:text-4xl font-extrabold text-black">
             پلن عضویت خود را انتخاب کنید
           </span>
+          <p class="text-lg text-black font-light">
+            برای استفاده کامل از امکانات پنل، یکی از پلن های زیر را بر اساس نیاز خود انتخاب نمایید.
+          </p>
           <CartsPlans />
         </div>
       </template>
@@ -67,7 +70,7 @@ import { createClubProfileService } from "~/services/clubProfile.service";
 import type { ClubProfileData } from "~/models/clubProfile/ClubProfileData";
 
 const isLoading: Ref<boolean> = ref(false);
-const isActive: Ref<number> = ref(0)
+const isActive: Ref<number> = ref(1)
 const toastStore = useToastStore()
 const { jalaliToGregorian } = useDateConverter()
 
@@ -165,6 +168,14 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 }
 
 definePageMeta({
-  layout: false
+  layout: false,
+  middleware: ["role-guard", "plan-guard"],
+})
+
+useHead({
+  title: "عضویت باشگاه",
+  meta: [
+    { name: "description", content: "ثبت اطلاعات باشگاه و انتخاب پلن عضویت." }
+  ]
 })
 </script>

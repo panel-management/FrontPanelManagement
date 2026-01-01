@@ -2,14 +2,14 @@
   <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
     <div class="w-full flex justify-between items-center">
       <div class="flex flex-col gap-2 sm:p-2">
-        <h2 class="text-lg sm:text-3xl font-bold">مدیریت استاد ها</h2>
-        <span class="text-xs sm:text-sm font-medium">مشاهده و مدیریت اطلاعات استاد های باشگاه</span>
+        <h2 class="text-lg sm:text-3xl font-bold">مدیریت اساتید</h2>
+        <span class="text-xs sm:text-sm font-medium">مشاهده و مدیریت اطلاعات اساتید باشگاه</span>
       </div>
     </div>
     <div class="bg-white flex flex-col gap-3 p-3 rounded-lg">
       <div class="flex flex-col gap-2">
-        <span class="text-2xl font-bold">لیست استاد ها ({{ formData.length }} نفر)</span>
-        <p class="wrap-break-word font-medium text-sm">مشاهده کامل اطلاعات استاد ها و مدیریت آنها</p>
+        <span class="text-2xl font-bold">لیست اساتید ({{ formData.length }} نفر)</span>
+        <p class="wrap-break-word font-medium text-sm">مشاهده کامل اطلاعات اساتید و مدیریت آنها</p>
       </div>
       <TableMasterTable :items="formData" v-model:loading="isLoading" @deleted="handleDelete" />
     </div>
@@ -52,4 +52,15 @@ function handleDelete(id: number) {
 }
 
 onMounted(getMasterData)
+
+definePageMeta({
+  middleware: ["role-guard", "plan-guard"],
+})
+
+useHead({
+  title: "مدیریت اساتید",
+  meta: [
+    { name: "description", content: "مدیریت اطلاعات اساتید، برنامه کلاس‌ ها و وضعیت فعالیت آن‌ها در باشگاه." }
+  ]
+})
 </script>
