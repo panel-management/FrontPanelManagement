@@ -21,6 +21,7 @@ const itemsSelectPlan = ref<{ label: string; value: string }[]>([])
 const isShow: Ref<boolean> = ref(true)
 const isLoading: Ref<boolean> = ref(false)
 
+const hasSystemBelt = computed(() => gettingVariousDataStore.hasBeltSystem)
 const userId = computed(() => modalStore.modals.studentEdit)
 
 const props = defineProps({
@@ -37,20 +38,22 @@ const localOpen = computed({
   }
 })
 
-const items = [
-  {
-    label: 'ویرایش اطلاعات',
-    slot: 'editData' as const
-  },
-  {
-    label: 'تاریخچه کمربند',
-    slot: 'dateBelt' as const
-  },
-  {
-    label: 'وضعیت مالی',
-    slot: 'paymentStatus' as const
-  }
-] satisfies TabsItem[]
+const items = computed(() => {
+  return [
+    {
+      label: 'ویرایش اطلاعات',
+      slot: 'editData' as const
+    },
+    ...(hasSystemBelt.value ? [{
+      label: 'تاریخچه کمربند',
+      slot: 'dateBelt' as const
+    }] : []),
+    {
+      label: 'وضعیت مالی',
+      slot: 'paymentStatus' as const
+    }
+  ] satisfies TabsItem[]
+})
 
 const schema = v.object({
   fullName: v.pipe(
@@ -219,7 +222,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     const payload: UpdateStudent = {
       ...event.data,
       age: Number(event.data.age),
-      beltIds: [Number(event.data.beltIds)],
+      beltIds: Number(event.data.beltIds),
       planId: Number(event.data.planId)
     }
     const result = await updateStudentService(userId.value, payload)
@@ -240,13 +243,13 @@ function toggleInput() {
   isShow.value = !isShow.value
 }
 
-watch(gettingVariousDataStore, (value) => {
-  itemsSelectBelt.value = value.beltData.map(item => ({
+watch(() => gettingVariousDataStore.beltData, (value) => {
+  if (!hasSystemBelt.value) return
+  itemsSelectBelt.value = value.map(item => ({
     label: item.color,
     value: String(item.id)
   }))
-})
-
+}, { immediate: true })
 
 watch(userId, (id) => {
   if (id) {
@@ -258,13 +261,11 @@ watch(userId, (id) => {
 
 onMounted(() => {
   fetchPlanStudent()
-  gettingVariousDataStore.fetchBelts()
   if (userId.value) {
     nextTick(loadStudent)
   }
 })
 </script>
-
 <template>
   <UModal fullscreen v-model:open="localOpen" title="پروفایل هنرجو" description="اطلاعات کامل و تاریخچه هنرجو">
     <template #body>
@@ -278,7 +279,8 @@ onMounted(() => {
               <div class="flex flex-col gap-2">
                 <span class="font-medium text-xl">{{ formData.fullName }}</span>
                 <div class="flex gap-3">
-                  <UBadge color="info" variant="solid" :label="formData.currentBelt.color" class="font-medium" />
+                  <UBadge v-if="hasSystemBelt" color="info" variant="solid" :label="formData.currentBelt.color"
+                    class="font-medium" />
                   <UBadge color="neutral" variant="soft" :label="formData.sport.name" class="font-semibold w-fit" />
                 </div>
               </div>
@@ -369,8 +371,8 @@ onMounted(() => {
                     </div>
                     <USeparator />
                     <div class="flex flex-col gap-4 w-full">
-                      <BaseFormSelect :required="false" v-model="state.beltIds" :items="itemsSelectBelt" name="beltIds"
-                        label="انتخاب کمربند" :disable="isShow" />
+                      <BaseFormSelect v-if="hasSystemBelt" :required="false" v-model="state.beltIds"
+                        :items="itemsSelectBelt" name="beltIds" label="انتخاب کمربند" :disable="isShow" />
                       <BaseFormSelect v-if="state.planId" :required="false" v-model="state.planId"
                         :items="itemsSelectPlan" name="planId" label="انتخاب پلن" :disable="isShow" />
                     </div>

@@ -4,6 +4,7 @@ import type { FormSubmitEvent } from "@nuxt/ui"
 import type { CoachListData } from '~/models/users/coach/CoachListData';
 import { getCoachByIdService, updateCoachService } from '~/services/coach.service';
 import type { UpdateCoach } from '~/models/users/coach/UpdateCoach';
+import { Role } from '~/models/Role';
 
 const emit = defineEmits(['update:open', 'updated'])
 const modalStore = useModalStore()
@@ -186,7 +187,7 @@ onMounted(() => {
                 <span class="font-medium text-xl">{{ formData.fullName }}</span>
                 <div class="flex gap-2 sm:gap-3">
                   <div class="flex max-sm:flex-col gap-2 sm:gap-3">
-                    <UBadge v-if="formData.type === 2" color="secondary" variant="solid" label="مربی"
+                    <UBadge v-if="formData.type === Role.Coach" color="secondary" variant="solid" label="مربی"
                       class="font-medium" />
                     <UBadge color="neutral" variant="soft" :label="formData.sport.name" class="font-semibold w-fit" />
                   </div>

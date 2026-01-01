@@ -5,6 +5,7 @@ import type { TabsItem } from '@nuxt/ui'
 import { getMasterByIdForAdminService, updateProfileMasterJustAdminService } from '~/services/master.service';
 import type { MasterListData } from '~/models/users/master/MasterListData';
 import type { UpdateMaster } from '~/models/users/master/UpdateMaster';
+import { Role } from '~/models/Role';
 
 const emit = defineEmits(['update:open', 'updated']);
 const modalStore = useModalStore()
@@ -173,12 +174,12 @@ function toggleInput() {
   isShow.value = !isShow.value
 }
 
-watch(gettingVariousDataStore, (value) => {
-  itemsSelect.value = value.sportData.map(item => ({
+watch(gettingVariousDataStore.sportData, (value) => {
+  itemsSelect.value = value.map(item => ({
     label: item.name,
     value: String(item.id)
   }))
-})
+}, { immediate: true })
 
 watch(userId, (id) => {
   if (id) {
@@ -209,7 +210,7 @@ onMounted(() => {
                 <span class="font-medium text-xl">{{ formData.fullName }}</span>
                 <div class="flex gap-2 sm:gap-3">
                   <div class="flex max-sm:flex-col gap-2 sm:gap-3">
-                    <UBadge v-if="formData.type === 1" color="secondary" variant="solid" label="استاد"
+                    <UBadge v-if="formData.type === Role.Master" color="secondary" variant="solid" label="استاد"
                       class="font-medium" />
                     <UBadge color="neutral" variant="soft" :label="formData.sport.name" class="font-semibold w-fit" />
                   </div>
@@ -368,7 +369,8 @@ onMounted(() => {
                 <div class="w-full h-80 overflow-hidden">
                   <div
                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 w-full h-full overflow-y-auto">
-                    <div class="w-full rounded-lg bg-muted p-4" v-for="data in formData.students" :key="data.user_id">
+                    <div class="w-full rounded-lg bg-muted p-4 h-fit" v-for="data in formData.students"
+                      :key="data.user_id">
                       <div class="flex flex-col items-center gap-3 w-full">
                         <div class="rounded-full bg-white size-14 flex items-center justify-center text-lg font-bold">
                           {{ data.fullName.slice(0, 1) }}
@@ -432,7 +434,7 @@ onMounted(() => {
                 </div>
                 <div class="bg-white w-full h-72 p-4 rounded-lg overflow-hidden" v-if="formData.subscriptionPayments">
                   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 overflow-auto h-full w-full">
-                    <div class="flex items-center gap-4 bg-muted p-3 rounded-xl"
+                    <div class="flex items-center gap-4 bg-muted p-3 rounded-xl h-fit"
                       v-for="payment in formData.subscriptionPayments" :key="payment.id">
                       <div class="flex justify-center items-center">
                         <UIcon :name="paymentIcon[lastPayment?.status] || 'bi:emoji-neutral-fill'" class="size-6"

@@ -4,6 +4,7 @@ import type { FormSubmitEvent } from "@nuxt/ui"
 import { createStudentService } from '~/services/student.service';
 import type { StudentPlanData } from '~/models/plan/studentPlan/StudentPlanData';
 import { getPlanMasterByStudentService } from '~/services/masterPlan.service';
+import type { CreateStudent } from '~/models/users/student/CreateStudent';
 
 const emit = defineEmits(['update:open', 'success']);
 const toastStore = useToastStore()
@@ -12,6 +13,7 @@ const planData: Ref<StudentPlanData[]> = ref([]);
 const beltSelect = ref<{ label: string; value: string }[]>([])
 const planSelect = ref<{ label: string; value: string }[]>([])
 const isLoading: Ref<boolean> = ref(false)
+const hasSystemBelt = computed(() => gettingVariousDataStore.hasBeltSystem)
 
 const props = defineProps({
   open: {
@@ -76,14 +78,12 @@ const schema = v.object({
   beltIds: v.pipe(
     v.string(),
     v.trim(),
-    v.nonEmpty('انتخاب کمربند الزامی است'),
-    v.minLength(1, 'لطفا یک از موارد کمربند انتخاب کنید'),
   ),
   planId: v.pipe(
     v.string(),
     v.trim(),
     v.nonEmpty('انتخاب طرح الزامی است'),
-    v.minLength(1, 'لطفا یک از موارد طرح انتخاب کنید'),
+    v.minLength(1, 'لطفا یک از طرح ها را انتخاب کنید'),
   ),
   underSupervisionDoctor: v.boolean(),
   diseaseRecords: v.boolean()
@@ -124,13 +124,14 @@ async function fetchPlanStudent() {
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
   try {
-    const payload = {
+    const payload: CreateStudent = {
       ...event.data,
       age: Number(event.data.age),
       planId: Number(event.data.planId),
-      beltIds: [Number(event.data.beltIds)]
+      beltIds: Number(event.data.beltIds)
     }
     const result = await createStudentService(payload)
+    console.log(result.data);
     if (result.statusCode === 201) {
       toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
       localOpen.value = false
@@ -158,17 +159,15 @@ function resetForm() {
   state.diseaseRecords = false;
 }
 
-watch(gettingVariousDataStore, (value) => {
-  beltSelect.value = value.beltData.map(item => ({
+watch(() => gettingVariousDataStore.beltData, (value) => {
+  if (!hasSystemBelt.value) return
+  beltSelect.value = value.map(item => ({
     label: item.color,
     value: String(item.id)
   }))
-})
+}, { immediate: true })
 
-onMounted(() => {
-  fetchPlanStudent()
-  gettingVariousDataStore.fetchBelts()
-})
+onMounted(fetchPlanStudent)
 </script>
 
 <template>
@@ -206,12 +205,10 @@ onMounted(() => {
             <BaseFormCheckBox :required="false" v-model="state.diseaseRecords" name="diseaseRecords"
               label="سوابق بیماری یا آسیب‌دیدگی؟" />
           </div>
-          <USeparator />
-          <div class="w-full">
-            <BaseFormSelect :required="true" v-model="state.beltIds" :items="beltSelect" name="beltIds"
-              placeholder="انتخاب کمربند" label="انتخاب کمربند" />
-          </div>
-          <div class="w-full">
+          <USeparator label="انتخاب کمربند و پلن" />
+          <div class="flex flex-col gap-4 w-full">
+            <BaseFormSelect v-if="hasSystemBelt" :required="hasSystemBelt" v-model="state.beltIds" :items="beltSelect"
+              name="beltIds" placeholder="انتخاب کمربند" label="انتخاب کمربند" />
             <BaseFormSelect :required="true" v-model="state.planId" :items="planSelect" name="planId"
               placeholder="انتخاب طرح" label="انتخاب طرح" />
           </div>
