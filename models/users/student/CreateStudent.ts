@@ -8,6 +8,6 @@ export interface CreateStudent {
   address: string;
   underSupervisionDoctor: boolean;
   diseaseRecords: boolean;
-  beltIds: number[];
+  beltIds?: number;
   planId: number;
 }
