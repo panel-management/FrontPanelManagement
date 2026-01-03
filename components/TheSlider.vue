@@ -108,7 +108,7 @@
             label: 'امور مالی من',
             icon: 'i-lucide-wallet',
             to: '/management-financial/my-financial',
-            click: () => (isOpen.value = false),
+            onSelect: () => (isOpen.value = false),
           },
           // {
           //   label: 'داشبورد من',

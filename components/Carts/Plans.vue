@@ -15,13 +15,13 @@
         <span class="text-5xl font-extrabold text-black" v-if="Number(data.price) === 0">
           رایگان
         </span>
-        <span class="text-5xl font-extrabold text-black" v-else>{{
-          Number(data.price).toLocaleString('fa-IR')
-        }}</span>
+        <span class="text-5xl font-extrabold text-black" v-else>
+          {{ Number(data.price).toLocaleString('fa-IR') }}
+        </span>
         <span class="block text-sm text-gray-500">به مدت {{ data.durationInDays }} روز</span>
       </div>
       <ul class="list-none flex flex-col flex-grow gap-3">
-        <li class="flex items-center gap-2" v-for="feature in data.features">
+        <li class="flex items-center gap-2" v-for="feature in data.features" :key="feature">
           <UIcon name="clarity:success-line" class="size-5 text-teal-500" />
           <span class="text-base text-black">{{ feature }}</span>
         </li>

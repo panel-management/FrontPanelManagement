@@ -52,16 +52,16 @@
 
   onMounted(roleStore.getDetailUser)
 
-  // defineShortcuts({
-  //   o: () => isOpen.value = !isOpen.value,
-  //   m: () => navigateTo("/profile/master", { replace: true }),
-  //   c: () => navigateTo("/profile/coach", { replace: true }),
-  //   u: () => navigateTo("/profile/student", { replace: true }),
-  //   g: () => navigateTo("/setting/master", { replace: true }),
-  //   a: () => navigateTo("/setting/admin", { replace: true }),
-  //   t: () => navigateTo("/supports", { replace: true }),
-  //   s: () => navigateTo("/supports/ticket", { replace: true }),
-  // })
+  defineShortcuts({
+    o: () => (isOpen.value = !isOpen.value),
+    m: () => navigateTo('/profile/master', { replace: true }),
+    c: () => navigateTo('/profile/coach', { replace: true }),
+    u: () => navigateTo('/profile/student', { replace: true }),
+    g: () => navigateTo('/setting/master', { replace: true }),
+    a: () => navigateTo('/setting/admin', { replace: true }),
+    t: () => navigateTo('/supports', { replace: true }),
+    s: () => navigateTo('/supports/ticket', { replace: true }),
+  })
 
   const dropDownMenu = computed<DropdownMenuItem[][]>(() => {
     const user = roleStore.detailUser
@@ -90,7 +90,7 @@
         {
           label: 'تنظیمات',
           icon: 'i-lucide-cog',
-          kbds: ['f'],
+          kbds: ['a'],
           to: '/setting/admin',
         }
       )
@@ -99,19 +99,19 @@
         {
           label: 'پروفایل',
           icon: 'i-lucide-user',
-          kbds: ['p'],
+          kbds: ['m'],
           to: '/profile/master',
         },
         {
           label: 'پشتیبانی',
           icon: 'bi:patch-question-fll',
-          kbds: ['alt', 's'],
+          kbds: ['s'],
           to: '/supports/ticket',
         },
         {
           label: 'تنظیمات',
           icon: 'i-lucide-cog',
-          kbds: ['f'],
+          kbds: ['g'],
           to: '/setting/master',
         }
       )
@@ -119,14 +119,14 @@
       sectionActions.push({
         label: 'پروفایل',
         icon: 'i-lucide-user',
-        kbds: ['p'],
+        kbds: ['c'],
         to: '/profile/coach',
       })
     } else if (role === Role.Student) {
       sectionActions.push({
         label: 'پروفایل',
         icon: 'i-lucide-user',
-        kbds: ['p'],
+        kbds: ['u'],
         to: '/profile/student',
       })
     }
@@ -135,7 +135,6 @@
       label: 'خروج',
       icon: 'i-lucide-log-out',
       color: 'error',
-      kbds: ['shift', 'q'],
       onSelect() {
         accountStore.isLogout()
         setTimeout(() => {
