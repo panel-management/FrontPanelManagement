@@ -4,9 +4,10 @@
       v-model="model"
       :placeholder="placeholder"
       :disabled="disable"
-      size="lg"
       autoresize
       :rows="5"
+      size="lg"
+      color="neutral"
       class="w-full"
       :class="{ 'blur-[1px]': disable }"
     />

@@ -80,9 +80,9 @@
                   <div class="flex w-full justify-between items-center">
                     <span class="font-medium">ویژگی:</span>
                     <div class="flex flex-col gap-2">
-                      <span class="font-medium" v-for="feature in data.features">{{
-                        feature
-                      }}</span>
+                      <span class="font-medium" v-for="feature in data.features">
+                        {{ feature }}
+                      </span>
                     </div>
                   </div>
                   <USeparator />
@@ -93,9 +93,10 @@
                   <USeparator />
                   <div class="flex w-full justify-between items-center">
                     <span class="font-medium">مدت زمان:</span>
-                    <span class="font-medium"
-                      ><span>{{ data.durationInDays }}</span> روز</span
-                    >
+                    <span class="font-medium">
+                      <span>{{ data.durationInDays }}</span>
+                      روز
+                    </span>
                   </div>
                   <USeparator />
                   <div class="w-full" v-if="Number(data.price) === 0">
@@ -103,9 +104,10 @@
                   </div>
                   <div class="flex w-full justify-between items-center" v-else>
                     <span class="font-medium">مبلغ:</span>
-                    <span class="font-medium"
-                      ><span>{{ Number(data.price).toLocaleString('fa-IR') }}</span> تومان</span
-                    >
+                    <span class="font-medium">
+                      <span>{{ Number(data.price).toLocaleString('fa-IR') }}</span>
+                      تومان
+                    </span>
                   </div>
                   <USeparator />
                   <div class="flex w-full justify-between items-center">

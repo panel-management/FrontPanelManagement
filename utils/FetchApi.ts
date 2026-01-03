@@ -22,7 +22,7 @@ export function FetchApi<TData>(
     newConfig.headers['authorization'] = `Bearer ${accountStore.getToken!}`
   }
   const showError = (data: ApiResponse<any>) => {
-    if (process.client) {
+    if (import.meta.client) {
       if (data.statusCode === 404) {
         toastStore.setAlert(data.message, '', 'warning', 'material-symbols-light:warning-rounded')
       } else {

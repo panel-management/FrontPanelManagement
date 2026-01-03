@@ -306,9 +306,9 @@
             <div class="flex items-center gap-1">
               <UIcon name="bxs:certification" class="size-6 text-black" />
               <span class="font-medium text-base mt-1">مدرک و گواهینامه ها:</span>
-              <span class="font-medium text-base mt-1">{{
-                formData.certificates || 'وجود ندارد'
-              }}</span>
+              <span class="font-medium text-base mt-1">
+                {{ formData.certificates || 'وجود ندارد' }}
+              </span>
             </div>
             <div class="flex items-center gap-1">
               <UIcon name="solar:planet-2-bold" class="size-6 text-black" />
@@ -352,9 +352,9 @@
               />
             </div>
             <div class="flex flex-col md:items-center gap-1">
-              <span class="font-semibold text-xl" v-if="formData.history"
-                >{{ formData.history }} سال</span
-              >
+              <span class="font-semibold text-xl" v-if="formData.history">
+                {{ formData.history }} سال
+              </span>
               <span class="font-semibold text-xl" v-else>سابقه وجود ندارد</span>
               <span class="font-medium">سابقه تدریس</span>
             </div>
@@ -441,7 +441,7 @@
                         class="w-full"
                       />
                     </div>
-                    <div class="w-full">
+                    <div class="flex flex-col gap-5 w-full">
                       <BaseFormInput
                         :required="false"
                         :disable="isShow"
@@ -452,8 +452,6 @@
                         placeholder="مدرک و گواهینامه ها مربیگری خلاصه"
                         class="w-full"
                       />
-                    </div>
-                    <div class="w-full">
                       <BaseFormSelect
                         :required="false"
                         :disable="isShow"
@@ -464,17 +462,15 @@
                       />
                     </div>
                     <div class="w-full flex flex-col justify-center items-center">
-                      <ClientOnly>
-                        <BaseFormUploadFile
-                          :required="false"
-                          :disable="isShow"
-                          v-model="state.imageFile"
-                          label="ارسال عکس گواهینامه"
-                          name="imageFile"
-                          description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا MB 1"
-                          class="w-full"
-                        />
-                      </ClientOnly>
+                      <BaseFormUploadFile
+                        :required="false"
+                        :disable="isShow"
+                        v-model="state.imageFile"
+                        label="ارسال عکس گواهینامه"
+                        name="imageFile"
+                        description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا MB 1"
+                        class="w-full"
+                      />
                       <img
                         v-if="state.imageUrl"
                         class="object-cover md:w-2/3 pt-10"
@@ -503,8 +499,8 @@
                   <div class="flex items-center gap-2">
                     <UIcon name="ph:users-three-bold" class="size-6 text-black/70" />
                     <span class="font-medium text-lg md:text-2xl">
-                      هنرجویان تحت نظر ({{ formData.students.length }} نفر)</span
-                    >
+                      هنرجویان تحت نظر ({{ formData.students.length }} نفر)
+                    </span>
                   </div>
                   <p class="break-words font-medium text-sm md:text-base">
                     لیست هنرجویان و مربی که تحت نظر این استاد هستند

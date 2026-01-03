@@ -272,7 +272,6 @@
   } from '~/services/student.service'
   import type { UpdateStudent } from '~/models/users/student/UpdateStudent'
 
-  const router = useRouter()
   const toastStore = useToastStore()
   const gettingVariousDataStore = useGettingVariousDataStore()
   const { gregorianToJalali, jalaliToGregorian } = useDateConverter()
@@ -348,20 +347,17 @@
     ] satisfies TabsItem[]
   })
 
-  const { data: student, refresh } = await useAsyncData('current-student-profile', () =>
-    getStudentJustStudentByIdService()
-  )
+  const {
+    data: student,
+    error,
+    refresh,
+  } = await useAsyncData('current-student-profile', () => getStudentJustStudentByIdService())
   console.log(student.value?.data)
-  if (!student.value || !student.value?.data) {
-    if (import.meta.client) {
-      toastStore.setAlert(student.value?.message, '', 'error', 'bx:bxs-error')
-      router.push('/profile/student')
-    } else {
-      throw createError({
-        statusCode: 404,
-        message: 'پروفایل پیدا نشده لطف دوباره تلاش کنید',
-      })
-    }
+  if (error.value || !student.value?.data) {
+    throw createError({
+      statusCode: 404,
+      message: student.value?.message || 'پروفایل پیدا نشده لطف دوباره تلاش کنید',
+    })
   }
 
   onMounted(gettingVariousDataStore.fetchSports)

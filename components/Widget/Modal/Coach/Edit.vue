@@ -252,9 +252,9 @@
             <div class="flex items-center gap-1">
               <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
               <span class="font-medium text-base mt-1">عضویت:</span>
-              <span class="font-medium text-base mt-1">{{
-                gregorianToJalali(formData.createdAt)
-              }}</span>
+              <span class="font-medium text-base mt-1">
+                {{ gregorianToJalali(formData.createdAt) }}
+              </span>
             </div>
             <div class="flex items-center gap-1">
               <UIcon name="ion:university" class="size-6 text-black" />
@@ -419,17 +419,15 @@
                   />
                 </div>
                 <div class="w-full flex flex-col justify-center items-center">
-                  <ClientOnly>
-                    <BaseFormUploadFile
-                      :required="false"
-                      :disable="isShow"
-                      v-model="state.imageFile"
-                      label="ارسال عکس گواهینامه"
-                      name="imageFile"
-                      description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا MB 1"
-                      class="w-full"
-                    />
-                  </ClientOnly>
+                  <BaseFormUploadFile
+                    :required="false"
+                    :disable="isShow"
+                    v-model="state.imageFile"
+                    label="ارسال عکس گواهینامه"
+                    name="imageFile"
+                    description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا MB 1"
+                    class="w-full"
+                  />
                   <img
                     v-if="state.imageUrl"
                     class="object-cover md:w-2/3 pt-10"

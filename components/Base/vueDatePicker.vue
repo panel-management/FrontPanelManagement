@@ -29,7 +29,6 @@
     </div>
   </UFormField>
 </template>
-
 <script setup lang="ts">
   import DatePicker from '@alireza-ab/vue3-persian-datepicker'
   import { onClickOutside } from '@vueuse/core'
@@ -77,7 +76,6 @@
     open.value = false
   }
 </script>
-
 <style scoped>
   .fade-enter-active,
   .fade-leave-active {

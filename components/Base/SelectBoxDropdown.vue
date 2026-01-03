@@ -4,6 +4,7 @@
     :items="items"
     :placeholder="placeholder"
     :disabled="disable"
+    color="neutral"
     class="w-full"
     :class="{ 'blur-[1px]': disable }"
   />

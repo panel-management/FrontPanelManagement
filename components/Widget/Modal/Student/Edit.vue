@@ -350,9 +350,9 @@
             <div class="flex items-center gap-1">
               <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
               <span class="font-medium text-base mt-1">تاریخ تولد:</span>
-              <span class="font-medium text-base mt-1">{{
-                gregorianToJalali(formData.birthDate)
-              }}</span>
+              <span class="font-medium text-base mt-1">
+                {{ gregorianToJalali(formData.birthDate) }}
+              </span>
             </div>
             <div class="flex items-center gap-1">
               <UIcon name="ic:round-person" class="size-6 text-black" />
@@ -540,9 +540,9 @@
                     v-for="data in formData.achievedBelts"
                     :key="data?.id"
                   >
-                    <span class="text-lg" :class="[getBeltClass(data?.color)]">{{
-                      data?.color
-                    }}</span>
+                    <span class="text-lg" :class="[getBeltClass(data?.color)]">
+                      {{ data?.color }}
+                    </span>
                     <div class="flex flex-col gap-1">
                       <span class="font-semibold text-lg">کمربند {{ data?.color }}</span>
                       <!-- <span class="font-medium text-sm flex items-center gap-1">

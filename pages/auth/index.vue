@@ -9,21 +9,19 @@
         class="w-full md:w-2/3 lg:w-1/2 xl:w-1/3 h-full flex flex-col items-center justify-center gap-5"
       >
         <div class="flex flex-col items-center-safe gap-1">
-          <span class="font-medium text-xl md:text-3xl text-black leading-relaxed"
-            >ورود به سیستم</span
-          >
+          <span class="font-medium text-xl md:text-3xl text-black leading-relaxed">
+            ورود به سیستم
+          </span>
           <span class="text-black/80 font-normal text-sm">لطفاً اطلاعات خود را وارد کنید</span>
         </div>
-        <div class="w-full flex flex-col gap-5">
-          <BaseFormInput
-            v-model="stateStep1.phoneNumber"
-            label="شماره تلفن"
-            name="phoneNumber"
-            type="text"
-            :required="false"
-            class="w-full"
-          />
-        </div>
+        <BaseFormInput
+          v-model="stateStep1.phoneNumber"
+          label="شماره تلفن"
+          name="phoneNumber"
+          type="text"
+          :required="false"
+          class="w-full"
+        />
         <UButton
           :loading="isLoading"
           type="submit"
@@ -40,22 +38,20 @@
         class="w-full md:w-2/3 lg:w-1/2 xl:w-1/3 h-full flex flex-col items-center justify-center gap-5"
       >
         <div class="flex flex-col items-center-safe gap-1">
-          <span class="font-medium text-xl md:text-3xl text-black leading-relaxed"
-            >ورود به سیستم</span
-          >
+          <span class="font-medium text-xl md:text-3xl text-black leading-relaxed">
+            ورود به سیستم
+          </span>
           <span class="text-black/80 font-normal text-sm">
             کد تایید ارسال شده به {{ stateStep1.phoneNumber }} را وارد کنید
           </span>
         </div>
-        <div class="w-full">
-          <BaseFormOtp
-            v-model="stateStep2.otpArray"
-            name="otpArray"
-            :disable="false"
-            :required="false"
-            class="w-full flex justify-center items-center"
-          />
-        </div>
+        <BaseFormOtp
+          v-model="stateStep2.otpArray"
+          name="otpArray"
+          :disable="false"
+          :required="false"
+          class="w-full flex justify-center items-center"
+        />
         <UButton
           :loading="isLoading"
           type="submit"
@@ -75,53 +71,51 @@
           <span class="font-medium text-xl md:text-3xl text-black leading-relaxed">ثبت نام</span>
           <span class="text-black/80 font-normal text-sm">ایجاد حساب کاربری جدید</span>
         </div>
-        <div class="w-full flex flex-col gap-5">
-          <BaseFormInput
-            v-model="stateStep3.fullName"
-            label="نام و نام خانوادگی"
-            name="fullName"
-            type="text"
-            required
-            :disable="false"
-            class="w-full"
-          />
-          <BaseFormInput
-            v-model="stateStep3.nationalCode"
-            label="کد ملی"
-            name="nationalCode"
-            type="text"
-            required
-            :disable="false"
-            class="w-full"
-          />
-          <BaseFormInput
-            v-model="stateStep1.phoneNumber"
-            label="شماره تلفن"
-            name="phoneNumber"
-            type="text"
-            required
-            :disable="true"
-            class="w-full"
-          />
-          <BaseFormInput
-            v-model="otpValue"
-            label="کد تایید"
-            name="otpArray"
-            type="text"
-            required
-            :disable="true"
-            class="w-full"
-          />
-          <BaseFormSelect
-            required
-            :disable="false"
-            v-model="stateStep3.selectSport"
-            :items="itemsSelect"
-            name="selectSport"
-            placeholder="رشته مورد نظر را انتخاب کنید"
-            label="انتخاب رشته ورزشی"
-          />
-        </div>
+        <BaseFormInput
+          v-model="stateStep3.fullName"
+          label="نام و نام خانوادگی"
+          name="fullName"
+          type="text"
+          required
+          :disable="false"
+          class="w-full"
+        />
+        <BaseFormInput
+          v-model="stateStep3.nationalCode"
+          label="کد ملی"
+          name="nationalCode"
+          type="text"
+          required
+          :disable="false"
+          class="w-full"
+        />
+        <BaseFormInput
+          v-model="stateStep1.phoneNumber"
+          label="شماره تلفن"
+          name="phoneNumber"
+          type="text"
+          required
+          :disable="true"
+          class="w-full"
+        />
+        <BaseFormInput
+          v-model="otpValue"
+          label="کد تایید"
+          name="otpArray"
+          type="text"
+          required
+          :disable="true"
+          class="w-full"
+        />
+        <BaseFormSelect
+          required
+          :disable="false"
+          v-model="stateStep3.selectSport"
+          :items="itemsSelect"
+          name="selectSport"
+          placeholder="رشته مورد نظر را انتخاب کنید"
+          label="انتخاب رشته ورزشی"
+        />
         <UButton
           :loading="isLoading"
           type="submit"

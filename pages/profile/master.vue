@@ -199,17 +199,15 @@
                 />
               </div>
               <div class="w-full flex flex-col justify-center items-center pt-1">
-                <ClientOnly>
-                  <BaseFormUploadFile
-                    :required="false"
-                    :disable="isShow"
-                    v-model="state.imageFile"
-                    label="ارسال عکس گواهینامه"
-                    name="imageFile"
-                    description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا MB 1"
-                    class="w-full"
-                  />
-                </ClientOnly>
+                <BaseFormUploadFile
+                  :required="false"
+                  :disable="isShow"
+                  v-model="state.imageFile"
+                  label="ارسال عکس گواهینامه"
+                  name="imageFile"
+                  description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا MB 1"
+                  class="w-full"
+                />
                 <img
                   v-if="state.imageUrl"
                   class="object-cover md:w-2/3 pt-10"
@@ -409,20 +407,17 @@
 
   type Schema = v.InferOutput<typeof schema>
 
-  const { data: master, refresh } = await useAsyncData('current-master-profile', () =>
-    getMasterByIdService()
-  )
+  const {
+    data: master,
+    error,
+    refresh,
+  } = await useAsyncData('current-master-profile', () => getMasterByIdService())
   console.log(master.value?.data)
-  if (!master.value || !master.value?.data) {
-    if (import.meta.client) {
-      toastStore.setAlert(master.value?.message, '', 'error', 'bx:bxs-error')
-      router.push('/dashboard')
-    } else {
-      throw createError({
-        statusCode: 404,
-        message: 'پروفایل پیدا نشده لطف دوباره تلاش کنید',
-      })
-    }
+  if (error.value || !master.value?.data) {
+    throw createError({
+      statusCode: 404,
+      message: master.value?.message || 'پروفایل پیدا نشده لطف دوباره تلاش کنید',
+    })
   }
 
   const state = reactive<UpdateMaster>({

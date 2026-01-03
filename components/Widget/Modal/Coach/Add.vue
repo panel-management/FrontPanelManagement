@@ -185,7 +185,7 @@
               class="w-full"
             />
           </div>
-          <div class="w-full">
+          <div class="flex flex-col gap-5 w-full">
             <BaseFormInput
               v-model="state.certificates"
               label="مدرک و گواهینامه ها"
@@ -195,8 +195,6 @@
               required
               class="w-full"
             />
-          </div>
-          <div class="w-full">
             <BaseFormUploadFile
               :required="false"
               v-model="state.imageFile"

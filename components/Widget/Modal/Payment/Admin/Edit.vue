@@ -91,25 +91,21 @@
     <template #body>
       <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
         <div class="flex flex-col gap-5 w-full">
-          <div class="w-full">
-            <BaseFormInput
-              v-model="state.description"
-              label="توضیحات"
-              name="description"
-              type="text"
-              placeholder="توضیح درباره پلن که ویرایش میخواهید انجام دهید؟"
-              required
-              class="w-full"
-            />
-          </div>
-          <div class="w-full">
-            <BaseFormCheckBox
-              v-model="state.isActive"
-              label="وضعیت پلن"
-              name="isActive"
-              :required="false"
-            />
-          </div>
+          <BaseFormInput
+            v-model="state.description"
+            label="توضیحات"
+            name="description"
+            type="text"
+            placeholder="توضیح درباره پلن که ویرایش میخواهید انجام دهید؟"
+            required
+            class="w-full"
+          />
+          <BaseFormCheckBox
+            v-model="state.isActive"
+            label="وضعیت پلن"
+            name="isActive"
+            :required="false"
+          />
           <div class="flex justify-between gap-2 pt-4">
             <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
             <UButton :loading="isLoading" label="ویرایش پلن" color="primary" type="submit" />

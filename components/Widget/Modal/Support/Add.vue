@@ -82,17 +82,15 @@
     <template #body>
       <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
         <div class="flex flex-col gap-5 w-full">
-          <div class="w-full">
-            <BaseFormInput
-              v-model="state.title"
-              label="عنوان تیکت"
-              name="title"
-              type="text"
-              placeholder="عنوان مشکل یا درخواست خود را بنویسید."
-              required
-              class="w-full"
-            />
-          </div>
+          <BaseFormInput
+            v-model="state.title"
+            label="عنوان تیکت"
+            name="title"
+            type="text"
+            placeholder="عنوان مشکل یا درخواست خود را بنویسید."
+            required
+            class="w-full"
+          />
           <div class="flex max-sm:flex-col gap-5 sm:gap-3 w-full">
             <BaseFormSelect
               :required="true"
@@ -113,16 +111,14 @@
               class="w-full"
             />
           </div>
-          <div class="w-full">
-            <BaseFormTextArea
-              v-model="state.text"
-              label="توضیحات"
-              name="text"
-              placeholder="مشکل یا درخواست خود را شرح دهید."
-              required
-              class="w-full"
-            />
-          </div>
+          <BaseFormTextArea
+            v-model="state.text"
+            label="توضیحات"
+            name="text"
+            placeholder="مشکل یا درخواست خود را شرح دهید."
+            required
+            class="w-full"
+          />
           <div class="flex justify-between gap-2 pt-4">
             <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
             <UButton label="ارسال تیکت" color="primary" type="submit" />

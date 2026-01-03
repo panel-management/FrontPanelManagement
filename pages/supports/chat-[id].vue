@@ -104,6 +104,10 @@
   const isLoading: Ref<boolean> = ref(false)
   const newMessage = ref('')
 
+  if (!id || isNaN(id)) {
+    showError({ statusCode: 404, message: 'شناسه تیکت نامعتبر است' })
+  }
+
   const {
     data: ticket,
     error,
@@ -111,15 +115,14 @@
   } = await useAsyncData(`ticket-${id}`, () => getTicketByIdService(id))
 
   if (error.value) {
-    showError({ statusCode: 500, message: 'خطای اتصال به سرور' })
-  } else if (!id || isNaN(id)) {
-    showError({ statusCode: 404, message: 'شناسه تیکت نامعتبر است' })
-  } else if (!ticket.value || !ticket.value.data) {
-    showError({ statusCode: 404, message: 'شناسه تیکت نامعتبر است' })
-  } else if (ticket.value.statusCode !== 200) {
-    showError({
-      statusCode: ticket.value.statusCode,
-      message: ticket.value.message || 'خطایی رخ داده است',
+    throw showError({
+      statusCode: 500,
+      message: 'خطای اتصال به سرور',
+    })
+  } else if (!ticket.value?.data) {
+    throw showError({
+      statusCode: 404,
+      message: 'تیکت پیدا نشد',
     })
   }
 

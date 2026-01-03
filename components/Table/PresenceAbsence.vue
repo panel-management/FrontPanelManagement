@@ -92,9 +92,9 @@
         <UIcon name="material-symbols:person-check" class="size-6 bg-turquoise-500" />
       </div>
       <div class="flex flex-col items-center gap-1">
-        <span class="font-semibold text-2xl">{{
-          summaryData?.PRESENT ? summaryData?.PRESENT : 'وجود ندارد'
-        }}</span>
+        <span class="font-semibold text-2xl">
+          {{ summaryData?.PRESENT ? summaryData?.PRESENT : 'وجود ندارد' }}
+        </span>
         <span class="font-medium text-sm">حضور</span>
       </div>
     </div>
@@ -103,9 +103,9 @@
         <UIcon name="material-symbols:person-cancel" class="size-6 bg-error-500" />
       </div>
       <div class="flex flex-col items-center gap-1">
-        <span class="font-semibold text-2xl">{{
-          summaryData?.ABSENT ? summaryData?.ABSENT : 'وجود ندارد'
-        }}</span>
+        <span class="font-semibold text-2xl">
+          {{ summaryData?.ABSENT ? summaryData?.ABSENT : 'وجود ندارد' }}
+        </span>
         <span class="font-medium text-sm">غیبت‌ ها</span>
       </div>
     </div>
@@ -114,9 +114,9 @@
         <UIcon name="material-symbols:alarm" class="size-6 bg-yellow-500" />
       </div>
       <div class="flex flex-col items-center gap-1">
-        <span class="font-semibold text-2xl">{{
-          summaryData?.LATE ? summaryData?.LATE : 'وجود ندارد'
-        }}</span>
+        <span class="font-semibold text-2xl">
+          {{ summaryData?.LATE ? summaryData?.LATE : 'وجود ندارد' }}
+        </span>
         <span class="font-medium text-sm">تأخیرات</span>
       </div>
     </div>
@@ -125,9 +125,9 @@
         <UIcon name="mdi:file-document-multiple" class="size-6 bg-secondary-500" />
       </div>
       <div class="flex flex-col items-center gap-1">
-        <span class="font-semibold text-2xl">{{
-          summaryData?.EXCUSED ? summaryData?.EXCUSED : 'وجود ندارد'
-        }}</span>
+        <span class="font-semibold text-2xl">
+          {{ summaryData?.EXCUSED ? summaryData?.EXCUSED : 'وجود ندارد' }}
+        </span>
         <span class="font-medium text-sm">موجه</span>
       </div>
     </div>
@@ -136,9 +136,9 @@
         <UIcon name="mdi-light:chart-bar" class="size-6 bg-info-500" />
       </div>
       <div class="flex flex-col items-center gap-1">
-        <span class="font-semibold text-2xl">{{
-          sessionsData?.totalSessions ? sessionsData?.totalSessions : 'وجود ندارد'
-        }}</span>
+        <span class="font-semibold text-2xl">
+          {{ sessionsData?.totalSessions ? sessionsData?.totalSessions : 'وجود ندارد' }}
+        </span>
         <span class="font-medium text-sm">کل جلسات</span>
       </div>
     </div>

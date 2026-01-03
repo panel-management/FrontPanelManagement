@@ -19,116 +19,114 @@
             @submit.prevent="onSubmit"
             class="w-full flex flex-col items-center justify-center gap-5"
           >
-            <ClientOnly>
-              <div class="flex flex-col gap-5 w-full">
-                <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-                  <BaseFormInput
-                    required
-                    v-model="state.clubName"
-                    label="نام باشگاه"
-                    name="clubName"
-                    type="text"
-                    class="w-full"
-                  />
-                  <BaseFormInput
-                    required
-                    v-model="state.activityType"
-                    label="حوزه فعالیت"
-                    name="activityType"
-                    type="text"
-                    class="w-full"
-                  />
-                </div>
-                <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-                  <BaseFormInput
-                    required
-                    v-model="state.clubPhoneNumber"
-                    label="شماره تلفن باشگاه"
-                    name="clubPhoneNumber"
-                    type="text"
-                    class="w-full"
-                  />
-                  <BaseDatePicker
-                    required
-                    v-model="state.foundationDate"
-                    label="تاریخ تاسسیس باشگاه"
-                    name="foundationDate"
-                    class="w-full"
-                  />
-                </div>
+            <div class="flex flex-col gap-5 w-full">
+              <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
                 <BaseFormInput
                   required
-                  v-model="state.goal"
-                  label="هدف ایجاد باشگاه"
-                  name="goal"
+                  v-model="state.clubName"
+                  label="نام باشگاه"
+                  name="clubName"
                   type="text"
                   class="w-full"
                 />
-                <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-                  <BaseFormInput
-                    :required="false"
-                    v-model="state.socialNetworks.instagram"
-                    label="ایدی اینستاگرام باشگاه (اختیاری)"
-                    name="instagram"
-                    type="text"
-                    class="w-full"
-                  />
-                  <BaseFormInput
-                    :required="false"
-                    v-model="state.socialNetworks.telegram"
-                    label="لینک گروه تلگرام باشگاه (اختیاری)"
-                    name="telegram"
-                    type="text"
-                    class="w-full"
-                  />
-                </div>
-                <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-                  <BaseFormInput
-                    :required="false"
-                    v-model="state.socialNetworks.eitaa"
-                    label="لینک گروه ایتا باشگاه (اختیاری)"
-                    name="eitaa"
-                    type="text"
-                    class="w-full"
-                  />
-                  <BaseFormInput
-                    :required="false"
-                    v-model="state.socialNetworks.website"
-                    label="لینک وب سایت (اختیاری)"
-                    name="website"
-                    type="text"
-                    class="w-full"
-                  />
-                </div>
-                <div class="w-full">
-                  <BaseFormTextArea
-                    required
-                    v-model="state.clubAddress"
-                    label="آدرس باشگاه"
-                    name="clubAddress"
-                    class="w-full"
-                  />
-                </div>
-                <div class="w-full">
-                  <BaseFormTextArea
-                    required
-                    v-model="state.aboutClub"
-                    label="درباره باشگاه"
-                    name="aboutClub"
-                    class="w-full"
-                  />
-                </div>
-                <div class="flex justify-end gap-2 pt-4">
-                  <UButton
-                    :loading="isLoading"
-                    type="submit"
-                    color="primary"
-                    class="flex justify-center text-base"
-                    label="ثبت اطلاعات"
-                  />
-                </div>
+                <BaseFormInput
+                  required
+                  v-model="state.activityType"
+                  label="حوزه فعالیت"
+                  name="activityType"
+                  type="text"
+                  class="w-full"
+                />
               </div>
-            </ClientOnly>
+              <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
+                <BaseFormInput
+                  required
+                  v-model="state.clubPhoneNumber"
+                  label="شماره تلفن باشگاه"
+                  name="clubPhoneNumber"
+                  type="text"
+                  class="w-full"
+                />
+                <BaseDatePicker
+                  required
+                  v-model="state.foundationDate"
+                  label="تاریخ تاسسیس باشگاه"
+                  name="foundationDate"
+                  class="w-full"
+                />
+              </div>
+              <BaseFormInput
+                required
+                v-model="state.goal"
+                label="هدف ایجاد باشگاه"
+                name="goal"
+                type="text"
+                class="w-full"
+              />
+              <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
+                <BaseFormInput
+                  :required="false"
+                  v-model="state.socialNetworks.instagram"
+                  label="ایدی اینستاگرام باشگاه (اختیاری)"
+                  name="instagram"
+                  type="text"
+                  class="w-full"
+                />
+                <BaseFormInput
+                  :required="false"
+                  v-model="state.socialNetworks.telegram"
+                  label="لینک گروه تلگرام باشگاه (اختیاری)"
+                  name="telegram"
+                  type="text"
+                  class="w-full"
+                />
+              </div>
+              <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
+                <BaseFormInput
+                  :required="false"
+                  v-model="state.socialNetworks.eitaa"
+                  label="لینک گروه ایتا باشگاه (اختیاری)"
+                  name="eitaa"
+                  type="text"
+                  class="w-full"
+                />
+                <BaseFormInput
+                  :required="false"
+                  v-model="state.socialNetworks.website"
+                  label="لینک وب سایت (اختیاری)"
+                  name="website"
+                  type="text"
+                  class="w-full"
+                />
+              </div>
+              <div class="w-full">
+                <BaseFormTextArea
+                  required
+                  v-model="state.clubAddress"
+                  label="آدرس باشگاه"
+                  name="clubAddress"
+                  class="w-full"
+                />
+              </div>
+              <div class="w-full">
+                <BaseFormTextArea
+                  required
+                  v-model="state.aboutClub"
+                  label="درباره باشگاه"
+                  name="aboutClub"
+                  class="w-full"
+                />
+              </div>
+              <div class="flex justify-end gap-2 pt-4">
+                <UButton
+                  :loading="isLoading"
+                  type="submit"
+                  color="primary"
+                  class="flex justify-center text-base"
+                  label="ثبت اطلاعات"
+                />
+              </div>
+            </div>
           </UForm>
         </div>
       </template>
@@ -221,16 +219,18 @@
                 <USeparator />
                 <div class="flex w-full justify-between">
                   <span class="font-medium">مدت:</span>
-                  <span class="font-medium"
-                    ><span>{{ data.durationInDays }}</span> روز</span
-                  >
+                  <span class="font-medium">
+                    <span>{{ data.durationInDays }}</span>
+                    روز
+                  </span>
                 </div>
                 <USeparator />
                 <div class="flex w-full justify-between">
                   <span class="font-medium">مبلغ:</span>
-                  <span class="font-medium"
-                    ><span>{{ Number(data.price).toLocaleString('fa-IR') }}</span> تومان</span
-                  >
+                  <span class="font-medium">
+                    <span>{{ Number(data.price).toLocaleString('fa-IR') }}</span>
+                    تومان
+                  </span>
                 </div>
                 <USeparator />
                 <div class="flex w-full justify-between items-center">

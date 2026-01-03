@@ -110,45 +110,40 @@
     <template #body>
       <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
         <div class="flex flex-col gap-5 w-full">
-          <div class="w-full">
-            <BaseFormInput
-              v-model="state.name"
-              label="نام پلن"
-              name="name"
-              type="text"
-              placeholder="مثال: پلن رایگان , پلن پولی"
-              required
-              class="w-full"
-            />
-          </div>
-          <div class="w-full">
-            <BaseFormInput
-              v-model="state.description"
-              label="توضیحات"
-              name="description"
-              type="text"
-              placeholder="توضیحات درباره این پلن"
-              :required="false"
-              class="w-full"
-            />
-          </div>
-          <div class="w-full">
-            <BaseFormInput
-              v-model="displayPrice"
-              label="قیمت(تومان)"
-              name="price"
-              type="text"
-              placeholder="1,500,000"
-              :required="false"
-              class="w-full"
-            />
-          </div>
+          <BaseFormInput
+            v-model="state.name"
+            label="نام پلن"
+            name="name"
+            type="text"
+            placeholder="مثال: پلن رایگان , پلن پولی"
+            required
+            class="w-full"
+          />
+          <BaseFormInput
+            v-model="state.description"
+            label="توضیحات"
+            name="description"
+            type="text"
+            placeholder="توضیحات درباره این پلن"
+            :required="false"
+            class="w-full"
+          />
+          <BaseFormInput
+            v-model="displayPrice"
+            label="قیمت(تومان)"
+            name="price"
+            type="text"
+            placeholder="1,500,000"
+            :required="false"
+            class="w-full"
+          />
           <div class="w-full flex flex-col">
             <div class="flex justify-between items-center">
               <label
                 class="text-base font-medium after:text-red-500 after:content-['*'] after:text-sm after:pr-1"
-                >ویژگی‌ها</label
               >
+                ویژگی‌ها
+              </label>
               <UButton
                 type="button"
                 color="neutral"
@@ -181,28 +176,24 @@
               />
             </div>
           </div>
-          <div class="w-full">
-            <BaseFormSelect
-              required
-              :disable="false"
-              v-model="state.type"
-              :items="itemsSelect"
-              name="type"
-              placeholder="پلن مورد نظر را انتخاب کنید"
-              label="انتخاب پلن"
-            />
-          </div>
-          <div class="w-full">
-            <BaseFormInput
-              v-model="state.durationInDays"
-              label="مدت زمان"
-              name="durationInDays"
-              type="text"
-              placeholder="مدت زمان باید به روز باشد"
-              required
-              class="w-full"
-            />
-          </div>
+          <BaseFormSelect
+            required
+            :disable="false"
+            v-model="state.type"
+            :items="itemsSelect"
+            name="type"
+            placeholder="پلن مورد نظر را انتخاب کنید"
+            label="انتخاب پلن"
+          />
+          <BaseFormInput
+            v-model="state.durationInDays"
+            label="مدت زمان"
+            name="durationInDays"
+            type="text"
+            placeholder="مدت زمان باید به روز باشد"
+            required
+            class="w-full"
+          />
           <div class="flex justify-between gap-2 pt-4">
             <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
             <UButton :loading="isLoading" label="افزودن پلن جدید" color="primary" type="submit" />

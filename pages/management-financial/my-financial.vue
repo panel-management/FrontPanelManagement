@@ -110,13 +110,14 @@
         </div>
         <USeparator />
         <div class="flex w-full justify-between">
-          <span class="font-medium" v-if="item.status === TransactionStatus.PAID"
-            >مبلغ پرداخت شده:</span
-          >
+          <span class="font-medium" v-if="item.status === TransactionStatus.PAID">
+            مبلغ پرداخت شده:
+          </span>
           <span class="font-medium" v-else>مبلغ قابل پرداخت:</span>
-          <span class="font-medium"
-            ><span>{{ Number(item.amount).toLocaleString('fa-IR') }}</span> تومان</span
-          >
+          <span class="font-medium">
+            <span>{{ Number(item.amount).toLocaleString('fa-IR') }}</span>
+            تومان
+          </span>
         </div>
         <USeparator />
         <div class="w-full flex flex-col gap-3">

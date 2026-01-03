@@ -2,12 +2,7 @@
   <div class="flex justify-between items-center-safe">
     <LazyTheSlider />
     <div class="flex justify-center items-center-safe gap-4">
-      <ClientOnly>
-        <span class="text-lg"> {{ jDate }} ساعت {{ currentTime }} </span>
-        <template #fallback>
-          <div class="bg-muted h-6 w-44 rounded animate-pulse"></div>
-        </template>
-      </ClientOnly>
+      <span class="text-lg"> {{ jDate }} ساعت {{ currentTime }} </span>
       <UIcon
         v-if="isFullscreen"
         name="garden:minimize-stroke-12"

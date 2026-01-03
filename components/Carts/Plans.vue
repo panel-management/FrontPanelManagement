@@ -12,9 +12,9 @@
         <p class="text-base text-gray-500">{{ data.description }}</p>
       </div>
       <div class="flex flex-col gap-2">
-        <span class="text-5xl font-extrabold text-black" v-if="Number(data.price) === 0"
-          >رایگان</span
-        >
+        <span class="text-5xl font-extrabold text-black" v-if="Number(data.price) === 0">
+          رایگان
+        </span>
         <span class="text-5xl font-extrabold text-black" v-else>{{
           Number(data.price).toLocaleString('fa-IR')
         }}</span>

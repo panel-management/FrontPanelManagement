@@ -90,38 +90,32 @@
     <template #body>
       <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
         <div class="flex flex-col gap-5 w-full">
-          <div class="w-full">
-            <BaseFormSelect
-              :required="true"
-              v-model="state.studentId"
-              :items="itemsSelect"
-              name="studentId"
-              placeholder="انتخاب نام هنرجو"
-              label="انتخاب هنرجو"
-            />
-          </div>
-          <div class="w-full">
-            <BaseFormInput
-              v-model="displayPrice"
-              label="مبلغ محصول(تومان)"
-              name="amount"
-              type="text"
-              placeholder="1,000,000"
-              required
-              class="w-full"
-            />
-          </div>
-          <div class="w-full">
-            <BaseFormInput
-              v-model="state.description"
-              label="توضیح درباره محصول"
-              name="description"
-              type="text"
-              placeholder="مثال: خرید دستکش بوکس"
-              required
-              class="w-full"
-            />
-          </div>
+          <BaseFormSelect
+            :required="true"
+            v-model="state.studentId"
+            :items="itemsSelect"
+            name="studentId"
+            placeholder="انتخاب نام هنرجو"
+            label="انتخاب هنرجو"
+          />
+          <BaseFormInput
+            v-model="displayPrice"
+            label="مبلغ محصول(تومان)"
+            name="amount"
+            type="text"
+            placeholder="1,000,000"
+            required
+            class="w-full"
+          />
+          <BaseFormInput
+            v-model="state.description"
+            label="توضیح درباره محصول"
+            name="description"
+            type="text"
+            placeholder="مثال: خرید دستکش بوکس"
+            required
+            class="w-full"
+          />
           <div class="flex justify-between gap-2 pt-4">
             <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
             <UButton :loading="isLoading" label="ثبت محصول" color="primary" type="submit" />
