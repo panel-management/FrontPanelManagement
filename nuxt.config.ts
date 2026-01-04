@@ -14,7 +14,7 @@ export default defineNuxtConfig({
       minify: 'terser',
       terserOptions: {
         compress: {
-          drop_console: !import.meta.env.APP_DEBUG,
+          drop_console: import.meta.env.APP_DEBUG !== 'true',
           drop_debugger: true,
         },
       },
@@ -31,7 +31,10 @@ export default defineNuxtConfig({
     head: {
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
-      meta: [{ 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' }],
+      meta: [
+        { name: 'robots', content: 'noindex, nofollow' },
+        { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
+      ],
       htmlAttrs: {
         dir: 'rtl',
         lang: 'fa',

@@ -2,7 +2,7 @@
   <div class="flex justify-between items-center-safe">
     <LazyTheSlider />
     <div class="flex justify-center items-center-safe gap-4">
-      <span class="text-lg"> {{ jDate }} ساعت {{ currentTime }} </span>
+      <span class="text-lg tabular-nums"> {{ jDate }} ساعت {{ currentTime }} </span>
       <UIcon
         v-if="isFullscreen"
         name="garden:minimize-stroke-12"
@@ -24,7 +24,7 @@
         :ui="{ content: 'w-48' }"
       >
         <!-- <UIcon name="material-symbols:account-circle-full" mode="svg" class="size-7 text-black cursor-pointer" /> -->
-        <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" />
+        <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" alt="avatar" />
       </UDropdownMenu>
     </div>
   </div>
@@ -38,19 +38,24 @@
   const accountStore = useAccountStore()
   const roleStore = useRolesStore()
   const { isFullscreen, toggle } = useFullscreen()
-  const now = useNow()
+  const now = useNow({ interval: 1000 })
   const isOpen: Ref<boolean> = ref(false)
+  const isMounted: Ref<boolean> = ref(false)
 
   const jDate = computed(() => useJDate(now.value))
-  const currentTime = computed(() =>
-    now.value.toLocaleTimeString('fa-IR', {
+  const currentTime = computed(() => {
+    if (!isMounted.value) return '...'
+    return now.value.toLocaleTimeString('fa-IR', {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
     })
-  )
+  })
 
-  onMounted(roleStore.getDetailUser)
+  onMounted(() => {
+    isMounted.value = true
+    roleStore.getDetailUser()
+  })
 
   defineShortcuts({
     o: () => (isOpen.value = !isOpen.value),
