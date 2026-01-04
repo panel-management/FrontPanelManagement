@@ -148,7 +148,7 @@
   import type { ClubProfileData } from '~/models/clubProfile/ClubProfileData'
 
   const isLoading: Ref<boolean> = ref(false)
-  const isActive: Ref<number> = ref(1)
+  const isActive: Ref<number> = ref(0)
   const toastStore = useToastStore()
   const { jalaliToGregorian } = useDateConverter()
 
@@ -228,7 +228,7 @@
 
   definePageMeta({
     layout: false,
-    middleware: ['role-guard', 'plan-guard'],
+    middleware: ['role-guard'],
   })
 
   useHead({

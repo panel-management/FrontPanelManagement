@@ -425,7 +425,7 @@
     phoneNumber: master.value?.data.phoneNumber ?? '',
     nationalCode: master.value?.data.nationalCode ?? '',
     age: master.value?.data.age?.toString() ?? '',
-    birthDate: gregorianToJalali(master.value?.data.birthDate) ?? '',
+    birthDate: master.value?.data.birthDate ? gregorianToJalali(master.value?.data.birthDate) : '',
     history: master.value?.data.history ?? '',
     certificates: master.value?.data.certificates ?? '',
     imageUrl: master.value?.data.image ?? undefined,

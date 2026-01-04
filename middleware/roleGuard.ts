@@ -1,57 +1,5 @@
 import { Role } from '~/models/Role'
 
-// export default defineNuxtRouteMiddleware(async (to, from) => {
-//   const roleStore = useRolesStore();
-
-//   if (!roleStore.detailUser) {
-//     await roleStore.getDetailUser();
-//   }
-
-//   const user = roleStore.detailUser;
-//   const role = user?.type as Role;
-
-//   const roleRoutes: Record<Role, string[]> = {
-//     [Role.Admin]: [
-//       "/dashboard",
-//       "/supports",
-//       "/setting/admin",
-//       "/management-master",
-//       "/payment/list",
-//     ],
-//     [Role.Master]: [
-//       "/dashboard",
-//       "/profile/master",
-//       "/setting/master",
-//       "/supports",
-//       "/management-student",
-//       "/management-coach",
-//       "/presence-absence",
-//       "/management-financial",
-//       "/membership/plans",
-//       "/payment",
-//     ],
-//     [Role.Coach]: ["/profile/coach"],
-//     [Role.Student]: ["/profile/student", "/management-financial/my-financial"],
-//   };
-
-//   const fallbackByRole: Record<Role, string> = {
-//     [Role.Admin]: "/dashboard",
-//     [Role.Master]: "/dashboard",
-//     [Role.Coach]: "/profile/coach",
-//     [Role.Student]: "/profile/student",
-//   };
-
-//   const allowedRoutes = roleRoutes[role] || [];
-
-//   const isAllowed = allowedRoutes.some(
-//     (route) => to.path === route || to.path.startsWith(route + "/")
-//   );
-
-//   if (isAllowed) return;
-
-//   return navigateTo(fallbackByRole[role], { replace: true });
-// });
-
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const roleStore = useRolesStore()
 
@@ -91,6 +39,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       '/presence-absence',
       '/management-financial',
       '/membership/plans',
+      '/membership',
       /^\/payment$/,
     ],
     [Role.Coach]: ['/profile/coach'],
