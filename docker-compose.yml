@@ -1,0 +1,10 @@
+services:
+  panel:
+    build: .
+    image: panel
+    container_name: panel-management
+    ports:
+      - '8080:80'
+    restart: always
+    env_file:
+      - .env
