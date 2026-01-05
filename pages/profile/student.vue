@@ -71,9 +71,9 @@
         <div class="flex items-center gap-1">
           <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">عضویت:</span>
-          <span class="font-medium text-base mt-1">{{
-            gregorianToJalali(student?.data?.createdAt)
-          }}</span>
+          <span class="font-medium text-base mt-1">
+            {{ gregorianToJalali(student?.data?.createdAt) }}
+          </span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
@@ -227,16 +227,6 @@
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 w-full">
-            <!-- <div class="flex items-center gap-4 bg-muted p-5 rounded-xl">
-              <span class="belt-white text-lg">سفید</span>
-              <div class="flex flex-col gap-1">
-                <span class="font-semibold text-lg">کمربند سفید</span>
-                <span class="font-medium text-sm flex items-center gap-1">
-                  <UIcon name="material-symbols:calendar-today-outline-rounded" class="size-4 text-black/70" />
-                  1404/02/20
-                </span>
-              </div>
-            </div> -->
             <div
               class="flex items-center gap-4 bg-muted p-5 rounded-xl"
               v-for="data in student?.data?.achievedBelts"

@@ -66,9 +66,9 @@
         <div class="flex items-center gap-1">
           <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">عضویت:</span>
-          <span class="font-medium text-base mt-1">{{
-            gregorianToJalali(coach?.data?.createdAt)
-          }}</span>
+          <span class="font-medium text-base mt-1">
+            {{ gregorianToJalali(coach?.data?.createdAt) }}
+          </span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="ion:university" class="size-6 text-black" />
@@ -225,7 +225,6 @@
 
   const isShow: Ref<boolean> = ref(true)
   const isLoading: Ref<boolean> = ref(false)
-  const router = useRouter()
   const toastStore = useToastStore()
   const { gregorianToJalali, jalaliToGregorian } = useDateConverter()
 

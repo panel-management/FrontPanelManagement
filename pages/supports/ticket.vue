@@ -21,12 +21,7 @@
         icon="material-symbols-light:add-comment-outline"
       />
     </div>
-    <div v-if="formData.length === 0" class="text-center text-xl py-10 text-gray-500">
-      <UIcon name="material-symbols:chat-bubble-outline" class="size-16 opacity-50" />
-      <p>تیکتی وجود ندارد.</p>
-      <p>می‌توانید یک تیکت جدید ایجاد کنید.</p>
-    </div>
-    <div v-else class="w-full h-full flex flex-col gap-3">
+    <div class="w-full h-full flex flex-col gap-3">
       <NuxtLink
         v-for="data in formData"
         :key="data.id"
@@ -59,6 +54,12 @@
           <TicketBadge type="category" :value="data.category" />
         </div>
       </NuxtLink>
+      <WidgetEmptyState
+        v-if="!formData.length"
+        icon="material-symbols:chat-error-outline"
+        title="تیکتی وجود ندارد"
+        description="می‌توانید یک تیکت جدید ایجاد کنید"
+      />
     </div>
     <div
       class="w-full flex bg-white p-4 rounded-lg justify-center items-center"

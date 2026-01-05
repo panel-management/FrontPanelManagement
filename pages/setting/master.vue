@@ -154,59 +154,13 @@
               <UIcon name="heroicons:fire-16-solid" class="size-7 text-yellow-200" />
               <span class="text-2xl font-bold">طرح‌ ها</span>
             </div>
-            <div
+            <WidgetEmptyState
               v-if="!formData.length"
-              class="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-            >
-              <div
-                v-for="n in 12"
-                :key="n"
-                class="bg-turquoise-50 rounded-lg p-4 w-full flex flex-col gap-4 animate-pulse"
-              >
-                <div class="w-full flex flex-col gap-2">
-                  <div class="h-6 bg-turquoise-200 rounded w-1/3"></div>
-                  <!-- name placeholder -->
-                  <div class="h-4 bg-turquoise-200 rounded w-2/3"></div>
-                  <!-- description placeholder -->
-                </div>
-                <div class="w-full flex flex-col gap-4">
-                  <div class="h-4 bg-turquoise-200 rounded w-full"></div>
-                  <div class="flex w-full justify-between items-center gap-2">
-                    <div class="h-4 bg-turquoise-200 rounded w-1/4"></div>
-                    <div class="h-4 bg-turquoise-200 rounded w-1/2"></div>
-                  </div>
-                  <div class="h-4 bg-turquoise-200 rounded w-full"></div>
-                  <div class="flex w-full justify-between items-center gap-2">
-                    <div class="h-4 bg-turquoise-200 rounded w-1/4"></div>
-                    <div class="h-4 bg-turquoise-200 rounded w-1/2"></div>
-                  </div>
-                </div>
-                <div class="w-full flex gap-2">
-                  <div class="h-10 bg-turquoise-200 rounded w-1/2"></div>
-                  <div class="h-10 bg-turquoise-200 rounded w-1/2"></div>
-                </div>
-              </div>
-            </div>
+              icon="material-symbols:credit-card-off-outline"
+              title="پلنی تعریف نشده است"
+              description="برای شروع، یک پلن جدید ایجاد کنید"
+            />
             <div v-else class="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <!-- <div class="bg-turquoise-50 rounded-lg p-4 w-full flex flex-col gap-4">
-                <div class="w-full flex flex-col gap-1">
-                  <span class="font-semibold text-lg xl:text-xl">شهریه ماهانه شهریور</span>
-                  <p class="text-sm font-medium">مدت: ۱ ماه</p>
-                </div>
-                <USeparator/>
-                <div class="flex w-full justify-between">
-                  <span class="font-medium">مبلغ:</span>
-                  <span class="font-medium"><span>۲,۵۰۰,۰۰۰</span> تومان</span>
-                </div>
-                <USeparator/>
-                <div class="w-full flex gap-2">
-                  <UButton @click="modalStore.toggleModal('paymentEdit')" color="primary" variant="solid"
-                           icon="material-symbols-light:edit-document-rounded"
-                           class="w-full flex content-center items-center justify-center" label="ویرایش"/>
-                  <UButton color="error" variant="solid" icon="material-symbols:delete-forever-rounded"
-                           class="w-full flex content-center items-center justify-center" label="حذف"/>
-                </div>
-              </div> -->
               <div
                 class="bg-turquoise-50 rounded-lg p-4 w-full flex flex-col gap-4"
                 v-for="data in formData"
@@ -260,9 +214,6 @@
               </div>
             </div>
           </div>
-          <!-- <div class="bg-white p-4 rounded-xl w-full flex justify-center items-center">
-            <UPagination v-model:page="page" show-edges :sibling-count="1" :total="50" />
-          </div> -->
         </div>
         <LazyWidgetModalPaymentAdd
           v-model:open="modalStore.modals.paymentAdd"

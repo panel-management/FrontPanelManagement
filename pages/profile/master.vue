@@ -65,9 +65,9 @@
         <div class="flex items-center gap-1">
           <UIcon name="hugeicons:students" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">هنرجو:</span>
-          <span class="font-medium text-base mt-1">{{
-            master?.data?.students.length ?? 'هنرجو وجود ندارد'
-          }}</span>
+          <span class="font-medium text-base mt-1">
+            {{ master?.data?.students.length ?? 'هنرجو وجود ندارد' }}
+          </span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="ion:university" class="size-6 text-black" />
@@ -91,9 +91,9 @@
         <div class="flex items-center gap-1">
           <UIcon name="solar:planet-2-bold" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">پلن انتخاب شده:</span>
-          <span class="font-medium text-base mt-1">{{
-            master?.data?.masterPlan.name ?? 'پلن وجود ندارد'
-          }}</span>
+          <span class="font-medium text-base mt-1">
+            {{ master?.data?.masterPlan.name ?? 'پلن وجود ندارد' }}
+          </span>
         </div>
       </div>
       <div class="flex gap-3 min-md:hidden">
@@ -265,7 +265,11 @@
                   <UIcon name="fluent:payment-32-filled" class="size-6 text-black" />
                 </div>
                 <span class="text-xl font-medium">
-                  {{ Number(master.data.masterPlan.price).toLocaleString('fa-IR') }}
+                  {{
+                    lastPayment
+                      ? Number(master.data.masterPlan.price).toLocaleString('fa-IR')
+                      : 'هیچ پرداختی موجود نیست'
+                  }}
                 </span>
                 <span class="text-sm">شهریه ماهانه (تومان)</span>
               </div>
@@ -326,9 +330,13 @@
             </div>
           </div>
         </div>
-        <div v-else class="bg-white rounded-lg p-4 w-full h-72 flex justify-center items-center">
-          <span class="text-black text-xl md:text-2xl font-bold">تاریخچه مالی وجود ندارد</span>
-        </div>
+        <WidgetEmptyState
+          v-else
+          class="bg-white rounded-lg"
+          icon="material-symbols:credit-card-off-outline"
+          title="تاریخچه مالی وجود ندارد"
+          description="پس از انجام اولین تراکنش، اطلاعات آن در این بخش نمایش داده می‌شود"
+        />
       </template>
     </BaseTabs>
   </section>
@@ -342,7 +350,6 @@
 
   const isShow: Ref<boolean> = ref(true)
   const isLoading: Ref<boolean> = ref(false)
-  const router = useRouter()
   const toastStore = useToastStore()
   const { gregorianToJalali, jalaliToGregorian } = useDateConverter()
 

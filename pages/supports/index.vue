@@ -102,14 +102,12 @@
             <TicketBadge type="category" :value="data.category" />
           </div>
         </NuxtLink>
-        <div
-          v-if="!isLoading && filterData.length === 0"
-          class="w-full py-12 flex flex-col items-center justify-center gap-3 text-center text-muted"
-        >
-          <UIcon name="material-symbols:chat-bubble-outline" class="size-10 opacity-50" />
-          <p class="text-base font-medium">تیکتی با این فیلترها پیدا نشد</p>
-          <span class="text-sm font-medium"> فیلترها را تغییر دهید یا همه را پاک کنید </span>
-        </div>
+        <WidgetEmptyState
+          v-if="!filterData.length"
+          icon="material-symbols:chat-error-outline"
+          title="تیکتی وجود ندارد"
+          description="فیلترها را تغییر دهید یا همه را پاک کنید"
+        />
       </div>
     </div>
     <div

@@ -29,7 +29,7 @@
               <UIcon name="bx:bxs-planet" class="size-7 text-sky-400" />
               <span class="text-2xl font-bold">پلن ها</span>
             </div>
-            <div
+            <!-- <div
               v-if="!formData.length"
               class="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
             >
@@ -64,7 +64,13 @@
                   <div class="h-10 bg-turquoise-200 rounded w-1/2"></div>
                 </div>
               </div>
-            </div>
+            </div> -->
+            <WidgetEmptyState
+              v-if="!formData.length"
+              icon="material-symbols:credit-card-off-outline"
+              title="پلنی تعریف نشده است"
+              description="برای شروع، یک پلن جدید ایجاد کنید"
+            />
             <div v-else class="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div
                 class="bg-teal-50 rounded-lg p-4 w-full flex flex-col items-center justify-between gap-4"
@@ -137,9 +143,6 @@
                 </div>
               </div>
             </div>
-            <!-- <div class="p-4 w-full flex justify-center items-center">
-              <UPagination v-model:page="page" show-edges :sibling-count="1" :total="50" />
-            </div> -->
           </div>
         </div>
         <LazyWidgetModalPaymentAdminAdd
