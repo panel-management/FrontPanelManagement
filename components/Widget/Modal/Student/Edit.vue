@@ -66,6 +66,7 @@
       v.trim(),
       v.nonEmpty('کد ملی الزامی است'),
       v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
+      v.minLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
       v.regex(/^\d+$/, 'کد ملی فقط می‌تواند شامل اعداد باشد')
     ),
     phoneNumber: v.pipe(
@@ -525,16 +526,6 @@
                   <p class="break-words font-medium text-base">روند پیشرفت و ارتقاهای هنرجو</p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 w-full">
-                  <!-- <div class="flex items-center gap-4 bg-muted p-5 rounded-xl">
-                    <span class="belt-white text-lg">سفید</span>
-                    <div class="flex flex-col gap-1">
-                      <span class="font-semibold text-lg">کمربند سفید</span>
-                      <span class="font-medium text-sm flex items-center gap-1">
-                        <UIcon name="material-symbols:calendar-today-outline-rounded" class="size-4 text-black/70"/>
-                        1404/02/20
-                      </span>
-                    </div>
-                  </div> -->
                   <div
                     class="flex items-center gap-4 bg-muted p-5 rounded-xl"
                     v-for="data in formData.achievedBelts"
@@ -614,10 +605,7 @@
                     </div>
                   </div>
                 </div>
-                <div
-                  class="bg-white w-full h-72 p-4 rounded-lg overflow-hidden"
-                  v-if="formData.studentTransactions"
-                >
+                <div class="bg-white w-full h-72 p-4 rounded-lg overflow-hidden">
                   <div
                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 overflow-auto h-full w-full"
                   >
@@ -658,7 +646,6 @@
                     </div>
                   </div>
                 </div>
-                <span v-else>هیچ دیتا پرداختی وجود ندارد</span>
               </div>
             </template>
           </BaseTabs>

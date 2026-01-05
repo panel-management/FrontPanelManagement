@@ -42,8 +42,8 @@
       slot: 'editData' as const,
     },
     {
-      label: 'هنرجویان',
-      slot: 'student' as const,
+      label: 'کاربران',
+      slot: 'users' as const,
     },
     {
       label: 'وضعیت مالی',
@@ -58,6 +58,7 @@
       v.trim(),
       v.nonEmpty('کد ملی الزامی است.'),
       v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
+      v.minLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
       v.regex(/^\d+$/, 'کد ملی فقط می‌تواند شامل اعداد باشد')
     ),
     phoneNumber: v.pipe(
@@ -352,10 +353,7 @@
               />
             </div>
             <div class="flex flex-col md:items-center gap-1">
-              <span class="font-semibold text-xl" v-if="formData.history">
-                {{ formData.history }} سال
-              </span>
-              <span class="font-semibold text-xl" v-else>سابقه وجود ندارد</span>
+              {{ formData.history ? `${formData.history} سال` : 'سابقه وجود ندارد' }}
               <span class="font-medium">سابقه تدریس</span>
             </div>
           </div>
@@ -493,17 +491,17 @@
                 </UForm>
               </div>
             </template>
-            <template #student>
+            <template #users>
               <div class="flex flex-col gap-6 p-4 bg-white rounded-lg w-full h-full">
                 <div class="flex flex-col gap-2">
                   <div class="flex items-center gap-2">
                     <UIcon name="ph:users-three-bold" class="size-6 text-black/70" />
                     <span class="font-medium text-lg md:text-2xl">
-                      هنرجویان تحت نظر ({{ formData.students.length }} نفر)
+                      کاربران تحت نظر ({{ formData.students.length }} نفر)
                     </span>
                   </div>
                   <p class="break-words font-medium text-sm md:text-base">
-                    لیست هنرجویان و مربی که تحت نظر این استاد هستند
+                    لیست کاربران که تحت نظر این استاد هستند
                   </p>
                 </div>
                 <div class="w-full h-80 overflow-hidden">
@@ -575,7 +573,11 @@
                         <UIcon name="fluent:payment-32-filled" class="size-6 text-black" />
                       </div>
                       <span class="text-xl font-medium">
-                        {{ Number(formData.masterPlan.price).toLocaleString('fa-IR') }}
+                        {{
+                          lastPayment
+                            ? Number(formData.masterPlan.price).toLocaleString('fa-IR')
+                            : 'هیچ پرداختی موجود نیست'
+                        }}
                       </span>
                       <span class="text-sm">شهریه ماهانه (تومان)</span>
                     </div>
@@ -601,9 +603,10 @@
                 </div>
                 <div
                   class="bg-white w-full h-72 p-4 rounded-lg overflow-hidden"
-                  v-if="formData.subscriptionPayments"
+                  :class="!formData.subscriptionPayments.length ? ' place-content-center' : ''"
                 >
                   <div
+                    v-if="formData.subscriptionPayments.length"
                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 overflow-auto h-full w-full"
                   >
                     <div
@@ -637,8 +640,13 @@
                       </div>
                     </div>
                   </div>
+                  <WidgetEmptyState
+                    v-else
+                    icon="material-symbols:credit-card-off-outline"
+                    title="تاریخچه مالی وجود ندارد"
+                    description="پس از انجام اولین تراکنش، اطلاعات آن در این بخش نمایش داده می‌شود"
+                  />
                 </div>
-                <span v-else>هیچ دیتا پرداختی وجود ندارد</span>
               </div>
             </template>
           </BaseTabs>

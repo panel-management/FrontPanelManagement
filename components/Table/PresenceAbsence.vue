@@ -14,7 +14,7 @@
         @update:model-value="table?.tableApi?.getColumn('fullName')?.setFilterValue($event)"
         type="search"
         class="w-full"
-        placeholder="جستجو بر اساس نام هنرجویان"
+        placeholder="جستجو بر اساس نام کاربران"
         size="xl"
         variant="outline"
         icon="i-lucide-search"

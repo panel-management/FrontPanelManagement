@@ -2,7 +2,7 @@
   <div class="flex justify-between items-center-safe">
     <LazyTheSlider />
     <div class="flex justify-center items-center-safe gap-4">
-      <span class="text-lg tabular-nums"> {{ jDate }} ساعت {{ currentTime }} </span>
+      <span class="text-base sm:text-lg tabular-nums"> {{ jDate }} ساعت {{ currentTime }} </span>
       <UIcon
         v-if="isFullscreen"
         name="garden:minimize-stroke-12"
