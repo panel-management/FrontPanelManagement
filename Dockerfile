@@ -22,6 +22,6 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=build-stage /app/.output/public /usr/share/nginx/html
 
-EXPOSE 80
+EXPOSE 80 443 443/udp
 
 CMD ["nginx", "-g", "daemon off;"]

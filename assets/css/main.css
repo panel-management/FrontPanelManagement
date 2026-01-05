@@ -2,7 +2,11 @@
 @import '@nuxt/ui';
 
 body {
-  font-family: 'Vazirmatn', sans-serif;
+  font-family:
+    'Vazirmatn',
+    system-ui,
+    -apple-system,
+    sans-serif;
   font-optical-sizing: auto;
   scroll-behavior: smooth;
 }
