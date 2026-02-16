@@ -1,6 +1,3 @@
-export interface UpdatePlanStudent {
-  name: string
-  description: string
-  price: number
-  durationInDays: number
-}
+import type { CreatePlanStudent } from './CreatePlanStudent'
+
+export interface UpdatePlanStudent extends Omit<CreatePlanStudent, 'isDefault'> {}

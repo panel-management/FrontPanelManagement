@@ -1,5 +1,4 @@
 import type { Sport } from '~/models/sportAndBelt/sport'
-import type { Active } from '~/models/Active'
 import type { PaymentStatus } from '~/models/PaymentStatus'
 
 export interface MasterData {
@@ -10,7 +9,7 @@ export interface MasterData {
   nationalCode: string
   phoneNumber: string
   history: string
-  active: Active
+  isActive: boolean
   sport: Sport
   paymentStatus: PaymentStatus
   createdAt: string

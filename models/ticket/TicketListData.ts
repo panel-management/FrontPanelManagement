@@ -2,7 +2,7 @@ import type { DataUsers } from '../users/dataUsers'
 import type { TicketCategory, TicketPriority, TicketStatus } from './TicketData'
 
 export interface TicketListData {
-  id: number
+  id: string
   title: string
   category: TicketCategory
   priority: TicketPriority
@@ -17,13 +17,9 @@ export interface Message {
   id: number
   text: string
   sender: Sender
-  ticketId: number
+  ticketId: string
   senderId: number
   createdAt: string
 }
 
-export interface Sender {
-  user_id: number
-  fullName: string
-  type: number
-}
+export interface Sender extends DataUsers {}

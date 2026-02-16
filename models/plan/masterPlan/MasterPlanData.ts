@@ -1,8 +1,8 @@
 export interface MasterPlanData {
   id: number
   name: string
-  description: string
-  price: number
+  description?: string
+  price?: number
   features: string[]
   type: string
   durationInDays: number

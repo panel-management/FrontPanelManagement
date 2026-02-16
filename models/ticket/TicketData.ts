@@ -1,7 +1,7 @@
 import type { DataUsers } from '../users/dataUsers'
 
 export interface TicketData {
-  id: number
+  id: string
   title: string
   category: TicketCategory
   priority: TicketPriority

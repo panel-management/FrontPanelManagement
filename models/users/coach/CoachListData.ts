@@ -10,7 +10,7 @@ export interface CoachListData {
   history: string
   certificates: string
   image: string
-  active: string
+  isActive: boolean
   type: number
   sport: Sport
   createdAt: string

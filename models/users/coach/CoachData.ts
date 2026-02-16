@@ -1,4 +1,3 @@
-import type { Active } from '~/models/Active'
 import type { Sport } from '~/models/sportAndBelt/sport'
 
 export interface CoachData {
@@ -11,7 +10,7 @@ export interface CoachData {
   history: string
   certificates: string
   image: string
-  active: Active
+  isActive: boolean
   type: number
   sport: Sport
   createdAt: string

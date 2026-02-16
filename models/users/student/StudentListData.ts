@@ -1,4 +1,3 @@
-import type { Active } from '~/models/Active'
 import type { StudentPlanData } from '~/models/plan/studentPlan/StudentPlanData'
 import type { Belt } from '~/models/sportAndBelt/belt'
 import type { Sport } from '~/models/sportAndBelt/sport'
@@ -14,7 +13,7 @@ export interface StudentListData {
   birthDate: string
   diseaseRecords: boolean
   underSupervisionDoctor: boolean
-  active: Active
+  isActive: boolean
   assignedPlan: StudentPlanData
   achievedBelts: Belt
   currentBelt: Belt

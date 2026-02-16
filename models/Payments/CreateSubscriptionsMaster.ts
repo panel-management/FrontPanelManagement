@@ -3,6 +3,5 @@ export interface createSubscriptionsMaster {
   bankName: string
   paymentDate: Date
   trackingNumber: string
-  amount: number
   imageFile: string
 }
