@@ -18,7 +18,6 @@ export const createSubscriptionsMasterService = (subscriptions: createSubscripti
   data.append('bankName', subscriptions.bankName)
   data.append('paymentDate', subscriptions.paymentDate.toString())
   data.append('trackingNumber', subscriptions.trackingNumber)
-  data.append('amount', subscriptions.amount.toString())
   data.append('imageFile', subscriptions.imageFile)
   return FetchApi('/financials/subscriptions', {
     method: 'POST',

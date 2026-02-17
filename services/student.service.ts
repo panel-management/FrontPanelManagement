@@ -6,7 +6,7 @@ export const getAllStudentService = (page: number, limit: number) => {
 }
 
 export const getStudentForEquipmentService = () => {
-  return FetchApi('/student/equipment')
+  return FetchApi('/student')
 }
 
 export const getStudentJustStudentByIdService = () => {
@@ -35,6 +35,13 @@ export const updateStudentService = (id: number, data: UpdateStudent) => {
   return FetchApi(`/student/${id}`, {
     method: 'PUT',
     body: data,
+  })
+}
+
+export const changeStatusStudentService = (id: number, isActive: boolean) => {
+  return FetchApi(`/student/changeStatus/${id}`, {
+    method: 'PUT',
+    body: { isActive },
   })
 }
 

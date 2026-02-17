@@ -67,10 +67,10 @@ export const updateCoachService = (id: number, coach: UpdateCoach) => {
   })
 }
 
-export const changeStatusCoachService = (id: number, active: string) => {
+export const changeStatusCoachService = (id: number, isActive: boolean) => {
   return FetchApi(`/coach/changeStatus/${id}`, {
     method: 'PUT',
-    body: { active },
+    body: { isActive },
   })
 }
 export const deleteCoachService = (id: number) => {

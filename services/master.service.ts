@@ -68,10 +68,10 @@ export const updateProfileMasterJustAdminService = (id: number, master: UpdateMa
 }
 
 // change status account master just admin
-export const changeStatusMasterService = (id: number, active: string) => {
+export const changeStatusMasterService = (id: number, isActive: boolean) => {
   return FetchApi(`/master/changeStatus/${id}`, {
     method: 'PUT',
-    body: { active },
+    body: { isActive },
   })
 }
 
