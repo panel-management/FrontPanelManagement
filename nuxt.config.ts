@@ -40,15 +40,6 @@ export default defineNuxtConfig({
         lang: 'fa',
         translate: 'no',
       },
-      link: [
-        {
-          rel: 'preload',
-          href: '~/assets/fonts/Vazirmatn-Medium.woff2',
-          as: 'font',
-          type: 'font/woff2',
-          crossorigin: 'anonymous',
-        },
-      ],
     },
   },
   ui: {
