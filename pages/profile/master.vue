@@ -17,9 +17,9 @@
                 class="font-medium"
               />
               <UBadge
-                :color="master?.data?.active === 'ENABLE' ? 'primary' : 'error'"
+                :color="master?.data?.isActive ? 'primary' : 'error'"
                 variant="soft"
-                :label="master?.data?.active === 'ENABLE' ? 'فعال' : 'غیر فعال'"
+                :label="master?.data?.isActive ? 'فعال' : 'غیر فعال'"
                 class="font-semibold"
               />
             </div>
@@ -64,7 +64,7 @@
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="hugeicons:students" class="size-6 text-black" />
-          <span class="font-medium text-base mt-1">هنرجو:</span>
+          <span class="font-medium text-base mt-1">تعداد هنرجو و مربی:</span>
           <span class="font-medium text-base mt-1">
             {{ master?.data?.students.length ?? 'هنرجو وجود ندارد' }}
           </span>
@@ -307,9 +307,9 @@
               >
                 <div class="flex justify-center items-center">
                   <UIcon
-                    :name="paymentIcon[lastPayment?.status] || 'bi:emoji-neutral-fill'"
+                    :name="paymentIcon[payment.status] || 'bi:emoji-neutral-fill'"
                     class="size-6"
-                    :class="paymentIconColor[lastPayment?.status] || 'text-gray-400'"
+                    :class="paymentIconColor[payment.status] || 'text-gray-400'"
                   />
                 </div>
                 <div class="w-full flex justify-between items-center">
@@ -422,7 +422,8 @@
   console.log(master.value?.data)
   if (error.value || !master.value?.data) {
     throw createError({
-      statusCode: 404,
+      statusCode: master.value?.statusCode || 404,
+      fatal: true,
       message: master.value?.message || 'پروفایل پیدا نشده لطف دوباره تلاش کنید',
     })
   }
@@ -455,6 +456,7 @@
       if (result.statusCode === 200) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         refresh()
+        reloadNuxtApp()
         isShow.value = true
       }
     } catch (error: any) {

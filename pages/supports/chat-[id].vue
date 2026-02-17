@@ -6,7 +6,7 @@
           {{ ticketData?.title }}
         </span>
         <span class="text-sm font-medium text-balance flex items-center gap-1">
-          تیکت #{{ ticketData?.id }} • ایجاد شده توسط {{ ticketData?.user?.fullName }}
+          تیکت #{{ ticketData?.id.slice(0, 2) }} • ایجاد شده توسط {{ ticketData?.user?.fullName }}
         </span>
         <div v-if="ticketData?.status !== TicketStatus.CLOSED" class="flex items-center gap-1">
           <UButton
@@ -86,6 +86,7 @@
   </section>
 </template>
 <script setup lang="ts">
+  import { validate as isUUID } from 'uuid'
   import { Role } from '~/models/Role'
   import type { SendMassage } from '~/models/ticket/SendMassage'
   import { TicketStatus } from '~/models/ticket/TicketData'
@@ -98,13 +99,13 @@
 
   const route = useRoute()
   const toastStore = useToastStore()
-  const id = Number(route.params.id)
+  const id = String(route.params.id)
 
   const messageContainer = ref<HTMLElement | null>(null)
   const isLoading: Ref<boolean> = ref(false)
   const newMessage = ref('')
 
-  if (!id || isNaN(id)) {
+  if (!id || !isUUID(id)) {
     showError({ statusCode: 404, message: 'شناسه تیکت نامعتبر است' })
   }
 

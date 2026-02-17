@@ -84,11 +84,11 @@
         >
           <div class="flex max-sm:flex-col sm:items-center gap-2">
             <div class="size-12 rounded-full bg-muted hidden sm:flex justify-center items-center">
-              <span class="font-light">{{ data.id }}#</span>
+              <span class="font-light">{{ data.id.slice(0, 2) }}#</span>
             </div>
             <div class="flex flex-col gap-1">
               <span class="font-semibold text-lg">
-                <span class="font-light sm:hidden">{{ data.id }}#</span>
+                <span class="font-light sm:hidden">{{ data.id.slice(0, 2) }}#</span>
                 {{ data.title }}
               </span>
               <p class="text-sm font-light text-muted">

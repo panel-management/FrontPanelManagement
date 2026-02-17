@@ -30,7 +30,7 @@
       >
         <div class="flex flex-col gap-2">
           <span class="font-medium text-lg sm:text-xl">
-            <span>{{ data.id.toLocaleString('fa-IR') }}#</span>
+            <span>{{ data.id.slice(0, 2) }}#</span>
             {{ data.title }}
           </span>
           <div class="flex max-md:flex-col gap-2">

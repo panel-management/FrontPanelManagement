@@ -23,9 +23,9 @@
                 class="font-medium"
               />
               <UBadge
-                :color="student?.data?.active === 'ENABLE' ? 'primary' : 'error'"
+                :color="student?.data?.isActive ? 'primary' : 'error'"
                 variant="soft"
-                :label="student?.data?.active === 'ENABLE' ? 'فعال' : 'غیر فعال'"
+                :label="student?.data?.isActive ? 'فعال' : 'غیر فعال'"
                 class="font-semibold"
               />
             </div>
@@ -345,7 +345,8 @@
   console.log(student.value?.data)
   if (error.value || !student.value?.data) {
     throw createError({
-      statusCode: 404,
+      statusCode: student.value?.statusCode || 404,
+      fatal: true,
       message: student.value?.message || 'پروفایل پیدا نشده لطف دوباره تلاش کنید',
     })
   }
@@ -375,6 +376,7 @@
       if (result.statusCode === 200) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         refresh()
+        reloadNuxtApp()
         isShow.value = true
       }
     } catch (error: any) {

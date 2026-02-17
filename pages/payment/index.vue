@@ -34,9 +34,9 @@
             />
             <BaseFormInput
               required
-              v-model="displayPrice"
-              label="مبلغ واریز"
-              name="amount"
+              v-model="state.trackingNumber"
+              label="شماره پیگیری"
+              name="trackingNumber"
               type="text"
               class="w-full"
             />
@@ -52,21 +52,13 @@
             <BaseFormInput
               required
               v-model="state.payerFullName"
-              label="نام نام خانوادگی پرداخت کننده"
+              label="نام و نام خانوادگی پرداخت کننده"
               name="payerFullName"
               type="text"
               class="w-full"
             />
           </div>
-          <div class="w-full flex flex-col gap-5">
-            <BaseFormInput
-              required
-              v-model="state.trackingNumber"
-              label="شماره پیگیری"
-              name="trackingNumber"
-              type="text"
-              class="w-full"
-            />
+          <div class="w-full">
             <BaseFormUploadFile
               required
               v-model="state.imageFile"
@@ -125,12 +117,6 @@
       v.trim(),
       v.nonEmpty('نام و نام خانوادگی پرداخت کننده الزامی است')
     ),
-    amount: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('مبلغ واریز الزامی است'),
-      v.regex(/^\d+$/, 'مبلغ واریز فقد می تواند شامل عدد باشد')
-    ),
     imageFile: v.pipe(
       v.file('فیش واریز الزامی است'),
       v.mimeType(
@@ -148,11 +134,8 @@
     bankName: '',
     paymentDate: '',
     trackingNumber: '',
-    amount: '',
     imageFile: '',
   })
-
-  const { displayPrice } = useFormattedPrice(toRef(state, 'amount'))
 
   async function onSubmit(event: FormSubmitEvent<Schema>) {
     isLoading.value = true
@@ -162,6 +145,7 @@
         paymentDate: jalaliToGregorian(event.data.paymentDate),
       }
       const result = await createSubscriptionsMasterService(payload)
+      console.log(result)
       if (result.statusCode === 201) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         await userStore.getStatusPlanUsers()

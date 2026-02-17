@@ -32,7 +32,6 @@
     try {
       const result = await getAllMasterService()
       if (result.statusCode === 200) {
-        console.log(result.data)
         formData.value = Array.isArray(result.data) ? result.data : []
       }
     } catch (error: any) {

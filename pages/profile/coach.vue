@@ -23,9 +23,9 @@
                 class="font-semibold w-fit"
               />
               <UBadge
-                :color="coach?.data?.active === 'ENABLE' ? 'primary' : 'error'"
+                :color="coach?.data?.isActive ? 'primary' : 'error'"
                 variant="soft"
-                :label="coach?.data?.active === 'ENABLE' ? 'فعال' : 'غیر فعال'"
+                :label="coach?.data?.isActive ? 'فعال' : 'غیر فعال'"
                 class="font-semibold"
               />
             </div>
@@ -289,7 +289,8 @@
   console.log(coach.value?.data)
   if (error.value || !coach.value?.data) {
     throw createError({
-      statusCode: 404,
+      statusCode: coach.value?.statusCode || 404,
+      fatal: true,
       message: coach.value?.message || 'پروفایل پیدا نشده لطف دوباره تلاش کنید',
     })
   }
@@ -317,6 +318,7 @@
       if (result.statusCode === 200) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         refresh()
+        reloadNuxtApp()
         isShow.value = true
       }
     } catch (error: any) {
