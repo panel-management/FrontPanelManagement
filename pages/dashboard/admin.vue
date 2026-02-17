@@ -1,59 +1,45 @@
 <template>
   <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
     <div
-      class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-between items-center-safe gap-5 md:gap-10"
+      class="w-full grid grid-cols-1 md:grid-cols-3 justify-between items-center-safe gap-5 md:gap-10"
     >
       <div
         class="w-full rounded-xl p-4 bg-white shadow flex items-center-safe gap-3 overflow-hidden"
       >
-        <div class="size-16 rounded-full flex justify-center items-center bg-muted">
-          <UIcon name="ph:student-duotone" class="size-9 text-muted" />
+        <div class="size-16 rounded-full flex justify-center items-center bg-primary-400/10">
+          <UIcon name="game-icons:confirmed" class="size-9 text-primary-400/40" />
         </div>
         <div class="flex flex-col gap-2">
           <h1 class="font-medium text-3xl">
-            {{ cardData?.totalStudents.toLocaleString('fa-IR') }}
+            {{ countData?.confirmedCount.toLocaleString('fa-IR') }}
           </h1>
-          <span class="font-medium text-muted text-nowrap"> هنرجو فعال </span>
+          <span class="font-medium text-muted text-nowrap"> تایید شده </span>
         </div>
       </div>
       <div
         class="w-full rounded-xl p-4 bg-white shadow flex items-center-safe gap-3 overflow-hidden"
       >
-        <div class="size-16 rounded-full flex justify-center items-center bg-turquoise-400/10">
-          <UIcon name="ci:users-group" class="size-9 text-turquoise-400/40" />
+        <div class="size-16 rounded-full flex justify-center items-center bg-warning-400/10">
+          <UIcon name="codicon:vm-pending" class="size-9 text-warning-400/40" />
         </div>
         <div class="flex flex-col gap-2">
           <h1 class="font-medium text-3xl">
-            {{ cardData?.totalCoaches.toLocaleString('fa-IR') }}
+            {{ countData?.pendingCount.toLocaleString('fa-IR') }}
           </h1>
-          <span class="font-medium text-muted text-nowrap"> مربی متخصص </span>
+          <span class="font-medium text-muted text-nowrap"> در انتظار تایید </span>
         </div>
       </div>
       <div
         class="w-full rounded-xl p-4 bg-white shadow flex items-center-safe gap-3 overflow-hidden"
       >
-        <div class="size-16 rounded-full flex justify-center items-center bg-pink-400/10">
-          <UIcon name="tabler:database-dollar" class="size-9 text-pink-400/40" />
+        <div class="size-16 rounded-full flex justify-center items-center bg-error-400/10">
+          <UIcon name="si-glyph:button-error" class="size-9 text-error-400/40" />
         </div>
         <div class="flex flex-col gap-2">
           <h1 class="font-medium text-3xl">
-            {{ cardData?.currentMonthRevenue.toLocaleString('fa-IR').slice(0, 1) }}
-            <span class="text-xl">تومان</span>
+            {{ countData?.rejectCount.toLocaleString('fa-IR') }}
           </h1>
-          <span class="font-medium text-muted text-nowrap"> درآمد ماهانه </span>
-        </div>
-      </div>
-      <div
-        class="w-full rounded-xl p-4 bg-white shadow flex items-center-safe gap-3 overflow-hidden"
-      >
-        <div class="size-16 rounded-full flex justify-center items-center bg-yellow-400/10">
-          <UIcon name="material-symbols:android-chat" class="size-9 text-yellow-400/40" />
-        </div>
-        <div class="flex flex-col gap-2">
-          <h1 class="font-medium text-3xl">
-            {{ cardData?.openTickets.toLocaleString('fa-IR') }}
-          </h1>
-          <span class="font-medium text-muted text-nowrap"> تیکت باز </span>
+          <span class="font-medium text-muted text-nowrap"> رد شده </span>
         </div>
       </div>
     </div>
@@ -63,14 +49,6 @@
         :categories="categories"
         :colors="color"
       />
-    </div>
-    <div class="w-full h-full flex max-lg:flex-col gap-2">
-      <div class="bg-white p-2 rounded-lg w-full h-full">
-        <LazyChartsPayment :series="seriesPayment" :chart-labels="chartLabels" />
-      </div>
-      <div class="bg-white p-4 rounded-lg w-full h-full">
-        <LazyWidgetProgressBar />
-      </div>
     </div>
     <!-- <div class="w-full h-full">
       <div class="bg-white p-4 rounded-lg flex flex-col gap-3 w-full h-full">
@@ -102,18 +80,15 @@
 </template>
 <script setup lang="ts">
   import type {
-    CardsData,
-    ChartData,
-    DashboardMasterResponse,
+    Counts,
+    DashboardAdminResponse,
     StatusData,
-  } from '~/models/dashboard/DashboardMaster'
-  import { getDashboardDataMasterService } from '~/services/dashboard.service'
+  } from '~/models/dashboard/DashboardAdmin'
+  import { getDashboardDataAdminService } from '~/services/dashboard.service'
 
-  const cardData = ref<CardsData | null>(null)
-  const chartLabels = ref<string[]>([])
-  const color = ref<string[]>(['#10B981', '#EF4444', '#F59E0B', '#3B82F6'])
-  const categories = ['پرداخت شده', 'پرداخت نشده', 'در انتظار', 'آینده']
-  const seriesPayment = ref<number[]>([])
+  const color = ref<string[]>(['#10B981', '#F59E0B', '#EF4444'])
+  const categories = ['تایید شده', 'در انتظار', 'رد شده']
+  const countData = ref<Counts | null>(null)
   const seriesTransaction = ref([
     {
       name: 'مبلغ',
@@ -121,29 +96,22 @@
     },
   ])
 
-  async function getDashboardMaster() {
+  async function getDashboardAdmin() {
     try {
-      const result = await getDashboardDataMasterService()
+      const result = await getDashboardDataAdminService()
       if (result.statusCode === 200) {
         console.log(result.data)
-        const data = result.data as DashboardMasterResponse
+        const data = result.data as DashboardAdminResponse
         const stats = data.statusData as StatusData
-        const cart = data.cards as CardsData
-
-        cardData.value = cart
-
-        const rawChartData: ChartData[] = Array.isArray(data.chartData) ? data.chartData : []
-        chartLabels.value = rawChartData.map((item) => item.name)
-        seriesPayment.value = rawChartData.map((item) => item.value)
+        countData.value = stats.counts as Counts
 
         seriesTransaction.value = [
           {
             name: 'مبلغ',
             data: [
-              Number(stats.paid),
-              Number(stats.unpaid),
-              Number(stats.pending),
-              Number(stats.upcoming),
+              Number(stats.confirmedRevenue),
+              Number(stats.pendingRevenue),
+              Number(stats.rejectRevenue),
             ],
           },
         ]
@@ -153,7 +121,7 @@
     }
   }
 
-  onMounted(getDashboardMaster)
+  onMounted(getDashboardAdmin)
 
   definePageMeta({
     middleware: ['role-guard', 'plan-guard'],

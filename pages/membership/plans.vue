@@ -8,7 +8,7 @@
         برای استفاده کامل از امکانات پنل، یکی از پلن های زیر را بر اساس نیاز خود انتخاب نمایید.
       </p>
     </div>
-    <CartsPlans />
+    <WidgetPlans />
   </section>
 </template>
 <script setup lang="ts">

@@ -134,7 +134,7 @@
           <p class="text-lg text-black font-light">
             برای استفاده کامل از امکانات پنل، یکی از پلن های زیر را بر اساس نیاز خود انتخاب نمایید.
           </p>
-          <CartsPlans />
+          <WidgetPlans />
         </div>
       </template>
     </UStepper>
