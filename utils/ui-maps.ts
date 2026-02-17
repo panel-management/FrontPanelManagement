@@ -1,4 +1,3 @@
-import { Active } from '~/models/Active'
 import type { PaymentStatus } from '~/models/PaymentStatus'
 import { TicketCategory, TicketPriority, TicketStatus } from '~/models/ticket/TicketData'
 import { TransactionStatus } from '~/models/transactions/TransactionStatus'
@@ -51,9 +50,9 @@ export const paymentIconBadge: Record<PaymentStatus, string> = {
   NO_PAYMENT: 'neutral',
 }
 
-export const activeLabels: Record<Active, string> = {
-  [Active.ENABLE]: 'فعال',
-  [Active.DISABLE]: 'غیر فعال',
+export const activeLabels: Record<string, string> = {
+  true: 'فعال',
+  false: 'غیر فعال',
 }
 
 export const transactionStatusLabel: Record<TransactionStatus, string> = {

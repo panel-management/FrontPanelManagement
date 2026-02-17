@@ -14,12 +14,11 @@ export function FetchApi<TData>(
     ...config,
     retry: 0,
   }
-  if (accountStore.isLogin) {
-    if (!newConfig.headers) {
-      newConfig.headers = {}
-    }
-    //@ts-ignore
-    newConfig.headers['authorization'] = `Bearer ${accountStore.getToken!}`
+  newConfig.headers = {
+    ...config?.headers,
+    ...(accountStore.isLogin && accountStore.getToken
+      ? { Authorization: `Bearer ${accountStore.getToken}` }
+      : {}),
   }
   const showError = (data: ApiResponse<any>) => {
     if (import.meta.client) {
@@ -43,33 +42,24 @@ export function FetchApi<TData>(
       } as ApiResponse<undefined>
       switch (e.response.status) {
         case 400: {
-          CustomResponse.statusCode = 400
-          let msg = e.response._data?.message ?? 'اطلاعات نامتعبر است'
-          CustomResponse.message = Array.isArray(msg) ? msg.join('') : String(msg)
+          CustomResponse.message = e.response._data?.message ?? 'اطلاعات نامتعبر است'
           break
         }
         case 401: {
-          CustomResponse.statusCode = 401
-          let msg = e.response._data?.message ?? 'دسترسی غیر مجاز'
-          CustomResponse.message = Array.isArray(msg) ? msg.join('') : String(msg)
+          CustomResponse.message = e.response._data?.message ?? 'دسترسی غیر مجاز'
           break
         }
         case 403: {
-          CustomResponse.statusCode = 403
-          let msg = e.response._data?.message ?? 'دسترسی به منبع درخواست شده ممنوع است'
-          CustomResponse.message = Array.isArray(msg) ? msg.join('') : String(msg)
+          CustomResponse.message =
+            e.response._data?.message ?? 'دسترسی به منبع درخواست شده ممنوع است'
           break
         }
         case 404: {
-          CustomResponse.statusCode = 404
-          let msg = e.response._data?.message ?? 'اطلاعات یافت نشد'
-          CustomResponse.message = Array.isArray(msg) ? msg.join('') : String(msg)
+          CustomResponse.message = e.response._data?.message ?? 'اطلاعات یافت نشد'
           break
         }
         case 406: {
-          CustomResponse.statusCode = 406
-          let msg = e.response._data?.message ?? 'درخواست قابل قبول نیست'
-          CustomResponse.message = Array.isArray(msg) ? msg.join('') : String(msg)
+          CustomResponse.message = e.response._data?.message ?? 'درخواست قابل قبول نیست'
           break
         }
       }
