@@ -23,7 +23,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   const roleRoutes: Record<Role, (string | RegExp)[]> = {
     [Role.Admin]: [
-      '/dashboard',
+      /^\/dashboard$\/admin$/,
       /^\/supports$/,
       /^\/supports\/chat-.*$/,
       '/setting/admin',
@@ -31,7 +31,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       '/payment/list',
     ],
     [Role.Master]: [
-      '/dashboard',
+      /^\/dashboard$/,
       '/profile/master',
       '/setting/master',
       '/supports/ticket',
@@ -49,7 +49,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   }
 
   const fallbackByRole: Record<Role, string> = {
-    [Role.Admin]: '/dashboard',
+    [Role.Admin]: '/dashboard/admin',
     [Role.Master]: '/dashboard',
     [Role.Coach]: '/profile/coach',
     [Role.Student]: '/profile/student',
