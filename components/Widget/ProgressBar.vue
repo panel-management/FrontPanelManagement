@@ -37,7 +37,6 @@
   import { getStatusPlanService } from '~/services/users.service'
 
   const formData = shallowRef<StatusPlanMaster | null>(null)
-  const emit = defineEmits(['delete'])
 
   const progress = computed(() => formData.value?.progressPercentage?.toFixed(0) ?? 0)
 
@@ -46,7 +45,6 @@
       const result = await getStatusPlanService()
       if (result.statusCode === 200) {
         formData.value = result.data as StatusPlanMaster
-        if (result?.isAdmin) emit('delete')
       }
     } catch (error: any) {
       console.log(error.message || error)

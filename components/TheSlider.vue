@@ -43,7 +43,7 @@
           {
             label: 'داشبورد',
             icon: 'mage:dashboard-2-fill',
-            to: '/dashboard',
+            to: '/dashboard/admin',
             onSelect: () => (isOpen.value = false),
           },
           {

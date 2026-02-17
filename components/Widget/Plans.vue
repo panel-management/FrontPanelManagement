@@ -58,13 +58,11 @@
     isLoading[id] = true
     try {
       const result = await selectPlanYourSelfMasterService(id)
-      console.log(result)
-
       if (result.statusCode === 200) {
-        toastStore.setAlert(result.data?.message, '', 'success', 'ep:success-filled')
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         await userStore.getStatusPlanUsers()
         const plan = userStore.planStatus
+        toastStore.setAlert(plan?.message!, '', 'success', 'ep:success-filled')
         if (plan?.needsPayment) {
           await navigateTo('/payment')
           return
@@ -84,7 +82,6 @@
   async function getPlanMaster() {
     try {
       const result = await getPlanMasterOrAdminService()
-      console.log(result)
       if (result.statusCode === 200) {
         formData.value = Array.isArray(result.data) ? result.data : []
       }
