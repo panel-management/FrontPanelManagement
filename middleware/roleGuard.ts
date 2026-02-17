@@ -11,6 +11,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
   }
 
+  if (roleStore.isBanned) return
+
   const user = roleStore.detailUser
 
   if (!user) {
@@ -22,8 +24,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const roleRoutes: Record<Role, (string | RegExp)[]> = {
     [Role.Admin]: [
       '/dashboard',
-      /^\/supports$/, // فقط صفحه اصلی ساپورت (دقیق)
-      /^\/supports\/chat-.*$/, // تمام صفحات چت داینامیک
+      /^\/supports$/,
+      /^\/supports\/chat-.*$/,
       '/setting/admin',
       '/management-master',
       '/payment/list',
@@ -32,8 +34,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       '/dashboard',
       '/profile/master',
       '/setting/master',
-      '/supports/ticket', // فقط صفحه تیکت
-      /^\/supports\/chat-.*$/, // تمام صفحات چت داینامیک
+      '/supports/ticket',
+      /^\/supports\/chat-.*$/,
       '/management-student',
       '/management-coach',
       '/presence-absence',
