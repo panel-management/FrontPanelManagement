@@ -303,6 +303,12 @@
                     :label="formData.sport.name"
                     class="font-semibold w-fit"
                   />
+                  <UBadge
+                    :color="formData.isActive ? 'primary' : 'error'"
+                    variant="soft"
+                    :label="formData.isActive ? 'فعال' : 'غیر فعال'"
+                    class="font-semibold"
+                  />
                 </div>
               </div>
             </div>
@@ -616,11 +622,9 @@
                     >
                       <div class="flex justify-center items-center">
                         <UIcon
-                          :name="
-                            transactionIcon[lastTransaction?.status] || 'bi:emoji-neutral-fill'
-                          "
+                          :name="transactionIcon[transaction?.status] || 'bi:emoji-neutral-fill'"
                           class="size-6"
-                          :class="transactionIconColor[lastTransaction?.status] || 'text-gray-400'"
+                          :class="transactionIconColor[transaction?.status] || 'text-gray-400'"
                         />
                       </div>
                       <div

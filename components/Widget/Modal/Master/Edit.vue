@@ -135,7 +135,8 @@
     state.birthDate = data.birthDate ? gregorianToDate(data.birthDate) : ''
     state.history = data.history ?? ''
     state.certificates = data.certificates ?? ''
-    ;((state.sportId = data.sport.id.toString() ?? ''), (state.imageUrl = data.image ?? ''))
+    state.sportId = data.sport.id.toString() ?? ''
+    state.imageUrl = data.image ?? ''
   })
 
   const lastPayment = computed(() => {
@@ -200,6 +201,7 @@
   onMounted(() => {
     if (userId.value) {
       nextTick(loadMaster)
+      gettingVariousDataStore.fetchSports
     }
   })
 </script>
@@ -241,9 +243,9 @@
                   </div>
                   <div class="flex max-sm:flex-col gap-2 sm:gap-3">
                     <UBadge
-                      :color="formData.active === 'ENABLE' ? 'primary' : 'error'"
+                      :color="formData.isActive ? 'primary' : 'error'"
                       variant="soft"
-                      :label="formData.active === 'ENABLE' ? 'فعال' : 'غیر فعال'"
+                      :label="formData.isActive ? 'فعال' : 'غیر فعال'"
                       class="font-semibold"
                     />
                   </div>
@@ -289,7 +291,7 @@
             </div>
             <div class="flex items-center gap-1">
               <UIcon name="hugeicons:students" class="size-6 text-black" />
-              <span class="font-medium text-base mt-1">هنرجو:</span>
+              <span class="font-medium text-base mt-1">تعداد هنرجو و مربی:</span>
               <span class="font-medium text-base mt-1">{{ formData.students.length }}</span>
             </div>
             <div class="flex items-center gap-1">
@@ -365,7 +367,7 @@
             </div>
             <div class="flex flex-col md:items-center gap-1">
               <span class="font-semibold text-xl">{{ formData.students.length }}</span>
-              <span class="font-medium">هنرجو</span>
+              <span class="font-medium">هنرجو و مربی</span>
             </div>
           </div>
         </div>
@@ -616,9 +618,9 @@
                     >
                       <div class="flex justify-center items-center">
                         <UIcon
-                          :name="paymentIcon[lastPayment?.status] || 'bi:emoji-neutral-fill'"
+                          :name="paymentIcon[payment.status] || 'bi:emoji-neutral-fill'"
                           class="size-6"
-                          :class="paymentIconColor[lastPayment?.status] || 'text-gray-400'"
+                          :class="paymentIconColor[payment.status] || 'text-gray-400'"
                         />
                       </div>
                       <div

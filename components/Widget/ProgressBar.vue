@@ -44,7 +44,6 @@
   async function getStatusPlanMaster() {
     try {
       const result = await getStatusPlanService()
-      console.log(result)
       if (result.statusCode === 200) {
         formData.value = result.data as StatusPlanMaster
         if (result?.isAdmin) emit('delete')

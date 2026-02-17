@@ -40,9 +40,8 @@
   async function getListStudent() {
     try {
       const result = await getStudentForEquipmentService()
-      console.log(result.data)
       if (result.statusCode === 200) {
-        studentData.value = Array.isArray(result.data) ? result.data : []
+        studentData.value = Array.isArray(result.data?.user) ? result.data?.user : []
         itemsSelect.value = studentData.value.map((item) => ({
           label: item.fullName,
           value: String(item.user_id),

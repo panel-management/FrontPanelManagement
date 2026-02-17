@@ -209,9 +209,9 @@
                   </div>
                   <div class="flex max-sm:flex-col gap-2 sm:gap-3">
                     <UBadge
-                      :color="formData.active === 'ENABLE' ? 'primary' : 'error'"
+                      :color="formData.isActive ? 'primary' : 'error'"
                       variant="soft"
-                      :label="formData.active === 'ENABLE' ? 'فعال' : 'غیر فعال'"
+                      :label="formData.isActive ? 'فعال' : 'غیر فعال'"
                       class="font-semibold"
                     />
                   </div>
