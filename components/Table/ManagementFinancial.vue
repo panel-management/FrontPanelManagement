@@ -295,7 +295,6 @@
     isLoading.value = true
     try {
       const result = await getHistoryTransactionMasterService(page.value, limit.value)
-      console.log(result)
       if (result.statusCode === 200) {
         const newItems = Array.isArray(result.data?.transactions) ? result.data?.transactions : []
         generalSum.value = result.data?.generalSum as GeneralSum
@@ -332,7 +331,6 @@
       const result = await confirmTransactionService(id)
       if (result.statusCode === 200) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-        console.log(result.data)
         const transactionIndex = formData.value.findIndex((transaction) => transaction.id === id)
         if (transactionIndex !== -1) {
           formData.value[transactionIndex].status = TransactionStatus.PAID
@@ -352,7 +350,6 @@
       const result = await rejectTransactionService(id, description)
       if (result.statusCode === 200) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-        console.log(result.data)
         const transactionIndex = formData.value.findIndex((transaction) => transaction.id === id)
         if (transactionIndex !== -1) {
           formData.value[transactionIndex].status = TransactionStatus.UNPAID

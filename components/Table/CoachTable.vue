@@ -35,7 +35,7 @@
         <BaseDropdownMenu
           :items="
             statusAccountOptions.map((account) => ({
-              label: activeLabels[account],
+              label: activeLabels[String(account)],
               type: 'checkbox' as const,
               checked: selectedStatusAccount.includes(account),
               onUpdateChecked(checked: boolean) {
@@ -50,7 +50,7 @@
               },
             }))
           "
-          label="وضعیت"
+          label="وضعیت حساب"
         />
       </div>
     </div>
@@ -73,7 +73,7 @@
 <script setup lang="ts">
   import type { TableColumn } from '@nuxt/ui'
   import type { CoachData } from '~/models/users/coach/CoachData'
-  import { Active } from '~/models/Active'
+  // import { Active } from '~/models/Active'
   import { changeStatusCoachService, deleteCoachService } from '~/services/coach.service'
 
   const UButton = resolveComponent('UButton')
@@ -90,17 +90,18 @@
     items: CoachData[]
   }>()
 
-  const selectedStatusAccount = ref<Active[]>([])
-  const statusAccountOptions: Ref<Active[]> = ref([Active.ENABLE, Active.DISABLE])
+  const selectedStatusAccount = ref<boolean[]>([])
+  const statusAccountOptions: Ref<boolean[]> = ref([true, false])
 
   const filteredData = computed(() => {
     return props.items.filter(
       (row) =>
-        selectedStatusAccount.value.length === 0 || selectedStatusAccount.value.includes(row.active)
+        selectedStatusAccount.value.length === 0 ||
+        selectedStatusAccount.value.includes(row.isActive)
     )
   })
 
-  async function changeStatusCoach(id: number, status: Active) {
+  async function changeStatusCoach(id: number, status: boolean) {
     loadingModel.value = true
     try {
       const result = await changeStatusCoachService(id, status)
@@ -108,7 +109,7 @@
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         const userIndex = props.items.findIndex((user) => user.user_id === id)
         if (userIndex !== -1) {
-          props.items[userIndex].active = status
+          props.items[userIndex].isActive = status
         }
       }
     } catch (error: any) {
@@ -183,36 +184,19 @@
       },
     },
     {
-      accessorKey: 'active',
+      accessorKey: 'isActive',
       header: 'وضعیت',
       cell: ({ row }) => {
-        const active = row.getValue('active') as string
-        const color = {
-          ENABLE: 'success' as const,
-          DISABLE: 'error' as const,
-        }[active]
-        const statusText = active === 'ENABLE' ? 'فعال' : 'غیر فعال'
+        const activeValue = row.getValue('isActive') as boolean
+        const color = activeValue ? 'success' : 'error'
+        const statusText = activeValue ? 'فعال' : 'غیر فعال'
         return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => statusText)
       },
     },
     {
       accessorKey: 'sport',
-      header: ({ column }) => {
-        const isSorted = column.getIsSorted()
-        return h(UButton, {
-          color: 'neutral',
-          variant: 'ghost',
-          label: 'رشته',
-          icon: isSorted
-            ? isSorted === 'asc'
-              ? 'i-lucide-arrow-up-narrow-wide'
-              : 'i-lucide-arrow-down-wide-narrow'
-            : 'i-lucide-arrow-up-down',
-          class: '-mx-2.5',
-          onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
-        })
-      },
-      cell: ({ row }) => h('div', { class: 'lowercase' }, row.getValue('sport')?.name),
+      header: 'رشته',
+      cell: ({ row }) => row.getValue('sport')?.name,
     },
     {
       accessorKey: 'history',
@@ -268,11 +252,10 @@
             label: 'تغییر وضعیت',
             icon: 'hugeicons:exchange-01',
             onSelect() {
-              const newStatus = row.original.active === 'ENABLE' ? 'DISABLE' : 'ENABLE'
               showConfirmDialog(
                 ` آیا میخواهید وضعیت حساب کاربر ${row.original.fullName} را تغییر دهید.`,
                 () => {
-                  changeStatusCoach(row.original.user_id, newStatus as Active)
+                  changeStatusCoach(row.original.user_id, !row.original.isActive)
                 }
               )
             },

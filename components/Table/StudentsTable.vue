@@ -76,6 +76,26 @@
           "
           label="وضعیت شهریه ها"
         />
+        <BaseDropdownMenu
+          :items="
+            statusAccountOptions.map((account) => ({
+              label: activeLabels[String(account)],
+              type: 'checkbox' as const,
+              checked: selectedStatusAccount.includes(account),
+              onUpdateChecked(checked: boolean) {
+                if (checked) {
+                  selectedStatusAccount.push(account)
+                } else {
+                  selectedStatusAccount = selectedStatusAccount.filter((b) => b !== account)
+                }
+              },
+              onSelect(e?: Event) {
+                e?.preventDefault()
+              },
+            }))
+          "
+          label="وضعیت حساب"
+        />
       </div>
     </div>
     <UTable
@@ -98,7 +118,7 @@
   import type { TableColumn } from '@nuxt/ui'
   import { TransactionStatus } from '~/models/transactions/TransactionStatus'
   import type { StudentData } from '~/models/users/student/StudentData'
-  import { deleteStudentService } from '~/services/student.service'
+  import { changeStatusStudentService, deleteStudentService } from '~/services/student.service'
 
   const UButton = resolveComponent('UButton')
   const UBadge = resolveComponent('UBadge')
@@ -121,8 +141,9 @@
   })
 
   const selectedBelts = ref<string[]>([])
+  const selectedStatusAccount = ref<boolean[]>([])
   const selectedTransactionStatus = ref<TransactionStatus[]>([])
-  // const beltOptions: Ref<Belt[]> = ref([])
+  const statusAccountOptions: Ref<boolean[]> = ref([true, false])
   const statusTransactionOption: Ref<TransactionStatus[]> = ref([
     TransactionStatus.PAID,
     TransactionStatus.PENDING,
@@ -134,12 +155,33 @@
     return props.items.filter((row) => {
       const beltMatch =
         selectedBelts.value.length === 0 || selectedBelts.value.includes(row.currentBelt.color)
+      const statusAccountMatch =
+        selectedStatusAccount.value.length === 0 ||
+        selectedStatusAccount.value.includes(row.isActive)
       const statusMatch =
         selectedTransactionStatus.value.length === 0 ||
         selectedTransactionStatus.value.includes(row.studentTransactions)
-      return beltMatch && statusMatch
+      return beltMatch && statusMatch && statusAccountMatch
     })
   })
+
+  async function changeStatusUser(id: number, status: boolean) {
+    loadingModel.value = true
+    try {
+      const result = await changeStatusStudentService(id, status)
+      if (result.statusCode === 200) {
+        toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
+        const userIndex = props.items.findIndex((user) => user.user_id === id)
+        if (userIndex !== -1) {
+          props.items[userIndex].isActive = status
+        }
+      }
+    } catch (error: any) {
+      console.log(error.message || error)
+    } finally {
+      loadingModel.value = false
+    }
+  }
 
   async function deleteAccountStudent(id: number) {
     loadingModel.value = true
@@ -430,7 +472,21 @@
         : []),
       {
         accessorKey: 'studentTransactions',
-        header: 'وضعیت شهریه',
+        header: ({ column }) => {
+          const isSorted = column.getIsSorted()
+          return h(UButton, {
+            color: 'neutral',
+            variant: 'ghost',
+            label: 'وضعیت شهریه',
+            icon: isSorted
+              ? isSorted === 'desc'
+                ? 'i-lucide-arrow-up-narrow-wide'
+                : 'i-lucide-arrow-down-wide-narrow'
+              : 'i-lucide-arrow-up-down',
+            class: '-mx-1',
+            onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+          })
+        },
         cell: ({ row }) => {
           const transactions = row.getValue('studentTransactions') as string
           const color = {
@@ -458,36 +514,19 @@
         },
       },
       {
-        accessorKey: 'active',
+        accessorKey: 'isActive',
         header: 'وضعیت',
         cell: ({ row }) => {
-          const activeValue = row.getValue('active') as string
-          const color = {
-            ENABLE: 'success' as const,
-            DISABLE: 'error' as const,
-          }[activeValue]
-          const statusText = activeValue === 'ENABLE' ? 'فعال' : 'غیر فعال'
+          const activeValue = row.getValue('isActive') as boolean
+          const color = activeValue ? 'success' : 'error'
+          const statusText = activeValue ? 'فعال' : 'غیر فعال'
           return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => statusText)
         },
       },
       {
         accessorKey: 'sport',
-        header: ({ column }) => {
-          const isSorted = column.getIsSorted()
-          return h(UButton, {
-            color: 'neutral',
-            variant: 'ghost',
-            label: 'رشته',
-            icon: isSorted
-              ? isSorted === 'asc'
-                ? 'i-lucide-arrow-up-narrow-wide'
-                : 'i-lucide-arrow-down-wide-narrow'
-              : 'i-lucide-arrow-up-down',
-            class: '-mx-2.5',
-            onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
-          })
-        },
-        cell: ({ row }) => h('div', { class: 'lowercase' }, row.getValue('sport')?.name),
+        header: 'رشته',
+        cell: ({ row }) => row.getValue('sport')?.name,
       },
       {
         accessorKey: 'createdAt',
@@ -533,6 +572,18 @@
               icon: 'material-symbols:person',
               onSelect() {
                 modalStore.toggleModal('studentEdit', row.original.user_id)
+              },
+            },
+            {
+              label: 'تغییر وضعیت',
+              icon: 'hugeicons:exchange-01',
+              onSelect() {
+                showConfirmDialog(
+                  ` آیا میخواهید وضعیت حساب کاربر ${row.original.fullName} را تغییر دهید.`,
+                  () => {
+                    changeStatusUser(row.original.user_id, !row.original.isActive)
+                  }
+                )
               },
             },
             {

@@ -56,7 +56,7 @@
         <BaseDropdownMenu
           :items="
             statusAccountOptions.map((account) => ({
-              label: activeLabels[account],
+              label: activeLabels[String(account)],
               type: 'checkbox' as const,
               checked: selectedStatusAccount.includes(account),
               onUpdateChecked(checked: boolean) {
@@ -115,9 +115,7 @@
   import type { TableColumn } from '@nuxt/ui'
   import { changeStatusMasterService, deleteMasterService } from '~/services/master.service'
   import type { MasterData } from '~/models/users/master/MasterData'
-  import { Active } from '~/models/Active'
   import { PaymentStatus } from '~/models/PaymentStatus'
-  import type { Sport } from '~/models/sportAndBelt/sport'
 
   const UButton = resolveComponent('UButton')
   const UBadge = resolveComponent('UBadge')
@@ -143,10 +141,9 @@
   }
 
   const selectedStatusSport = ref<string[]>([])
-  const selectedStatusAccount = ref<Active[]>([])
+  const selectedStatusAccount = ref<boolean[]>([])
   const selectedStatusPayment = ref<PaymentStatus[]>([])
-  const statusSportOptions: Ref<Sport[]> = ref([])
-  const statusAccountOptions: Ref<Active[]> = ref([Active.ENABLE, Active.DISABLE])
+  const statusAccountOptions: Ref<boolean[]> = ref([true, false])
   const statusPaymentOption: Ref<PaymentStatus[]> = ref([
     PaymentStatus.PENDING,
     PaymentStatus.CONFIRMED,
@@ -157,7 +154,8 @@
   const filteredData = computed(() => {
     return props.items.filter((row) => {
       const statusAccountMatch =
-        selectedStatusAccount.value.length === 0 || selectedStatusAccount.value.includes(row.active)
+        selectedStatusAccount.value.length === 0 ||
+        selectedStatusAccount.value.includes(row.isActive)
       const statusPaymentMatch =
         selectedStatusPayment.value.length === 0 ||
         selectedStatusPayment.value.includes(row.paymentStatus)
@@ -167,7 +165,7 @@
     })
   })
 
-  async function changeStatusUser(id: number, status: Active) {
+  async function changeStatusUser(id: number, status: boolean) {
     loadingModel.value = true
     try {
       const result = await changeStatusMasterService(id, status)
@@ -175,7 +173,7 @@
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         const userIndex = props.items.findIndex((user) => user.user_id === id)
         if (userIndex !== -1) {
-          props.items[userIndex].active = status
+          props.items[userIndex].isActive = status
         }
       }
     } catch (error: any) {
@@ -287,15 +285,12 @@
       },
     },
     {
-      accessorKey: 'active',
+      accessorKey: 'isActive',
       header: 'وضعیت',
       cell: ({ row }) => {
-        const activeValue = row.getValue('active')
-        const color = {
-          ENABLE: 'success' as const,
-          DISABLE: 'error' as const,
-        }[activeValue as string]
-        const statusText = activeValue === 'ENABLE' ? 'فعال' : 'غیر فعال'
+        const activeValue = row.getValue('isActive') as boolean
+        const color = activeValue ? 'success' : 'error'
+        const statusText = activeValue ? 'فعال' : 'غیر فعال'
         return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => statusText)
       },
     },
@@ -332,11 +327,11 @@
     },
     {
       accessorKey: 'studentCount',
-      header: 'هنرجویان',
+      header: 'تعداد کاربر',
       cell: ({ row }) => {
         const student = row.getValue('studentCount')
         if (!student) {
-          return h('span', { class: 'font-medium' }, 'هنرجو وجود ندارد')
+          return h('span', { class: 'font-medium' }, 'کاربری وجود ندارد')
         } else {
           return h('span', { class: 'font-medium' }, `${student} نفر`)
         }
@@ -392,11 +387,10 @@
             label: 'تغییر وضعیت',
             icon: 'hugeicons:exchange-01',
             onSelect() {
-              const newStatus = row.original.active === 'ENABLE' ? 'DISABLE' : 'ENABLE'
               showConfirmDialog(
                 ` آیا میخواهید وضعیت حساب کاربر ${row.original.fullName} را تغییر دهید.`,
                 () => {
-                  changeStatusUser(row.original.user_id, newStatus as Active)
+                  changeStatusUser(row.original.user_id, !row.original.isActive)
                 }
               )
             },
