@@ -1,4 +1,23 @@
+# Dependencies
 node_modules
-.output
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Build outputs
 .nuxt
 dist
+build
+*.log
+
+# Git and IDE
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore

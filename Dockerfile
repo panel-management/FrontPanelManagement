@@ -12,7 +12,6 @@ COPY . .
 
 RUN pnpm run generate
 
-
 FROM nginx:stable-alpine
 
 RUN rm -rf /etc/nginx/conf.d/*
@@ -22,6 +21,6 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=build-stage /app/.output/public /usr/share/nginx/html
 
-EXPOSE 80 443 443/udp
+EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
