@@ -6,7 +6,7 @@ export default defineNuxtConfig({
     enabled: import.meta.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
   },
   ssr: false,
-  modules: ['@nuxt/ui', '@pinia/nuxt', '@vueuse/nuxt'],
+  modules: ['@nuxt/ui', '@pinia/nuxt', '@vueuse/nuxt', '@vite-pwa/nuxt'],
   css: ['~/assets/css/main.css'],
   vite: {
     plugins: [tailwindcss()],
@@ -24,6 +24,59 @@ export default defineNuxtConfig({
           manualChunks: undefined,
         },
       },
+    },
+  },
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: import.meta.env.APP_NAME,
+      lang: 'fa',
+      dir: 'rtl',
+      short_name: import.meta.env.APP_NAME,
+      description: 'smart panel of the sports club',
+      theme_color: '#ffffff',
+      display: 'standalone',
+      scope: '/',
+      start_url: '/',
+      icons: [
+        {
+          src: 'icons/icon-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: 'icons/icon-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+      ],
+      screenshots: [
+        {
+          src: 'icons/icon-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          form_factor: 'wide',
+        },
+      ],
+    },
+    workbox: {
+      cleanupOutdatedCaches: true,
+      runtimeCaching: [
+        {
+          urlPattern: new RegExp(`${import.meta.env.API_URL}/api/v1/.*`),
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'api-cache',
+            expiration: {
+              maxEntries: 100,
+              maxAgeSeconds: 2 * 60,
+            },
+          },
+        },
+      ],
+    },
+    devOptions: {
+      enabled: import.meta.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
     },
   },
   app: {

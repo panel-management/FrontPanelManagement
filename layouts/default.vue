@@ -11,6 +11,7 @@
         <TheHeader />
       </header>
       <main class="p-[10px] w-full h-full flex justify-center items-center">
+        <VitePwaManifest />
         <NuxtLoadingIndicator />
         <NuxtRouteAnnouncer />
         <NuxtPage />

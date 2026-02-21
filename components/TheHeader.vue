@@ -33,14 +33,17 @@
   import type { DropdownMenuItem } from '@nuxt/ui'
   import { useJDate } from '../composables/useJdate'
   import { Role } from '~/models/Role'
+  import type { BeforeInstallPromptEvent } from '@vite-pwa/nuxt/dist/runtime/plugins/types.js'
 
   const router = useRouter()
   const accountStore = useAccountStore()
   const roleStore = useRolesStore()
+  const toastStore = useToastStore()
   const { isFullscreen, toggle } = useFullscreen()
   const now = useNow({ interval: 1000 })
   const isOpen: Ref<boolean> = ref(false)
   const isMounted: Ref<boolean> = ref(false)
+  const deferredPrompt = ref<BeforeInstallPromptEvent | null>(null)
 
   const jDate = computed(() => useJDate(now.value))
   const currentTime = computed(() => {
@@ -55,6 +58,10 @@
   onMounted(() => {
     isMounted.value = true
     roleStore.getDetailUser()
+    window.addEventListener('beforeinstallprompt', (e: Event) => {
+      e.preventDefault()
+      deferredPrompt.value = e as BeforeInstallPromptEvent
+    })
   })
 
   defineShortcuts({
@@ -136,17 +143,36 @@
       })
     }
 
-    sectionActions.push({
-      label: 'خروج',
-      icon: 'i-lucide-log-out',
-      color: 'error',
-      onSelect() {
-        accountStore.isLogout()
-        setTimeout(() => {
-          router.push('/auth')
-        }, 200)
+    sectionActions.push(
+      {
+        label: 'دانلود اپلیکیشن',
+        icon: 'carbon:application-web',
+        color: 'info',
+        onSelect() {
+          if (!deferredPrompt.value) return
+          deferredPrompt.value.prompt()
+          deferredPrompt.value.userChoice.then((choiceResult: any) => {
+            if (choiceResult.outcome === 'accepted') {
+              toastStore.setAlert('اپلیکیشن با موفقیت نصب شد', '', 'success', 'ep:success-filled')
+            } else {
+              toastStore.setAlert('خطا اپلیکیشن نصب نشد', '', 'error', 'bx:bxs-error')
+            }
+            deferredPrompt.value = null
+          })
+        },
       },
-    })
+      {
+        label: 'خروج',
+        icon: 'i-lucide-log-out',
+        color: 'error',
+        onSelect() {
+          accountStore.isLogout()
+          setTimeout(() => {
+            router.push('/auth')
+          }, 200)
+        },
+      }
+    )
 
     return [sectionHeader, sectionActions]
   })
