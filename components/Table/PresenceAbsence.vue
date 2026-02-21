@@ -234,11 +234,10 @@
     try {
       const periodParam = selectedPeriod.value || undefined
       const result = await getAttendanceReportService(page.value, limit.value, periodParam)
-      console.log(result)
       if (result.statusCode === 200) {
         const newItems = Array.isArray(result.data?.report) ? result.data?.report : []
-        summaryData.value = result.data?.summary as AttendanceSummary
-        sessionsData.value = result.data?.sessions as AttendanceSessions
+        summaryData.value = result.data?.summary
+        sessionsData.value = result.data?.sessions
         if (page.value === 1) {
           reportData.value = newItems
         } else {

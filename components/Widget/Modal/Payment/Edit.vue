@@ -87,9 +87,7 @@
         durationInDays: Number(event.data.durationInDays),
       }
       const result = await updatePlanMasterByStudentService(planId.value, payload)
-      console.log(result)
       if (result.statusCode === 200) {
-        console.log(event.data)
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         localOpen.value = false
         emit('updated', result.data)

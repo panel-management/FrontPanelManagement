@@ -187,7 +187,6 @@
     loadingModel.value = true
     try {
       const result = await deleteStudentService(id)
-      console.log(result)
       if (result.statusCode === 200) {
         emit('deleted', id)
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')

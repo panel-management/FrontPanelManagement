@@ -73,7 +73,6 @@
 <script setup lang="ts">
   import type { TableColumn } from '@nuxt/ui'
   import type { CoachData } from '~/models/users/coach/CoachData'
-  // import { Active } from '~/models/Active'
   import { changeStatusCoachService, deleteCoachService } from '~/services/coach.service'
 
   const UButton = resolveComponent('UButton')

@@ -1,3 +1,4 @@
+import type { CoachListData } from '~/models/users/coach/CoachListData'
 import type { CreateCoach } from '~/models/users/coach/CreateCoach'
 import type { UpdateCoach } from '~/models/users/coach/UpdateCoach'
 
@@ -6,7 +7,7 @@ export const getAllCoachService = () => {
 }
 
 export const getCoachProfileService = () => {
-  return FetchApi('/coach/profile')
+  return FetchApi<CoachListData>('/coach/profile')
 }
 
 export const getCoachByIdService = (id: number) => {

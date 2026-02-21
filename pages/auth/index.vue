@@ -156,7 +156,7 @@
   })
   const step2Schema = v.object({
     otpArray: v.pipe(
-      v.array(v.number()),
+      v.array(v.string()),
       v.nonEmpty('کد تایید الزامی است'),
       v.minLength(6, 'کد باید ۶ رقم باشد'),
       v.maxLength(6, 'کد نباید بیشتر از ۶ رقم باشد')
@@ -183,7 +183,7 @@
     phoneNumber: '',
   })
   const stateStep2 = reactive({
-    otpArray: [] as number[],
+    otpArray: [] as string[],
   })
   const stateStep3 = reactive({
     fullName: '',
@@ -195,7 +195,7 @@
       return stateStep2.otpArray.join('')
     },
     set(value) {
-      stateStep2.otpArray = value.split('').map(Number)
+      stateStep2.otpArray = value.split('')
     },
   })
 
@@ -204,7 +204,6 @@
     try {
       const result = await requestOtpService(event.data.phoneNumber)
       if (result.statusCode === 200) {
-        console.log(result)
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         step.value = 2
       }
@@ -221,7 +220,6 @@
       const otpString = event.data.otpArray.join('')
       const result = await otpCodeService(stateStep1.phoneNumber, otpString)
       if (result.statusCode === 200) {
-        console.log(result.data)
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         accountStore.setAuthToken(result.data)
         setTimeout(() => {
@@ -250,7 +248,6 @@
         sport
       )
       if (result.statusCode === 201) {
-        console.log(result)
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         accountStore.setAuthToken(result.data)
         setTimeout(() => {

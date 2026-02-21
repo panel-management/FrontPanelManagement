@@ -186,7 +186,6 @@
     try {
       const result = await getListAttendanceService(page.value, limit.value)
       if (result.statusCode === 200) {
-        console.log(result)
         formData.value = Array.isArray(result.data) ? result.data : []
         formData.value.forEach((item) => {
           if (item.status) {
@@ -214,8 +213,7 @@
         attendances: [{ studentId, status }],
       }
       const result = await acceptListAttendanceService(payload)
-      console.log(result)
-      if (result.statusCode === 201) {
+      if (result.statusCode === 200) {
         selectedStatuses.value[studentId] = status
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
       }

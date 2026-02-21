@@ -55,7 +55,6 @@
     isLoading.value = true
     try {
       const result = await getAllStudentService(page.value, limit.value)
-      console.log(result.data)
       if (result.statusCode === 200) {
         const newItems = Array.isArray(result.data?.user) ? result.data?.user : []
         if (page.value === 1) {
@@ -79,7 +78,7 @@
         }
       }
     } catch (error: any) {
-      console.error(error.message || error)
+      console.log(error.message || error)
     } finally {
       isLoading.value = false
     }

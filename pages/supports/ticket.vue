@@ -97,7 +97,6 @@
     try {
       const result = await getTicketMasterService(page.value, limit.value)
       if (result.statusCode === 200) {
-        console.log(result)
         formData.value = Array.isArray(result.data) ? result.data : []
         if (result.pagination) {
           total.value = result.pagination.total

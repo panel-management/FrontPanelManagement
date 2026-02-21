@@ -15,7 +15,6 @@ export const useGettingVariousDataStore = defineStore('GettingVariousData', () =
     if (sportsLoaded.value) return
     try {
       const result = await getAllSportService()
-      console.log(result.data)
       if (result.statusCode === 200) {
         sportData.value = Array.isArray(result.data) ? result.data : []
         sportsLoaded.value = true
@@ -29,7 +28,6 @@ export const useGettingVariousDataStore = defineStore('GettingVariousData', () =
     if (beltsLoaded.value) return
     try {
       const result = await getAllBeltService()
-      console.log(result.data)
       if (result.statusCode === 200) {
         beltData.value = Array.isArray(result.data) ? result.data : []
         beltsLoaded.value = true

@@ -1,3 +1,4 @@
+import type { MasterListData } from '~/models/users/master/MasterListData'
 import type { UpdateMaster } from '~/models/users/master/UpdateMaster'
 
 // get All Master just Admin
@@ -25,7 +26,7 @@ export const getMasterByIdForAdminService = (id: number) => {
 
 // get data yourself just master
 export const getMasterByIdService = () => {
-  return FetchApi('/master/details')
+  return FetchApi<MasterListData>('/master/details')
 }
 
 // update profile just yourself master

@@ -1,4 +1,5 @@
 import type { AcceptAttendance } from '~/models/attendance/AcceptAttendance'
+import type { AttendanceListData } from '~/models/attendance/AttendanceListData'
 
 export const acceptListAttendanceService = (data: AcceptAttendance) => {
   return FetchApi(`/attendance/mark`, {
@@ -27,5 +28,5 @@ export const getAttendanceReportService = (page: number, limit: number, period?:
   if (period) {
     params.append('period', period)
   }
-  return FetchApi(`/attendance/report?${params.toString()}`)
+  return FetchApi<AttendanceListData>(`/attendance/report?${params.toString()}`)
 }

@@ -189,8 +189,6 @@
   async function loadStudent() {
     try {
       const result = await getStudentByIdService(userId.value)
-      console.log(result.data)
-
       if (result.statusCode === 200) {
         formData.value = result.data as StudentListData
       }
@@ -203,7 +201,6 @@
   async function fetchPlanStudent() {
     try {
       const result = await getPlanMasterByStudentService()
-      console.log(result.data)
       if (result.statusCode === 200) {
         planData.value = Array.isArray(result.data) ? result.data : []
         itemsSelectPlan.value = planData.value.map((item) => ({
@@ -212,7 +209,7 @@
         }))
       }
     } catch (error: any) {
-      console.error(error.message || error)
+      console.log(error.message || error)
     }
   }
 

@@ -4,13 +4,13 @@
       <div class="flex items-center justify-between w-full">
         <div class="flex gap-3">
           <div class="bg-black rounded-full size-16 flex justify-center items-center text-white">
-            {{ coach?.data?.fullName.slice(0, 1) }}
+            {{ coach?.data.fullName.slice(0, 1) }}
           </div>
           <div class="flex flex-col gap-2">
-            <span class="font-medium text-xl">{{ coach?.data?.fullName }}</span>
+            <span class="font-medium text-xl">{{ coach?.data.fullName }}</span>
             <div class="flex flex-wrap gap-2 sm:gap-3">
               <UBadge
-                v-if="coach?.data?.type === Role.Coach"
+                v-if="coach?.data.type === Role.Coach"
                 color="secondary"
                 variant="solid"
                 label="مربی"
@@ -19,13 +19,13 @@
               <UBadge
                 color="neutral"
                 variant="soft"
-                :label="coach?.data?.sport.name"
+                :label="coach?.data.sport.name"
                 class="font-semibold w-fit"
               />
               <UBadge
-                :color="coach?.data?.isActive ? 'primary' : 'error'"
+                :color="coach?.data.isActive ? 'primary' : 'error'"
                 variant="soft"
-                :label="coach?.data?.isActive ? 'فعال' : 'غیر فعال'"
+                :label="coach?.data.isActive ? 'فعال' : 'غیر فعال'"
                 class="font-semibold"
               />
             </div>
@@ -56,31 +56,31 @@
         <div class="flex items-center gap-1">
           <UIcon name="ic:baseline-call" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">شماره تلفن:</span>
-          <span class="font-medium text-base mt-1">{{ coach?.data?.phoneNumber }}</span>
+          <span class="font-medium text-base mt-1">{{ coach?.data.phoneNumber }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="iconoir:barcode" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">کدملی:</span>
-          <span class="font-medium text-base mt-1">{{ coach?.data?.nationalCode }}</span>
+          <span class="font-medium text-base mt-1">{{ coach?.data.nationalCode }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">عضویت:</span>
           <span class="font-medium text-base mt-1">
-            {{ gregorianToJalali(coach?.data?.createdAt) }}
+            {{ gregorianToJalali(coach?.data.createdAt!) }}
           </span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="ion:university" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">سابقه:</span>
           <span class="font-medium text-base mt-1">
-            {{ coach?.data?.history ? `${coach?.data?.history} سال ` : 'وجود ندارد' }}
+            {{ coach?.data.history ? `${coach?.data.history} سال ` : 'وجود ندارد' }}
           </span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="solar:medal-ribbons-star-bold" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">تخصص:</span>
-          <span class="font-medium text-base mt-1">{{ coach?.data?.sport.name }}</span>
+          <span class="font-medium text-base mt-1">{{ coach?.data.sport.name }}</span>
         </div>
       </div>
       <div class="flex gap-3 min-md:hidden">
@@ -286,7 +286,6 @@
     error,
     refresh,
   } = await useAsyncData('current-coach-profile', () => getCoachProfileService())
-  console.log(coach.value?.data)
   if (error.value || !coach.value?.data) {
     throw createError({
       statusCode: coach.value?.statusCode || 404,
@@ -296,14 +295,14 @@
   }
 
   const state = reactive<UpdateCoach>({
-    fullName: coach.value?.data.fullName ?? '',
-    phoneNumber: coach.value?.data.phoneNumber ?? '',
-    nationalCode: coach.value?.data.nationalCode ?? '',
+    fullName: coach.value.data.fullName ?? '',
+    phoneNumber: coach.value.data.phoneNumber ?? '',
+    nationalCode: coach.value.data.nationalCode ?? '',
     birthDate: gregorianToJalali(coach.value?.data.birthDate) ?? '',
-    age: coach.value?.data.age.toString() ?? '',
-    certificates: coach.value?.data.certificates ?? '',
-    history: coach.value?.data.history ?? '',
-    imageUrl: coach.value?.data.image ?? undefined,
+    age: coach.value.data.age.toString() ?? '',
+    certificates: coach.value.data.certificates ?? '',
+    history: coach.value.data.history ?? '',
+    imageUrl: coach.value.data.image ?? undefined,
     imageFile: undefined,
   })
 

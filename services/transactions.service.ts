@@ -1,8 +1,11 @@
 import type { CreateTransactionEquipment } from '~/models/transactions/CreateTransactionEquipment'
 import type { RejectTransaction } from '~/models/transactions/RejectTransaction'
+import type { GetTransactionData } from '~/models/transactions/TransactionData'
 
 export const getHistoryTransactionMasterService = (page: number, limit: number) => {
-  return FetchApi(`/financials/transactions/master/history?page=${page}&limit=${limit}`)
+  return FetchApi<GetTransactionData>(
+    `/financials/transactions/master/history?page=${page}&limit=${limit}`
+  )
 }
 
 export const getHistoryTransactionStudentService = (page: number, limit: number) => {

@@ -140,7 +140,6 @@
       }
       const result = await sendMessageService(id, payload)
       if (result.statusCode === 201) {
-        console.log(result.data)
         if (ticketData.value) {
           ticketData.value.messages.push(result.data)
         }
@@ -148,7 +147,7 @@
         await scrollToBottom()
       }
     } catch (error: any) {
-      console.error(error.message || error)
+      console.log(error.message || error)
     } finally {
       isLoading.value = false
     }
@@ -158,7 +157,6 @@
     isLoading.value = true
     try {
       const result = await changeStatusTicketService(id)
-      console.log(result)
       if (result.statusCode === 200) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
       }

@@ -4,28 +4,28 @@
       <div class="flex items-center justify-between w-full">
         <div class="flex gap-3">
           <div class="bg-black rounded-full size-16 flex justify-center items-center text-white">
-            {{ student?.data?.fullName.slice(0, 1) }}
+            {{ student?.data.fullName.slice(0, 1) }}
           </div>
           <div class="flex flex-col gap-2">
-            <span class="font-medium text-xl">{{ student?.data?.fullName }}</span>
+            <span class="font-medium text-xl">{{ student?.data.fullName }}</span>
             <div class="flex gap-3">
               <UBadge
                 color="tertiary"
                 variant="subtle"
-                :label="student?.data?.sport.name"
+                :label="student?.data.sport.name"
                 class="font-medium"
               />
               <UBadge
                 v-if="hasSystemBelt"
                 color="info"
                 variant="solid"
-                :label="student?.data?.currentBelt.color"
+                :label="student?.data.currentBelt.color"
                 class="font-medium"
               />
               <UBadge
-                :color="student?.data?.isActive ? 'primary' : 'error'"
+                :color="student?.data.isActive ? 'primary' : 'error'"
                 variant="soft"
-                :label="student?.data?.isActive ? 'فعال' : 'غیر فعال'"
+                :label="student?.data.isActive ? 'فعال' : 'غیر فعال'"
                 class="font-semibold"
               />
             </div>
@@ -56,34 +56,34 @@
         <div class="flex items-center gap-1">
           <UIcon name="iconoir:barcode" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">کدملی:</span>
-          <span class="font-medium text-base mt-1">{{ student?.data?.nationalCode }}</span>
+          <span class="font-medium text-base mt-1">{{ student?.data.nationalCode }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="ic:baseline-call" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">شماره تلفن:</span>
-          <span class="font-medium text-base mt-1">{{ student?.data?.phoneNumber }}</span>
+          <span class="font-medium text-base mt-1">{{ student?.data.phoneNumber }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="ic:baseline-call" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">شماره تلفن:</span>
-          <span class="font-medium text-base mt-1">{{ student?.data?.phoneNumberEmergency }}</span>
+          <span class="font-medium text-base mt-1">{{ student?.data.phoneNumberEmergency }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">عضویت:</span>
           <span class="font-medium text-base mt-1">
-            {{ gregorianToJalali(student?.data?.createdAt) }}
+            {{ gregorianToJalali(student?.data.createdAt!) }}
           </span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">تاریخ تولد:</span>
-          <span class="font-medium text-base mt-1">{{ useJDate(student?.data?.birthDate) }}</span>
+          <span class="font-medium text-base mt-1">{{ useJDate(student?.data.birthDate) }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="ic:round-person" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">سن:</span>
-          <span class="font-medium text-base mt-1">{{ student?.data?.age }}</span>
+          <span class="font-medium text-base mt-1">{{ student?.data.age }}</span>
         </div>
       </div>
       <div class="flex gap-3 min-md:hidden">
@@ -229,12 +229,12 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 w-full">
             <div
               class="flex items-center gap-4 bg-muted p-5 rounded-xl"
-              v-for="data in student?.data?.achievedBelts"
-              :key="data?.id"
+              v-for="data in student?.data.achievedBelts"
+              :key="data.id"
             >
-              <span class="text-lg" :class="[getBeltClass(data?.color)]">{{ data?.color }}</span>
+              <span class="text-lg" :class="[getBeltClass(data.color)]">{{ data.color }}</span>
               <div class="flex flex-col gap-1">
-                <span class="font-semibold text-lg">کمربند {{ data?.color }}</span>
+                <span class="font-semibold text-lg">کمربند {{ data.color }}</span>
                 <!-- <span class="font-medium text-sm flex items-center gap-1">
                         <UIcon name="material-symbols:calendar-today-outline-rounded" class="size-4 text-black/70" />
                         {{ data?.createAt || new Date().getFullYear() }}
@@ -342,7 +342,6 @@
     error,
     refresh,
   } = await useAsyncData('current-student-profile', () => getStudentJustStudentByIdService())
-  console.log(student.value?.data)
   if (error.value || !student.value?.data) {
     throw createError({
       statusCode: student.value?.statusCode || 404,
@@ -354,15 +353,15 @@
   onMounted(gettingVariousDataStore.fetchSports)
 
   const state = reactive<UpdateStudent>({
-    fullName: student.value?.data?.fullName ?? '',
-    nationalCode: student.value?.data?.nationalCode ?? '',
-    phoneNumber: student.value?.data?.phoneNumber ?? '',
-    phoneNumberEmergency: student.value?.data?.phoneNumberEmergency ?? '',
-    address: student.value?.data?.address ?? '',
-    age: student.value?.data?.age.toString() ?? '',
-    birthDate: gregorianToJalali(student.value?.data?.birthDate) ?? '',
-    underSupervisionDoctor: student.value?.data?.underSupervisionDoctor ?? '',
-    diseaseRecords: student.value?.data?.diseaseRecords ?? '',
+    fullName: student.value.data.fullName ?? '',
+    nationalCode: student.value.data.nationalCode ?? '',
+    phoneNumber: student.value.data.phoneNumber ?? '',
+    phoneNumberEmergency: student.value.data.phoneNumberEmergency ?? '',
+    address: student.value.data.address ?? '',
+    age: student.value.data.age.toString() ?? '',
+    birthDate: gregorianToJalali(student.value.data.birthDate) ?? '',
+    underSupervisionDoctor: student.value.data.underSupervisionDoctor ?? '',
+    diseaseRecords: student.value.data.diseaseRecords ?? '',
   })
 
   async function onSubmit(event: FormSubmitEvent<Schema>) {

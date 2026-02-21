@@ -50,7 +50,6 @@
     isLoading.value = true
     try {
       const result = await createTicketService(event.data as CreateTicket)
-      console.log(result)
       if (result.statusCode === 201) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         localOpen.value = false

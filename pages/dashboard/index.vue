@@ -125,7 +125,6 @@
     try {
       const result = await getDashboardDataMasterService()
       if (result.statusCode === 200) {
-        console.log(result.data)
         const data = result.data as DashboardMasterResponse
         const stats = data.statusData as StatusData
         const cart = data.cards as CardsData

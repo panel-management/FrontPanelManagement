@@ -297,7 +297,7 @@
       const result = await getHistoryTransactionMasterService(page.value, limit.value)
       if (result.statusCode === 200) {
         const newItems = Array.isArray(result.data?.transactions) ? result.data?.transactions : []
-        generalSum.value = result.data?.generalSum as GeneralSum
+        generalSum.value = result.data?.generalSum
         if (page.value === 1) {
           formData.value = newItems
         } else {

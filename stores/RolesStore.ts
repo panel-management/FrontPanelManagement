@@ -4,9 +4,11 @@ import { getDataUserService } from '~/services/users.service'
 
 export const useRolesStore = defineStore('role', () => {
   const detailUser = ref<DataUsers | null>(null)
+  const isLoading: Ref<boolean> = ref(false)
   const isBanned: Ref<boolean> = ref(false)
 
   async function getDetailUser() {
+    if (detailUser.value) return
     try {
       const result = await getDataUserService()
       if (result.statusCode === 200) {
@@ -17,8 +19,10 @@ export const useRolesStore = defineStore('role', () => {
       }
     } catch (error: any) {
       console.log(error.message || error)
+    } finally {
+      isLoading.value = false
     }
   }
 
-  return { detailUser, getDetailUser, isBanned }
+  return { detailUser, getDetailUser, isBanned, isLoading }
 })

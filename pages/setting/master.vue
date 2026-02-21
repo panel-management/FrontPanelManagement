@@ -384,7 +384,6 @@
     try {
       const result = await getPlanMasterByStudentService()
       if (result.statusCode === 200) {
-        console.log(result.data)
         formData.value = Array.isArray(result.data) ? result.data : []
       }
     } catch (error: any) {
@@ -441,7 +440,7 @@
             toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
           }
         } catch (error: any) {
-          console.error(error.message || error)
+          console.log(error.message || error)
         } finally {
           isLoading.value = false
         }

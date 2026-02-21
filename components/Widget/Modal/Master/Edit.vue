@@ -148,7 +148,6 @@
     try {
       const result = await getMasterByIdForAdminService(userId.value)
       if (result.statusCode === 200) {
-        console.log(result.data)
         formData.value = result.data as MasterListData
       }
     } catch (error: any) {
@@ -162,14 +161,13 @@
     try {
       const result = await updateProfileMasterJustAdminService(userId.value, event.data)
       if (result.statusCode === 200) {
-        console.log(result.data)
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         isShow.value = true
         localOpen.value = false
         emit('updated', result.data)
       }
-    } catch (err: any) {
-      console.error('onSubmit error:', err)
+    } catch (error: any) {
+      console.log(error.message || error)
     } finally {
       isLoading.value = false
     }

@@ -141,7 +141,6 @@
     isLoading.value = true
     try {
       const result = await getTicketAdminService(page.value, limit.value)
-      console.log(result)
       if (result.statusCode === 200) {
         formData.value = Array.isArray(result.data) ? result.data : []
         // @ts-ignore

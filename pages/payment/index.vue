@@ -145,7 +145,6 @@
         paymentDate: jalaliToGregorian(event.data.paymentDate),
       }
       const result = await createSubscriptionsMasterService(payload)
-      console.log(result)
       if (result.statusCode === 201) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         await userStore.getStatusPlanUsers()

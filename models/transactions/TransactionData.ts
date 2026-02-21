@@ -4,6 +4,11 @@ import type { PaymentMethodStatus } from './PaymentMethodStatus'
 import type { TransactionStatus } from './TransactionStatus'
 import type { TransactionType } from './TransactionType'
 
+export interface GetTransactionData {
+  transactions: TransactionData
+  generalSum: GeneralSum
+}
+
 export interface TransactionData {
   id: number
   amount: string

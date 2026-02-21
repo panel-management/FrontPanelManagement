@@ -3,17 +3,15 @@
     <Transition name="fade">
       <div
         v-if="shouldShow"
-        class="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-2xl bg-black/60"
+        class="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-sm bg-black/30"
       >
-        <div
-          class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full flex flex-col items-center gap-6"
-        >
-          <div class="size-20 bg-error-50 rounded-full flex items-center justify-center">
-            <UIcon name="i-lucide-lock" class="size-10 text-error-500" />
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full flex flex-col items-center gap-6">
+          <div class="size-20 bg-error-100 rounded-full flex items-center justify-center">
+            <UIcon name="i-lucide-lock" class="size-10 text-error" />
           </div>
-          <div class="text-center space-y-2">
-            <h3 class="font-bold text-xl text-gray-900">دسترسی محدود</h3>
-            <p class="text-gray-500 leading-relaxed">
+          <div class="flex flex-col items-center gap-2">
+            <h3 class="font-bold text-xl text-black">دسترسی محدود</h3>
+            <p class="text-center leading-relaxed">
               {{ displayMessage }}
             </p>
           </div>
@@ -25,7 +23,7 @@
             color="primary"
             :label="buttonLabel"
           />
-          <p v-if="planStatus?.userType === 'STUDENT'" class="text-sm text-gray-400 italic">
+          <p v-if="planStatus?.userType === 'STUDENT'" class="text-sm italic">
             لطفاً برای تمدید دسترسی با مدیر مجموعه تماس بگیرید.
           </p>
         </div>
@@ -37,6 +35,7 @@
   const route = useRoute()
   const userStore = useUsersStore()
   const { planStatus, planStatusLoaded } = storeToRefs(userStore)
+  const isLocked = useScrollLock(import.meta.client ? document.body : null)
 
   const shouldShow = computed(() => {
     if (!planStatusLoaded.value) return false
@@ -60,6 +59,14 @@
     if (planStatus.value?.needsPayment) return 'پرداخت صورتحساب'
     return 'انتخاب پلن جدید'
   })
+
+  watch(
+    shouldShow,
+    (val) => {
+      isLocked.value = val
+    },
+    { immediate: true }
+  )
 </script>
 <style scoped>
   .fade-enter-active,

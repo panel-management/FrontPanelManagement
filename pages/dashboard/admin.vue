@@ -100,7 +100,6 @@
     try {
       const result = await getDashboardDataAdminService()
       if (result.statusCode === 200) {
-        console.log(result.data)
         const data = result.data as DashboardAdminResponse
         const stats = data.statusData as StatusData
         countData.value = stats.counts as Counts

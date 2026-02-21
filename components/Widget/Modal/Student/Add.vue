@@ -101,7 +101,6 @@
   async function fetchPlanStudent() {
     try {
       const result = await getPlanMasterByStudentService()
-      console.log(result.data)
       if (result.statusCode === 200) {
         planData.value = Array.isArray(result.data) ? result.data : []
         planSelect.value = planData.value.map((item) => ({
@@ -110,7 +109,7 @@
         }))
       }
     } catch (error: any) {
-      console.error(error.message || error)
+      console.log(error.message || error)
     }
   }
 
@@ -124,7 +123,6 @@
         beltIds: Number(event.data.beltIds),
       }
       const result = await createStudentService(payload)
-      console.log(result.data)
       if (result.statusCode === 201) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         localOpen.value = false

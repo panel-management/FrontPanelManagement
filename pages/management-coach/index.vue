@@ -44,7 +44,6 @@
     try {
       const result = await getAllCoachService()
       if (result.statusCode === 200) {
-        console.log(result.data)
         formData.value = Array.isArray(result.data) ? result.data : []
       }
     } catch (error: any) {

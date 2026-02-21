@@ -149,7 +149,6 @@
   async function getTransactionStudent() {
     try {
       const result = await getHistoryTransactionStudentService(page.value, limit.value)
-      console.log(result)
       if (result.statusCode === 200) {
         formData.value = Array.isArray(result.data) ? result.data : []
         if (result.pagination) {

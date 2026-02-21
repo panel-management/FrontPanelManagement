@@ -126,7 +126,6 @@
     try {
       const result = await getCoachByIdService(userId.value)
       if (result.statusCode === 200) {
-        console.log(result.data)
         formData.value = result.data as CoachListData
       }
     } catch (error: any) {
@@ -139,7 +138,6 @@
     isLoading.value = true
     try {
       const result = await updateCoachService(userId.value, event.data)
-      console.log(result)
       if (result.statusCode === 200) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         isShow.value = true

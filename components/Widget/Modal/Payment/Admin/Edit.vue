@@ -113,7 +113,7 @@
         }
       })
     } catch (error: any) {
-      console.error(error.message || error)
+      console.log(error.message || error)
     } finally {
       isLoading.value = false
     }

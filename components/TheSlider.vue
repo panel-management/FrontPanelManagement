@@ -1,25 +1,14 @@
 <template>
-  <UDrawer handle-only v-model:open="isOpen">
+  <UDrawer handle-only v-model:open="isOpen" :ui="{ header: 'hidden' }">
     <UIcon
       name="material-symbols:menu-rounded"
       mode="svg"
       class="size-7 text-black cursor-pointer"
     />
-    <template #title>
-      <div class="md:px-2 lg:px-5 flex items-center gap-2">
-        <img
-          class="size-10 rounded object-cover"
-          src="/image/logo.png"
-          alt="club logo"
-          loading="lazy"
-          draggable="false"
-        />
-        <span class="font-medium text-2xl">پنل مدیریت باشگاه</span>
-      </div>
-    </template>
+    <template #title></template>
     <template #description></template>
     <template #body>
-      <div class="md:p-2 lg:p-5">
+      <div class="md:p-2 lg:p-3">
         <UNavigationMenu orientation="vertical" :items="items" />
       </div>
     </template>

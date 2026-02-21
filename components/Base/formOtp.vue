@@ -6,7 +6,9 @@
       size="xl"
       color="neutral"
       otp
-      type="number"
+      type="text"
+      inputmode="numeric"
+      autocomplete="one-time-code"
       :length="6"
       :disabled="disable"
       :class="{ 'blur-[1px]': disable }"
@@ -14,7 +16,7 @@
   </UFormField>
 </template>
 <script setup lang="ts">
-  const model = defineModel<number[]>()
+  const model = defineModel<string[]>()
 
   const {
     name,

@@ -3,7 +3,7 @@
     <div class="flex flex-col justify-center items-center gap-5 w-full h-dvh px-7">
       <div class="flex flex-col items-center-safe gap-3">
         <span class="font-medium text-xl md:text-4xl text-black leading-relaxed">
-          خوش آمدید به پنل مدیریت باشگاه
+          خوش آمدید به پنل هوشمند باشگاه
         </span>
         <span class="text-black/80 font-normal text-sm md:text-lg">
           لطف جهت روند کار ورود یا ثبت نام کنید
@@ -25,7 +25,7 @@
   })
 
   useHead({
-    title: 'خوش آمدید به پنل مدیریت باشگاه',
+    title: 'خوش آمدید به پنل هوشمند باشگاه',
     meta: [
       {
         name: 'description',

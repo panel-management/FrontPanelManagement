@@ -4,22 +4,22 @@
       <div class="flex items-center justify-between w-full">
         <div class="flex gap-3">
           <div class="bg-black rounded-full size-16 flex justify-center items-center text-white">
-            {{ master?.data?.fullName.slice(0, 1) }}
+            {{ master?.data.fullName.slice(0, 1) }}
           </div>
           <div class="flex flex-col gap-2">
-            <span class="font-medium text-xl">{{ master?.data?.fullName }}</span>
+            <span class="font-medium text-xl">{{ master?.data.fullName }}</span>
             <div class="flex flex-wrap gap-2 sm:gap-3">
               <UBadge
-                v-if="master?.data?.type === Role.Master"
+                v-if="master?.data.type === Role.Master"
                 color="secondary"
                 variant="solid"
                 label="استاد"
                 class="font-medium"
               />
               <UBadge
-                :color="master?.data?.isActive ? 'primary' : 'error'"
+                :color="master?.data.isActive ? 'primary' : 'error'"
                 variant="soft"
-                :label="master?.data?.isActive ? 'فعال' : 'غیر فعال'"
+                :label="master?.data.isActive ? 'فعال' : 'غیر فعال'"
                 class="font-semibold"
               />
             </div>
@@ -50,49 +50,49 @@
         <div class="flex items-center gap-1">
           <UIcon name="ic:baseline-call" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">شماره تلفن:</span>
-          <span class="font-medium text-base mt-1">{{ master?.data?.phoneNumber }}</span>
+          <span class="font-medium text-base mt-1">{{ master?.data.phoneNumber }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="iconoir:barcode" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">کدملی:</span>
-          <span class="font-medium text-base mt-1">{{ master?.data?.nationalCode }}</span>
+          <span class="font-medium text-base mt-1">{{ master?.data.nationalCode }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">عضویت:</span>
-          <span class="font-medium text-base mt-1">{{ useJDate(master?.data?.createdAt) }}</span>
+          <span class="font-medium text-base mt-1">{{ useJDate(master?.data.createdAt) }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="hugeicons:students" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">تعداد هنرجو و مربی:</span>
           <span class="font-medium text-base mt-1">
-            {{ master?.data?.students.length ?? 'هنرجو وجود ندارد' }}
+            {{ master?.data.students.length ?? 'هنرجو وجود ندارد' }}
           </span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="ion:university" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">سابقه:</span>
           <span class="font-medium text-base mt-1">
-            {{ master?.data?.history ? `سال ${master?.data?.history}` : 'وجود ندارد' }}
+            {{ master?.data.history ? `سال ${master?.data.history}` : 'وجود ندارد' }}
           </span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="solar:medal-ribbons-star-bold" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">تخصص:</span>
-          <span class="font-medium text-base mt-1">{{ master?.data?.sport.name }}</span>
+          <span class="font-medium text-base mt-1">{{ master?.data.sport.name }}</span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="bxs:certification" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">مدرک و گواهینامه ها:</span>
           <span class="font-medium text-base mt-1">
-            {{ master?.data?.certificates ? master?.data?.certificates : 'وجود ندارد' }}
+            {{ master?.data.certificates ? master?.data.certificates : 'وجود ندارد' }}
           </span>
         </div>
         <div class="flex items-center gap-1">
           <UIcon name="solar:planet-2-bold" class="size-6 text-black" />
           <span class="font-medium text-base mt-1">پلن انتخاب شده:</span>
           <span class="font-medium text-base mt-1">
-            {{ master?.data?.masterPlan.name ?? 'پلن وجود ندارد' }}
+            {{ master?.data.masterPlan.name ?? 'پلن وجود ندارد' }}
           </span>
         </div>
       </div>
@@ -232,7 +232,7 @@
       </template>
       <template #paymentStatus>
         <div
-          v-if="master?.data?.subscriptionPayments.length"
+          v-if="master?.data.subscriptionPayments.length"
           class="flex flex-col gap-6 w-full h-full"
         >
           <div class="bg-white flex flex-col gap-5 rounded-lg p-4 w-full">
@@ -419,7 +419,6 @@
     error,
     refresh,
   } = await useAsyncData('current-master-profile', () => getMasterByIdService())
-  console.log(master.value?.data)
   if (error.value || !master.value?.data) {
     throw createError({
       statusCode: master.value?.statusCode || 404,
@@ -429,14 +428,14 @@
   }
 
   const state = reactive<UpdateMaster>({
-    fullName: master.value?.data.fullName ?? '',
-    phoneNumber: master.value?.data.phoneNumber ?? '',
-    nationalCode: master.value?.data.nationalCode ?? '',
-    age: master.value?.data.age?.toString() ?? '',
-    birthDate: master.value?.data.birthDate ? gregorianToJalali(master.value?.data.birthDate) : '',
-    history: master.value?.data.history ?? '',
-    certificates: master.value?.data.certificates ?? '',
-    imageUrl: master.value?.data.image ?? undefined,
+    fullName: master.value.data.fullName ?? '',
+    phoneNumber: master.value.data.phoneNumber ?? '',
+    nationalCode: master.value.data.nationalCode ?? '',
+    age: master.value.data.age?.toString() ?? '',
+    birthDate: master.value.data.birthDate ? gregorianToJalali(master.value.data.birthDate) : '',
+    history: master.value.data.history ?? '',
+    certificates: master.value.data.certificates ?? '',
+    imageUrl: master.value.data.image ?? undefined,
     imageFile: undefined,
   })
 

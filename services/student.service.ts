@@ -1,8 +1,10 @@
 import type { CreateStudent } from '~/models/users/student/CreateStudent'
+import type { GetStudentData } from '~/models/users/student/StudentData'
+import type { StudentListData } from '~/models/users/student/StudentListData'
 import type { UpdateStudent } from '~/models/users/student/UpdateStudent'
 
 export const getAllStudentService = (page: number, limit: number) => {
-  return FetchApi(`/student?page=${page}&limit=${limit}`)
+  return FetchApi<GetStudentData>(`/student?page=${page}&limit=${limit}`)
 }
 
 export const getStudentForEquipmentService = () => {
@@ -10,7 +12,7 @@ export const getStudentForEquipmentService = () => {
 }
 
 export const getStudentJustStudentByIdService = () => {
-  return FetchApi('/student/details')
+  return FetchApi<StudentListData>('/student/details')
 }
 
 export const getStudentByIdService = (id: number) => {
