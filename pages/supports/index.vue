@@ -126,6 +126,7 @@
   </section>
 </template>
 <script setup lang="ts">
+  import { Role } from '~/models/Role'
   import { type TicketData, type TicketStats } from '~/models/ticket/TicketData'
   import { getTicketAdminService } from '~/services/ticket.service'
 
@@ -179,7 +180,8 @@
   onMounted(getTicketAdmin)
 
   definePageMeta({
-    middleware: ['role-guard', 'plan-guard'],
+    middleware: ['plan-guard'],
+    roles: [Role.Admin],
   })
 
   useHead({

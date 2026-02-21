@@ -12,8 +12,11 @@
   </section>
 </template>
 <script setup lang="ts">
+  import { Role } from '~/models/Role'
+
   definePageMeta({
-    middleware: ['role-guard', 'plan-guard'],
+    middleware: ['plan-guard'],
+    roles: [Role.Master],
   })
 
   useHead({

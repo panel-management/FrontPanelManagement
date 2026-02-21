@@ -107,6 +107,7 @@
     DashboardMasterResponse,
     StatusData,
   } from '~/models/dashboard/DashboardMaster'
+  import { Role } from '~/models/Role'
   import { getDashboardDataMasterService } from '~/services/dashboard.service'
 
   const cardData = ref<CardsData | null>(null)
@@ -155,7 +156,8 @@
   onMounted(getDashboardMaster)
 
   definePageMeta({
-    middleware: ['role-guard', 'plan-guard'],
+    middleware: ['plan-guard'],
+    roles: [Role.Master],
   })
 
   useHead({

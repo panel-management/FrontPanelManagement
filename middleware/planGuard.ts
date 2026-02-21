@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   if (publicPaths.includes(to.path)) return
 
-  if (!userStore.planStatusLoaded || !userStore.planStatus) {
+  if (!userStore.planStatusLoaded) {
     await userStore.getStatusPlanUsers()
   }
 
@@ -18,11 +18,17 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   if (plan.userType === 'STUDENT') return
 
   if (plan.needsPayment) {
-    return navigateTo('/payment')
+    if (to.path !== '/payment') {
+      return navigateTo('/payment')
+    }
+    return
   }
 
   if (plan.noPlan || plan.isExpired) {
-    return navigateTo('/membership/plans')
+    if (to.path !== '/membership/plans') {
+      return navigateTo('/membership/plans')
+    }
+    return
   }
 
   if (plan.isPending) return

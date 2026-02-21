@@ -242,7 +242,7 @@
       v.trim(),
       v.nonEmpty('شماره تلفن الزامی است'),
       v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
-      v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد'),
+      v.maxLength(11, 'شماره تلفن نباید بیشتر از ۱۱ رقم باشد'),
       v.regex(/^09\d{9,10}$/, 'شماره تلفن باید با 09 شروع شود')
     ),
     history: v.pipe(
@@ -332,7 +332,8 @@
   }
 
   definePageMeta({
-    middleware: ['role-guard', 'plan-guard'],
+    middleware: ['plan-guard'],
+    roles: [Role.Coach],
   })
 
   useHead({

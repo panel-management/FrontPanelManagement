@@ -261,6 +261,7 @@
     updateStudentJustStudentByIdService,
   } from '~/services/student.service'
   import type { UpdateStudent } from '~/models/users/student/UpdateStudent'
+  import { Role } from '~/models/Role'
 
   const toastStore = useToastStore()
   const gettingVariousDataStore = useGettingVariousDataStore()
@@ -284,7 +285,7 @@
       v.trim(),
       v.nonEmpty('شماره تلفن الزامی است'),
       v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
-      v.maxLength(12, 'شماره تلفن نباید بیشتر از ۱۲ رقم باشد'),
+      v.maxLength(11, 'شماره تلفن نباید بیشتر از ۱۱ رقم باشد'),
       v.regex(/^09\d{9,10}$/, 'شماره تلفن باید با 09 شروع شود')
     ),
     phoneNumberEmergency: v.pipe(
@@ -292,7 +293,7 @@
       v.trim(),
       v.nonEmpty('شماره تلفن اضطراری الزامی است'),
       v.minLength(11, 'شماره تلفن اضطراری باید حداقل ۱۱ رقم باشد'),
-      v.maxLength(12, 'شماره تلفن اضطراری نباید بیشتر از ۱۲ رقم باشد'),
+      v.maxLength(11, 'شماره تلفن اضطراری نباید بیشتر از ۱۱ رقم باشد'),
       v.regex(/^09\d{9,10}$/, 'شماره تلفن اضطراری باید با 09 شروع شود')
     ),
     address: v.pipe(v.string(), v.trim(), v.nonEmpty('ادرس محل زندگی الزامی است')),
@@ -390,7 +391,8 @@
   }
 
   definePageMeta({
-    middleware: ['role-guard', 'plan-guard'],
+    middleware: ['plan-guard'],
+    roles: [Role.Student],
   })
 
   useHead({

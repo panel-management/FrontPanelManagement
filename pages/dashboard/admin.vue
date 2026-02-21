@@ -84,6 +84,7 @@
     DashboardAdminResponse,
     StatusData,
   } from '~/models/dashboard/DashboardAdmin'
+  import { Role } from '~/models/Role'
   import { getDashboardDataAdminService } from '~/services/dashboard.service'
 
   const color = ref<string[]>(['#10B981', '#F59E0B', '#EF4444'])
@@ -123,7 +124,8 @@
   onMounted(getDashboardAdmin)
 
   definePageMeta({
-    middleware: ['role-guard', 'plan-guard'],
+    middleware: ['plan-guard'],
+    roles: [Role.Admin],
   })
 
   useHead({

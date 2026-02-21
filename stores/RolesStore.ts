@@ -9,6 +9,7 @@ export const useRolesStore = defineStore('role', () => {
 
   async function getDetailUser() {
     if (detailUser.value) return
+    isLoading.value = true
     try {
       const result = await getDataUserService()
       if (result.statusCode === 200) {

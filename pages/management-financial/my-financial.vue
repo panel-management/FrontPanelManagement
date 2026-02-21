@@ -114,6 +114,7 @@
   </section>
 </template>
 <script setup lang="ts">
+  import { Role } from '~/models/Role'
   import type { TransactionData } from '~/models/transactions/TransactionData'
   import { TransactionStatus } from '~/models/transactions/TransactionStatus'
   import { TransactionType } from '~/models/transactions/TransactionType'
@@ -164,7 +165,8 @@
   onMounted(getTransactionStudent)
 
   definePageMeta({
-    middleware: ['role-guard', 'plan-guard'],
+    middleware: ['plan-guard'],
+    roles: [Role.Student],
   })
 
   useHead({

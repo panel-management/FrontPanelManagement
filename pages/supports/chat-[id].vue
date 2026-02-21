@@ -183,7 +183,8 @@
   )
 
   definePageMeta({
-    middleware: ['role-guard', 'plan-guard'],
+    middleware: ['plan-guard'],
+    roles: [Role.Admin, Role.Master],
   })
 
   useHead({

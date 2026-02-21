@@ -155,6 +155,7 @@
   import type { TabsItem } from '@nuxt/ui'
   import type { AcceptAttendance } from '~/models/attendance/AcceptAttendance'
   import { AttendanceStatus, type AttendanceData } from '~/models/attendance/AttendanceData'
+  import { Role } from '~/models/Role'
   import {
     acceptListAttendanceService,
     getListAttendanceService,
@@ -229,7 +230,8 @@
   onMounted(getListAttendance)
 
   definePageMeta({
-    middleware: ['role-guard', 'plan-guard'],
+    middleware: ['plan-guard'],
+    roles: [Role.Master],
   })
 
   useHead({

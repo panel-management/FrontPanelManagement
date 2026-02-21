@@ -160,6 +160,7 @@
 <script setup lang="ts">
   import type { TabsItem } from '@nuxt/ui'
   import type { MasterPlanData } from '~/models/plan/masterPlan/MasterPlanData'
+  import { Role } from '~/models/Role'
   import {
     deleteMasterPlanService,
     getPlanMasterOrAdminService,
@@ -239,9 +240,9 @@
   onMounted(getPlanMaster)
 
   definePageMeta({
-    middleware: ['role-guard', 'plan-guard'],
+    middleware: ['plan-guard'],
+    roles: [Role.Admin],
   })
-
   useHead({
     title: 'مدیریت تنظیمات سیستم',
     meta: [

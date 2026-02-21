@@ -146,6 +146,7 @@
   import type { FormSubmitEvent, StepperItem } from '@nuxt/ui'
   import { createClubProfileService } from '~/services/clubProfile.service'
   import type { ClubProfileData } from '~/models/clubProfile/ClubProfileData'
+  import { Role } from '~/models/Role'
 
   const isLoading: Ref<boolean> = ref(false)
   const isActive: Ref<number> = ref(0)
@@ -228,7 +229,7 @@
 
   definePageMeta({
     layout: false,
-    middleware: ['role-guard'],
+    roles: [Role.Master],
   })
 
   useHead({

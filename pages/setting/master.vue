@@ -265,6 +265,7 @@
   import * as v from 'valibot'
   import type { ClubProfileData } from '~/models/clubProfile/ClubProfileData'
   import type { StudentPlanData } from '~/models/plan/studentPlan/StudentPlanData'
+  import { Role } from '~/models/Role'
   import { getClubProfileService, updateClubProfileService } from '~/services/clubProfile.service'
   import {
     deletePlanMasterByStudentService,
@@ -465,7 +466,8 @@
   )
 
   definePageMeta({
-    middleware: ['role-guard', 'plan-guard'],
+    middleware: ['plan-guard'],
+    roles: [Role.Master],
   })
 
   useHead({

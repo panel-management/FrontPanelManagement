@@ -87,6 +87,7 @@
   import type { FormSubmitEvent } from '@nuxt/ui'
   import { createSubscriptionsMasterService } from '~/services/payment.service'
   import type { createSubscriptionsMaster } from '~/models/Payments/CreateSubscriptionsMaster'
+  import { Role } from '~/models/Role'
 
   const { jalaliToGregorian } = useDateConverter()
   const toastStore = useToastStore()
@@ -158,7 +159,8 @@
   }
 
   definePageMeta({
-    middleware: ['role-guard', 'plan-guard'],
+    middleware: ['plan-guard'],
+    roles: [Role.Master],
   })
 
   useHead({

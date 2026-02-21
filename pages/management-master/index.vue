@@ -20,6 +20,7 @@
   </section>
 </template>
 <script setup lang="ts">
+  import { Role } from '~/models/Role'
   import type { MasterData } from '~/models/users/master/MasterData'
   import { getAllMasterService } from '~/services/master.service'
 
@@ -56,7 +57,8 @@
   onMounted(getMasterData)
 
   definePageMeta({
-    middleware: ['role-guard', 'plan-guard'],
+    middleware: ['plan-guard'],
+    roles: [Role.Admin],
   })
 
   useHead({
