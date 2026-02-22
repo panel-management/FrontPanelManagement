@@ -174,6 +174,7 @@
     type AttendanceSessions,
     type AttendanceSummary,
   } from '~/models/attendance/AttendanceListData'
+  import { Role } from '~/models/Role'
   import { getAttendanceReportService } from '~/services/attendance.service'
 
   const UBadge = resolveComponent('UBadge')
@@ -318,12 +319,18 @@
 
   const columnLabels: Record<string, string> = {
     fullName: 'نام کامل',
+    type: 'نقش',
     status: 'وضعیت',
     date: 'زمان',
     createdAt: 'تاریخ',
   }
 
   const columns: TableColumn<AttendanceReport>[] = [
+    {
+      accessorKey: 'type',
+      header: 'نقش',
+      accessorFn: (row) => (row.student.type === Role.Student ? 'هنرجو' : 'مربی'),
+    },
     {
       accessorKey: 'fullName',
       header: 'نام کامل',

@@ -5,10 +5,11 @@
       v-model="model"
       size="xl"
       color="neutral"
-      otp
-      type="text"
-      inputmode="numeric"
+      type="number"
       autocomplete="one-time-code"
+      inputmode="numeric"
+      otp
+      autofocus
       :length="6"
       :disabled="disable"
       :class="{ 'blur-[1px]': disable }"
@@ -16,7 +17,7 @@
   </UFormField>
 </template>
 <script setup lang="ts">
-  const model = defineModel<string[]>()
+  const model = defineModel<number[]>()
 
   const {
     name,

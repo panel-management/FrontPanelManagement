@@ -36,7 +36,6 @@ export default defineNuxtConfig({
       description: 'smart panel of the sports club',
       theme_color: '#ffffff',
       display: 'standalone',
-      scope: '/',
       start_url: '/',
       icons: [
         {
@@ -50,16 +49,9 @@ export default defineNuxtConfig({
           type: 'image/png',
         },
       ],
-      screenshots: [
-        {
-          src: 'icons/icon-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
-          form_factor: 'wide',
-        },
-      ],
     },
     workbox: {
+      navigateFallback: '/',
       cleanupOutdatedCaches: true,
       runtimeCaching: [
         {
@@ -69,7 +61,7 @@ export default defineNuxtConfig({
             cacheName: 'api-cache',
             expiration: {
               maxEntries: 100,
-              maxAgeSeconds: 2 * 60,
+              maxAgeSeconds: 3 * 60,
             },
           },
         },
