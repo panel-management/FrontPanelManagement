@@ -203,6 +203,8 @@
     isLoading.value = true
     try {
       const result = await requestOtpService(event.data.phoneNumber)
+      console.log(result)
+
       if (result.statusCode === 200) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         step.value = 2

@@ -1,6 +1,16 @@
 <template>
-  <div class="w-full p-5 rounded-xl bg-white flex flex-col gap-3">
+  <div class="w-full p-3 sm:p-5 rounded-xl bg-white flex flex-col gap-3">
     <div class="w-full flex max-md:flex-col gap-3">
+      <div class="flex max-sm:flex-col gap-3">
+        <UButton
+          icon="mdi-light:download"
+          label="خروجی اکسل"
+          size="xl"
+          color="neutral"
+          variant="solid"
+          class="flex- justify-center w-full md:w-fit"
+        />
+      </div>
       <UInput
         :model-value="table?.tableApi?.getColumn('fullName')?.getFilterValue() as string"
         @update:model-value="table?.tableApi?.getColumn('fullName')?.setFilterValue($event)"
@@ -25,16 +35,6 @@
       />
     </div>
     <div class="flex max-md:flex-col gap-3 w-full h-full">
-      <div class="flex max-sm:flex-col gap-3">
-        <UButton
-          icon="mdi-light:download"
-          label="خروجی اکسل"
-          size="xl"
-          color="neutral"
-          variant="solid"
-          class="flex- justify-center w-full md:w-fit"
-        />
-      </div>
       <BaseDropdownMenu
         :items="
           table?.tableApi
@@ -108,7 +108,7 @@
       </div>
     </div>
   </div> -->
-  <div class="w-full h-full p-5 rounded-xl bg-white flex flex-col gap-5">
+  <div class="w-full h-full p-3 sm:p-5 rounded-xl bg-white flex flex-col gap-5">
     <div class="flex flex-col gap-2">
       <span class="text-lg md:text-2xl font-bold">
         لیست تراکنش های مالی ({{ formData.length }} مورد)

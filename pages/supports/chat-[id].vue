@@ -1,5 +1,5 @@
 <template>
-  <section class="h-dvh w-full rounded-sm p-4 bg-muted flex flex-col gap-4">
+  <section class="h-dvh w-full rounded-sm p-3 sm:p-4 bg-muted flex flex-col gap-4">
     <div class="flex justify-between">
       <div class="flex flex-col gap-2">
         <span class="text-2xl font-medium">

@@ -71,7 +71,7 @@
       if (newData) {
         state.name = newData.name || ''
         state.description = newData.description || ''
-        displayPrice.value = newData.price || ''
+        displayPrice.value = String(newData.price) || ''
         state.durationInDays = String(newData.durationInDays) || ''
       }
     },
@@ -138,7 +138,7 @@
           />
           <BaseFormInput
             v-model="displayPrice"
-            label="قیمت (تومان)"
+            label="قیمت(تومان)"
             name="price"
             type="text"
             placeholder="2,500,000"

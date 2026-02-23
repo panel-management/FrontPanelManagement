@@ -1,8 +1,8 @@
 <template>
-  <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
+  <section class="h-full w-full rounded-sm p-2 sm:p-3 bg-muted flex flex-col gap-4">
     <div class="w-full h-full flex flex-col gap-2 sm:p-2">
-      <h2 class="text-lg sm:text-3xl font-bold">صورتحساب‌ های شما</h2>
-      <span class="text-xs sm:text-sm font-medium">مشاهده و پرداخت صورتحساب‌ های معوق و آینده</span>
+      <h2 class="text-xl sm:text-3xl font-bold">صورتحساب‌ های شما</h2>
+      <span class="text-sm font-medium">مشاهده و پرداخت صورتحساب‌ های معوق و آینده</span>
     </div>
     <div
       v-if="formData.length"
@@ -93,7 +93,7 @@
         size="xl"
       />
     </div>
-    <div class="w-full h-full flex max-sm:flex-col gap-5 p-4 rounded-lg bg-white">
+    <div class="w-full h-full flex max-sm:flex-col gap-5 p-3 sm:p-4 rounded-lg bg-white">
       <div class="flex max-sm:items-center gap-2">
         <div class="rounded-full size-12 flex items-center justify-center bg-info-100">
           <UIcon name="bi:info-circle" class="size-5 bg-info-500" />

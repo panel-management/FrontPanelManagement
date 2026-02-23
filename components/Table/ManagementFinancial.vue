@@ -8,7 +8,7 @@
           size="xl"
           color="neutral"
           variant="solid"
-          class="flex- justify-center w-full md:w-fit"
+          class="flex justify-center w-full md:w-fit"
         />
         <UButton
           icon="material-symbols:shopping-bag"
@@ -17,7 +17,7 @@
           size="xl"
           color="neutral"
           variant="solid"
-          class="flex- justify-center w-full md:w-fit"
+          class="flex justify-center w-full md:w-fit"
         />
       </div>
       <UInput

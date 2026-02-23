@@ -1,8 +1,8 @@
 <template>
-  <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
+  <section class="h-full w-full rounded-sm p-2 sm:p-3 bg-muted flex flex-col gap-4">
     <div class="w-full h-full flex flex-col gap-2 sm:p-2">
-      <h2 class="text-lg sm:text-3xl font-bold">تنظیمات باشگاه</h2>
-      <span class="text-xs sm:text-sm font-medium">مدیریت و پیکربندی تنظیمات کلی سیستم باشگاه</span>
+      <h2 class="text-xl sm:text-3xl font-bold">تنظیمات باشگاه</h2>
+      <span class="text-sm font-medium">مدیریت و پیکربندی تنظیمات کلی سیستم باشگاه</span>
     </div>
     <BaseTabs v-model="active" :items="items" color="tertiary">
       <template #public>
@@ -226,7 +226,7 @@
       </template>
       <template #ranks>
         <div class="flex flex-col gap-6 p-4 bg-white rounded-lg w-full h-full">
-          <div class="w-full flex max-sm:flex-col items-center justify-between gap-4 sm:gap-2">
+          <div class="w-full flex max-md:flex-col md:items-center justify-between gap-4 sm:gap-2">
             <div class="flex flex-col gap-2">
               <span class="text-2xl font-bold">کمربندها یا درجه ها</span>
               <p class="break-words font-medium text-sm">
@@ -234,7 +234,7 @@
               </p>
             </div>
           </div>
-          <div class="flex flex-col gap-5 w-full p-2">
+          <div class="flex flex-col gap-5 w-full md:p-2">
             <div
               class="flex items-center justify-between gap-2 w-full"
               v-for="item in gettingVariousDataStore.beltData"
@@ -430,23 +430,20 @@
   }
 
   async function deletePlanMasterByStudent(id: number) {
-    showConfirmDialog(
-      'آیا از حذف این پلن اطمینان دارید؟ این عملیات قابل بازگشت نیست.',
-      async () => {
-        isLoading.value = true
-        try {
-          const result = await deletePlanMasterByStudentService(id)
-          if (result.statusCode === 200) {
-            formData.value = formData.value.filter((user) => user.id !== id)
-            toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-          }
-        } catch (error: any) {
-          console.log(error.message || error)
-        } finally {
-          isLoading.value = false
+    showConfirmDialog('آیا از حذف این طرح اطمینان دارید؟ این عملیات قابل بازگشت نیست', async () => {
+      isLoading.value = true
+      try {
+        const result = await deletePlanMasterByStudentService(id)
+        if (result.statusCode === 200) {
+          formData.value = formData.value.filter((user) => user.id !== id)
+          toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         }
+      } catch (error: any) {
+        console.log(error.message || error)
+      } finally {
+        isLoading.value = false
       }
-    )
+    })
   }
 
   onMounted(() => {

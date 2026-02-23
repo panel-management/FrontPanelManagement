@@ -1,9 +1,9 @@
 <template>
-  <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
+  <section class="h-full w-full rounded-sm p-2 sm:p-3 bg-muted flex flex-col gap-4">
     <div class="w-full flex justify-between items-center">
       <div class="flex flex-col gap-2 sm:p-2">
-        <h2 class="text-lg sm:text-3xl font-bold">مدیریت اساتید</h2>
-        <span class="text-xs sm:text-sm font-medium">مشاهده و مدیریت اطلاعات اساتید باشگاه</span>
+        <h2 class="text-xl sm:text-3xl font-bold">مدیریت اساتید</h2>
+        <span class="text-sm font-medium">مشاهده و مدیریت اطلاعات اساتید باشگاه</span>
       </div>
     </div>
     <div class="bg-white flex flex-col gap-3 p-3 rounded-lg">

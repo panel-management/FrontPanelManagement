@@ -1,8 +1,8 @@
 <template>
-  <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
+  <section class="h-full w-full rounded-sm p-2 sm:p-3 bg-muted flex flex-col gap-4">
     <div class="w-full h-full flex flex-col gap-2 sm:p-2">
-      <h2 class="text-lg sm:text-3xl font-bold">تنظیمات سیستم</h2>
-      <span class="text-xs sm:text-sm font-medium">مدیریت و پیکربندی تنظیمات کلی سیستم</span>
+      <h2 class="text-xl sm:text-3xl font-bold">تنظیمات سیستم</h2>
+      <span class="text-sm font-medium">مدیریت و پیکربندی تنظیمات کلی سیستم</span>
     </div>
     <BaseTabs v-model="active" :items="items" color="tertiary">
       <template #mali>
@@ -224,7 +224,7 @@
   async function deletePlanMaster(id: number) {
     const plan = formData.value.find((item) => item.id === id)
     if (!plan) return
-    showConfirmDialog(`آیا مطمئن هستید که می‌خواهید پلن ${plan?.name} را حذف کنید؟`, async () => {
+    showConfirmDialog(`آیا مطمئن هستید که می‌خواهید ${plan?.name} را حذف کنید؟`, async () => {
       try {
         const result = await deleteMasterPlanService(id)
         if (result.statusCode === 200) {

@@ -1,8 +1,8 @@
 <template>
-  <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
+  <section class="h-full w-full rounded-sm p-2 sm:p-3 bg-muted flex flex-col gap-4">
     <div class="w-full h-full flex flex-col gap-2 sm:p-2">
-      <h2 class="text-lg sm:text-3xl font-bold">مدیریت پشتیبانی</h2>
-      <span class="text-xs sm:text-sm font-medium">مدیریت تیکت ‌ها</span>
+      <h2 class="text-xl sm:text-3xl font-bold">مدیریت پشتیبانی</h2>
+      <span class="text-sm font-medium">مدیریت تیکت ‌ها</span>
     </div>
     <div
       class="w-full h-full p-4 flex max-sm:flex-col sm:items-center sm:justify-between gap-3 sm:gap-0 rounded-xl bg-white"

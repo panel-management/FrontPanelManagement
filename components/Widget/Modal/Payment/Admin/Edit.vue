@@ -85,7 +85,7 @@
       if (newData) {
         state.name = newData.name
         state.description = newData.description || ''
-        state.price = Number(newData.price) || ''
+        state.price = String(newData.price) || ''
         state.features = [...newData.features]
         state.type = newData.type
         state.durationInDays = String(newData.durationInDays) || ''

@@ -1,17 +1,18 @@
 <template>
-  <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
-    <div class="w-full flex justify-between items-center">
+  <section class="h-full w-full rounded-sm p-2 md:p-3 bg-muted flex flex-col gap-4">
+    <div class="w-full flex max-md:flex-col justify-between md:items-center max-md:gap-3">
       <div class="flex flex-col gap-2 sm:p-2">
-        <h2 class="text-lg sm:text-3xl font-bold">مدیریت هنرجویان</h2>
-        <span class="text-xs sm:text-sm font-medium">مشاهده و مدیریت اطلاعات هنرجویان باشگاه</span>
+        <h2 class="text-xl sm:text-3xl font-bold">مدیریت هنرجویان</h2>
+        <span class="text-sm font-medium">مشاهده و مدیریت اطلاعات هنرجویان باشگاه</span>
       </div>
       <div class="sm:p-2">
         <UButton
           @click="modalStore.toggleModal('studentAdd')"
-          trailing-icon="material-symbols:person-add"
+          icon="material-symbols:person-add"
           size="lg"
           color="primary"
           variant="subtle"
+          class="flex justify-center w-full md:w-fit"
         >
           افزودن هنرجو جدید
         </UButton>
@@ -19,7 +20,7 @@
     </div>
     <div class="bg-white flex flex-col gap-3 p-3 rounded-lg">
       <div class="flex flex-col gap-2">
-        <span class="text-2xl font-bold">لیست هنرجویان ({{ formData.length }} نفر)</span>
+        <span class="text-xl md:text-2xl font-bold">لیست هنرجویان ({{ formData.length }} نفر)</span>
         <p class="wrap-break-word font-medium text-sm">
           مشاهده کامل اطلاعات هنرجویان و مدیریت آنها
         </p>

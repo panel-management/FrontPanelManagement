@@ -1,8 +1,8 @@
 <template>
-  <section class="h-full w-full rounded-sm p-3 bg-muted flex flex-col gap-4">
+  <section class="h-full w-full rounded-sm p-3 sm:p-3 bg-muted flex flex-col gap-4">
     <div class="flex flex-col gap-2 sm:p-2">
-      <h2 class="text-lg sm:text-3xl font-bold">حضور و غیاب</h2>
-      <span class="text-xs sm:text-sm font-medium">مدیریت و ثبت حضور و غیاب اعضای باشگاه</span>
+      <h2 class="text-xl sm:text-3xl font-bold">حضور و غیاب</h2>
+      <span class="text-sm font-medium">مدیریت و ثبت حضور و غیاب اعضای باشگاه</span>
     </div>
     <BaseTabs :items="items" color="tertiary">
       <template #reports>
@@ -13,7 +13,7 @@
       <template #attendanceRecord>
         <div class="w-full h-full p-4 bg-white flex flex-col gap-5 rounded-xl">
           <div class="flex flex-col gap-2">
-            <span class="text-lg md:text-2xl font-bold">ثبت حضور غیاب هنرجویان</span>
+            <span class="text-2xl font-bold">ثبت حضور غیاب هنرجویان</span>
             <p class="break-words font-medium text-sm">
               بر روی دکمه‌های وضعیت برای ثبت حضور کلیک کنید.
             </p>

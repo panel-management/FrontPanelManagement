@@ -56,15 +56,7 @@
       v.regex(/^\d+$/, 'سابقه تدریس باید عدد باشد')
     ),
     certificates: v.pipe(v.string(), v.trim(), v.nonEmpty('مدرک و گواهینامه مربی الزامی است')),
-    birthDate: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('تاریخ تولد الزامی است'),
-      v.regex(
-        /^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/,
-        'فرمت تاریخ میلادی صحیح نیست. مثال: 2000-04-20'
-      )
-    ),
+    birthDate: v.pipe(v.string(), v.trim(), v.nonEmpty('تاریخ تولد الزامی است')),
     age: v.pipe(
       v.string(),
       v.trim(),

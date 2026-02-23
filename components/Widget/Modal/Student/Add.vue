@@ -45,15 +45,7 @@
       v.maxLength(2, 'سن باید حداکثر ۲ رقم باشد'),
       v.regex(/^\d+$/, 'سن باید عدد باشد')
     ),
-    birthDate: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('تاریخ تولد هنرجو الزامی است'),
-      v.regex(
-        /^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/,
-        'فرمت تاریخ میلادی صحیح نیست. مثال: 2000-04-20'
-      )
-    ),
+    birthDate: v.pipe(v.string(), v.trim(), v.nonEmpty('تاریخ تولد هنرجو الزامی است')),
     phoneNumber: v.pipe(
       v.string(),
       v.trim(),
