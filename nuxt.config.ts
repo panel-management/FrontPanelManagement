@@ -8,6 +8,9 @@ export default defineNuxtConfig({
   ssr: false,
   modules: ['@nuxt/ui', '@pinia/nuxt', '@vueuse/nuxt', '@vite-pwa/nuxt'],
   css: ['~/assets/css/main.css'],
+  experimental: {
+    payloadExtraction: false,
+  },
   vite: {
     plugins: [tailwindcss()],
     build: {
