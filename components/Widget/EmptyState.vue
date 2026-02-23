@@ -4,7 +4,7 @@
     <span class="text-lg md:text-xl font-medium">
       {{ title }}
     </span>
-    <p class="text-base md:text-lg">
+    <p class="text-base text-center text-pretty md:text-lg">
       {{ description }}
     </p>
   </div>
