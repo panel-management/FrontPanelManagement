@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full p-5 rounded-xl bg-white flex flex-col gap-3">
+  <div class="w-full p-3 sm:p-5 rounded-xl bg-white flex flex-col gap-3">
     <div class="w-full flex max-md:flex-col gap-3">
       <div class="flex max-sm:flex-col gap-3">
         <UButton
@@ -180,7 +180,7 @@
       </div>
     </div>
   </div>
-  <div class="w-full h-full p-5 rounded-xl bg-white flex flex-col gap-5">
+  <div class="w-full h-full p-3 sm:p-5 rounded-xl bg-white flex flex-col gap-5">
     <div class="flex flex-col gap-2">
       <span class="text-lg md:text-2xl font-bold">
         لیست تراکنش های مالی ({{ formData.length }} مورد)
