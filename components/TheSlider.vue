@@ -21,8 +21,6 @@
   const roleStore = useRolesStore()
   const isOpen: Ref<boolean> = ref(false)
 
-  onMounted(roleStore.getDetailUser)
-
   const items = computed<NavigationMenuItem[][]>(() => {
     const role = roleStore.detailUser?.type
 

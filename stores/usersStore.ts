@@ -8,7 +8,7 @@ export type PlanStatus = {
   isExpired: boolean
   noPlan: boolean
   needsPayment: boolean
-  userType: string
+  userType: 'ADMIN' | 'MASTER' | 'COACH' | 'STUDENT'
   message: string
   statusCode: number
 }

@@ -44,6 +44,7 @@
   const isOpen: Ref<boolean> = ref(false)
   const isMounted: Ref<boolean> = ref(false)
   const deferredPrompt = ref<BeforeInstallPromptEvent | null>(null)
+  const isInstalled = ref(false)
 
   const jDate = computed(() => useJDate(now.value))
   const currentTime = computed(() => {
@@ -55,13 +56,27 @@
     })
   })
 
-  onMounted(() => {
-    isMounted.value = true
-    roleStore.getDetailUser()
+  function pwaApplicationEvent() {
+    const standalone =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      (window.navigator as any).standalone === true
+
+    isInstalled.value = standalone
+
     window.addEventListener('beforeinstallprompt', (e: Event) => {
       e.preventDefault()
       deferredPrompt.value = e as BeforeInstallPromptEvent
     })
+
+    window.addEventListener('appinstalled', () => {
+      isInstalled.value = true
+      deferredPrompt.value = null
+    })
+  }
+
+  onMounted(() => {
+    isMounted.value = true
+    pwaApplicationEvent()
   })
 
   defineShortcuts({
@@ -143,11 +158,12 @@
       })
     }
 
-    sectionActions.push(
-      {
+    if (!isInstalled.value) {
+      sectionActions.push({
         label: 'دانلود اپلیکیشن',
         icon: 'carbon:application-web',
         color: 'info',
+        disabled: isInstalled.value,
         onSelect() {
           if (!deferredPrompt.value) return
           deferredPrompt.value.prompt()
@@ -160,19 +176,20 @@
             deferredPrompt.value = null
           })
         },
+      })
+    }
+
+    sectionActions.push({
+      label: 'خروج',
+      icon: 'i-lucide-log-out',
+      color: 'error',
+      onSelect() {
+        accountStore.isLogout()
+        setTimeout(() => {
+          router.push('/auth')
+        }, 200)
       },
-      {
-        label: 'خروج',
-        icon: 'i-lucide-log-out',
-        color: 'error',
-        onSelect() {
-          accountStore.isLogout()
-          setTimeout(() => {
-            router.push('/auth')
-          }, 200)
-        },
-      }
-    )
+    })
 
     return [sectionHeader, sectionActions]
   })

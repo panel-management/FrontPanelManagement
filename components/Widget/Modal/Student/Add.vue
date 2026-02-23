@@ -251,7 +251,7 @@
               label="سوابق بیماری یا آسیب‌دیدگی؟"
             />
           </div>
-          <USeparator label="انتخاب کمربند و پلن" />
+          <USeparator />
           <div class="flex flex-col gap-4 w-full">
             <BaseFormSelect
               v-if="hasSystemBelt"

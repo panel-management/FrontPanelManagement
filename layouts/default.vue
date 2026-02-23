@@ -1,39 +1,29 @@
 <template>
   <UApp :locale="ar" :toaster="{ position: 'top-right' }">
-    <div
-      v-if="isInitialLoading"
-      class="fixed inset-0 flex flex-col items-center justify-center bg-white"
-    >
+    <VitePwaManifest />
+    <NuxtLoadingIndicator />
+    <NuxtRouteAnnouncer />
+    <div v-if="isLoading" class="fixed inset-0 flex flex-col items-center justify-center bg-white">
       <span class="font-medium text-black text-xl animate-pulse">در حال بارگذاری اطلاعات...</span>
     </div>
-    <template v-else>
+    <div v-else>
       <header class="w-full h-full shadow-xs shadow-black p-4 px-5">
         <TheHeader />
       </header>
-      <main class="p-[10px] w-full h-full flex justify-center items-center">
-        <VitePwaManifest />
-        <NuxtLoadingIndicator />
-        <NuxtRouteAnnouncer />
+      <main class="p-[10px] w-full h-full flex flex-1 justify-center items-center">
         <NuxtPage />
         <WidgetPlanLockOverlay />
       </main>
-    </template>
+    </div>
   </UApp>
 </template>
 <script setup lang="ts">
   import { ar } from '@nuxt/ui/locale'
 
-  const isInitialLoading = ref(true)
-  const roleStore = useRolesStore()
+  const isLoading: Ref<boolean> = ref(true)
 
-  onMounted(async () => {
-    try {
-      await roleStore.getDetailUser()
-    } catch (error: any) {
-      console.log(error.message || error)
-    } finally {
-      isInitialLoading.value = false
-    }
+  onNuxtReady(() => {
+    isLoading.value = false
   })
 
   useHead({

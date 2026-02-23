@@ -203,8 +203,6 @@
     isLoading.value = true
     try {
       const result = await requestOtpService(event.data.phoneNumber)
-      console.log(result)
-
       if (result.statusCode === 200) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         step.value = 2
@@ -224,7 +222,7 @@
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         accountStore.setAuthToken(result.data)
         setTimeout(() => {
-          navigateTo(route.query.redirectTo as string, { replace: true })
+          navigateTo(route.query.redirectTo as string)
         }, 200)
       } else if (result.statusCode === 404) {
         step.value = 3
