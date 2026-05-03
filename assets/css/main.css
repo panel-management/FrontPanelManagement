@@ -198,7 +198,7 @@ body {
 
 @layer utilities {
   .btn-outline {
-    @apply outline-none px-2 py-4 w-full text-center rounded-lg transition-all duration-500 ease-in-out hover:scale-105;
+    @apply outline-none px-2 py-4 w-full text-center rounded-lg transition-all duration-500 ease-in-out;
   }
 
   .btn {

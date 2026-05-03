@@ -9,12 +9,18 @@ export default defineNuxtConfig({
   modules: ['@nuxt/ui', '@pinia/nuxt', '@vueuse/nuxt', '@vite-pwa/nuxt'],
   css: ['~/assets/css/main.css'],
   experimental: {
-    payloadExtraction: false,
+    viteEnvironmentApi: import.meta.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
+    noVueServer: true,
+    inlineRouteRules: true,
+  },
+  features: {
+    inlineStyles: true,
   },
   vite: {
     plugins: [tailwindcss()],
     build: {
       minify: 'terser',
+      cssMinify: true,
       terserOptions: {
         compress: {
           drop_console: import.meta.env.APP_DEBUG?.toLocaleLowerCase() !== 'true',
@@ -89,6 +95,28 @@ export default defineNuxtConfig({
         translate: 'no',
       },
     },
+  },
+  icon: {
+    clientBundle: {
+      scan: true,
+      icons: [
+        'lucide:loader-circle',
+        'lucide:x',
+        'lucide:check',
+        'lucide:chevrons-left',
+        'lucide:chevrons-right',
+        'lucide:chevron-left',
+        'lucide:chevron-right',
+        'garden:minimize-stroke-12',
+        'garden:maximize-stroke-12',
+        'heroicons:x-circle',
+        'heroicons:check-circle',
+        'proicons:question-circle',
+        'mage:dashboard-2-fill',
+        'material-symbols-light:warning-rounded',
+      ],
+    },
+    serverBundle: false,
   },
   ui: {
     fonts: false,
