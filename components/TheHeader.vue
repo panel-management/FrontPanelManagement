@@ -23,7 +23,6 @@
         :content="{ align: 'end', side: 'bottom', sideOffset: 8 }"
         :ui="{ content: 'w-48' }"
       >
-        <!-- <UIcon name="material-symbols:account-circle-full" mode="svg" class="size-7 text-black cursor-pointer" /> -->
         <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" alt="avatar" />
       </UDropdownMenu>
     </div>

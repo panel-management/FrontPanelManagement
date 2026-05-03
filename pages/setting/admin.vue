@@ -26,7 +26,7 @@
           </div>
           <div class="bg-white p-4 rounded-xl w-full flex flex-col gap-5">
             <div class="flex items-center gap-2">
-              <UIcon name="bx:bxs-planet" class="size-7 text-sky-400" />
+              <UIcon name="bx:bxs-planet" class="size-7 bg-black" />
               <span class="text-2xl font-bold">پلن ها</span>
             </div>
             <!-- <div

@@ -80,12 +80,6 @@
             to: '/management-financial',
             onSelect: () => (isOpen.value = false),
           },
-          {
-            label: 'پلن ها',
-            icon: 'solar:planet-broken',
-            to: '/membership/plans',
-            onSelect: () => (isOpen.value = false),
-          },
         ],
       ]
     } else if (role === Role.Student) {
