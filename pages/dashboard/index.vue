@@ -3,59 +3,39 @@
     <div
       class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-between items-center-safe gap-5 md:gap-10"
     >
-      <div
-        class="w-full rounded-xl p-4 bg-white shadow flex items-center-safe gap-3 overflow-hidden"
+      <WidgetCartsSmallData
+        bgColorIcon="bg-muted"
+        nameIcon="ph:student-duotone"
+        classIcon="size-7 sm:size-9 text-muted"
+        title="هنرجو فعال"
       >
-        <div class="size-16 rounded-full flex justify-center items-center bg-muted">
-          <UIcon name="ph:student-duotone" class="size-9 text-muted" />
-        </div>
-        <div class="flex flex-col gap-2">
-          <h1 class="font-medium text-3xl">
-            {{ cardData?.totalStudents.toLocaleString('fa-IR') }}
-          </h1>
-          <span class="font-medium text-muted text-nowrap"> هنرجو فعال </span>
-        </div>
-      </div>
-      <div
-        class="w-full rounded-xl p-4 bg-white shadow flex items-center-safe gap-3 overflow-hidden"
+        {{ useLocaleString(cardData?.totalStudents ?? 0) }}
+      </WidgetCartsSmallData>
+      <WidgetCartsSmallData
+        bgColorIcon="bg-turquoise-400/10"
+        nameIcon="ci:users-group"
+        classIcon="size-7 sm:size-9 text-turquoise-400/40"
+        title="مربی متخصص"
       >
-        <div class="size-16 rounded-full flex justify-center items-center bg-turquoise-400/10">
-          <UIcon name="ci:users-group" class="size-9 text-turquoise-400/40" />
-        </div>
-        <div class="flex flex-col gap-2">
-          <h1 class="font-medium text-3xl">
-            {{ cardData?.totalCoaches.toLocaleString('fa-IR') }}
-          </h1>
-          <span class="font-medium text-muted text-nowrap"> مربی متخصص </span>
-        </div>
-      </div>
-      <div
-        class="w-full rounded-xl p-4 bg-white shadow flex items-center-safe gap-3 overflow-hidden"
+        {{ useLocaleString(cardData?.totalCoaches ?? 0) }}
+      </WidgetCartsSmallData>
+      <WidgetCartsSmallData
+        bgColorIcon="bg-pink-400/10"
+        nameIcon="tabler:database-dollar"
+        classIcon="size-7 sm:size-9 text-pink-400/40"
+        title="جمع درآمد ماهانه"
       >
-        <div class="size-16 rounded-full flex justify-center items-center bg-pink-400/10">
-          <UIcon name="tabler:database-dollar" class="size-9 text-pink-400/40" />
-        </div>
-        <div class="flex flex-col gap-2">
-          <h1 class="font-medium text-3xl">
-            {{ cardData?.currentMonthRevenue.toLocaleString('fa-IR').slice(0, 1) }}
-            <span class="text-xl">تومان</span>
-          </h1>
-          <span class="font-medium text-muted text-nowrap"> درآمد ماهانه </span>
-        </div>
-      </div>
-      <div
-        class="w-full rounded-xl p-4 bg-white shadow flex items-center-safe gap-3 overflow-hidden"
+        {{ useLocaleString(cardData?.currentMonthRevenue ?? 0) }}
+        <span class="text-base">تومان</span>
+      </WidgetCartsSmallData>
+      <WidgetCartsSmallData
+        bgColorIcon="bg-yellow-400/10"
+        nameIcon="material-symbols:android-chat"
+        classIcon="size-7 sm:size-9 text-yellow-400/40"
+        title="تیکت باز"
       >
-        <div class="size-16 rounded-full flex justify-center items-center bg-yellow-400/10">
-          <UIcon name="material-symbols:android-chat" class="size-9 text-yellow-400/40" />
-        </div>
-        <div class="flex flex-col gap-2">
-          <h1 class="font-medium text-3xl">
-            {{ cardData?.openTickets.toLocaleString('fa-IR') }}
-          </h1>
-          <span class="font-medium text-muted text-nowrap"> تیکت باز </span>
-        </div>
-      </div>
+        {{ useLocaleString(cardData?.openTickets ?? 0) }}
+      </WidgetCartsSmallData>
     </div>
     <div class="bg-white p-2 w-full h-full rounded-lg">
       <LazyChartsTransactions

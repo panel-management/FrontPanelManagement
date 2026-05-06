@@ -5,53 +5,38 @@
       <span class="text-sm font-medium">مدیریت تیکت‌ها و پشتیبانی کاربران</span>
     </div>
     <div class="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-      <div
-        class="w-full h-full p-5 bg-white rounded-lg flex flex-col justify-center items-center gap-4"
+      <WidgetCartsInformation
+        bgColorIcon="bg-turquoise-100"
+        nameIcon="streamline:interface-validation-check-circle-checkmark-addition-circle-success-check-validation-add-form"
+        classIcon="size-7 sm:size-6 text-turquoise-500"
+        title="تیکت‌های باز"
       >
-        <div class="size-14 rounded-full bg-turquoise-100 flex justify-center items-center">
-          <UIcon
-            name="streamline:interface-validation-check-circle-checkmark-addition-circle-success-check-validation-add-form"
-            class="size-6 text-turquoise-500"
-          />
-        </div>
-        <div class="flex flex-col items-center gap-1">
-          <span class="text-2xl font-semibold">{{ statsData?.open ?? 'وجود ندارد' }}</span>
-          <span class="text-sm font-light">تیکت‌های باز</span>
-        </div>
-      </div>
-      <div
-        class="w-full h-full p-5 bg-white rounded-lg flex flex-col justify-center items-center gap-4"
+        {{ statsData?.open ?? 'وجود ندارد' }}
+      </WidgetCartsInformation>
+      <WidgetCartsInformation
+        bgColorIcon="bg-yellow-100"
+        nameIcon="ic:twotone-access-time-filled"
+        classIcon="size-7 sm:size-6 text-yellow-400"
+        title="در انتظار"
       >
-        <div class="size-14 rounded-full bg-yellow-100 flex justify-center items-center">
-          <UIcon name="ic:twotone-access-time-filled" class="size-6 text-yellow-400" />
-        </div>
-        <div class="flex flex-col items-center gap-1">
-          <span class="text-2xl font-semibold">{{ statsData?.pending ?? 'وجود ندارد' }}</span>
-          <span class="text-sm font-light">در انتظار</span>
-        </div>
-      </div>
-      <div
-        class="w-full h-full p-5 bg-white rounded-lg flex flex-col justify-center items-center gap-4"
+        {{ statsData?.pending ?? 'وجود ندارد' }}
+      </WidgetCartsInformation>
+      <WidgetCartsInformation
+        bgColorIcon="bg-error-100"
+        nameIcon="proicons:question-circle"
+        classIcon="size-7 sm:size-6 text-error-400"
+        title="اولویت"
       >
-        <div class="size-14 rounded-full bg-error-100 flex justify-center items-center">
-          <UIcon name="proicons:question-circle" class="size-6 text-error-400" />
-        </div>
-        <div class="flex flex-col items-center gap-1">
-          <span class="text-2xl font-semibold">{{ statsData?.highPriority ?? 'وجود ندارد' }}</span>
-          <span class="text-sm font-light">اولویت بالا</span>
-        </div>
-      </div>
-      <div
-        class="w-full h-full p-5 bg-white rounded-lg flex flex-col justify-center items-center gap-4"
+        {{ statsData?.highPriority ?? 'وجود ندارد' }}
+      </WidgetCartsInformation>
+      <WidgetCartsInformation
+        bgColorIcon="bg-info-100"
+        nameIcon="material-symbols:android-chat"
+        classIcon="size-7 sm:size-6 text-info-400"
+        title="کل تیکت ها"
       >
-        <div class="size-14 rounded-full bg-info-100 flex justify-center items-center">
-          <UIcon name="material-symbols:android-chat" class="size-6 text-info-400" />
-        </div>
-        <div class="flex flex-col items-center gap-1">
-          <span class="text-2xl font-semibold">{{ statsData?.total ?? 'وجود ندارد' }}</span>
-          <span class="text-sm font-light">کل تیکت‌ها</span>
-        </div>
-      </div>
+        {{ statsData?.total ?? 'وجود ندارد' }}
+      </WidgetCartsInformation>
     </div>
     <div class="flex max-sm:flex-col gap-2 w-full h-full p-3 bg-white rounded-lg">
       <BaseSelectBoxDropdown

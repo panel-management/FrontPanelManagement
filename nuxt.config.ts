@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   experimental: {
     viteEnvironmentApi: import.meta.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
     noVueServer: true,
-    inlineRouteRules: true,
+    // inlineRouteRules: true,
   },
   features: {
     inlineStyles: true,

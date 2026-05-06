@@ -87,61 +87,46 @@
     </div>
   </div>
   <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4 w-full h-full">
-    <div class="w-full p-4 bg-white rounded-lg flex flex-col gap-3 justify-center items-center">
-      <div class="flex items-center justify-center size-14 rounded-full bg-turquoise-100">
-        <UIcon name="material-symbols:person-check" class="size-6 bg-turquoise-500" />
-      </div>
-      <div class="flex flex-col items-center gap-1">
-        <span class="font-semibold text-2xl">
-          {{ summaryData?.PRESENT ? summaryData?.PRESENT : 'وجود ندارد' }}
-        </span>
-        <span class="font-medium text-sm">حضور</span>
-      </div>
-    </div>
-    <div class="w-full p-4 bg-white rounded-lg flex flex-col gap-3 justify-center items-center">
-      <div class="flex items-center justify-center size-14 rounded-full bg-error-100">
-        <UIcon name="material-symbols:person-cancel" class="size-6 bg-error-500" />
-      </div>
-      <div class="flex flex-col items-center gap-1">
-        <span class="font-semibold text-2xl">
-          {{ summaryData?.ABSENT ? summaryData?.ABSENT : 'وجود ندارد' }}
-        </span>
-        <span class="font-medium text-sm">غیبت‌ ها</span>
-      </div>
-    </div>
-    <div class="w-full p-4 bg-white rounded-lg flex flex-col gap-3 justify-center items-center">
-      <div class="flex items-center justify-center size-14 rounded-full bg-yellow-100">
-        <UIcon name="material-symbols:alarm" class="size-6 bg-yellow-500" />
-      </div>
-      <div class="flex flex-col items-center gap-1">
-        <span class="font-semibold text-2xl">
-          {{ summaryData?.LATE ? summaryData?.LATE : 'وجود ندارد' }}
-        </span>
-        <span class="font-medium text-sm">تأخیرات</span>
-      </div>
-    </div>
-    <div class="w-full p-4 bg-white rounded-lg flex flex-col gap-3 justify-center items-center">
-      <div class="flex items-center justify-center size-14 rounded-full bg-secondary-100">
-        <UIcon name="mdi:file-document-multiple" class="size-6 bg-secondary-500" />
-      </div>
-      <div class="flex flex-col items-center gap-1">
-        <span class="font-semibold text-2xl">
-          {{ summaryData?.EXCUSED ? summaryData?.EXCUSED : 'وجود ندارد' }}
-        </span>
-        <span class="font-medium text-sm">موجه</span>
-      </div>
-    </div>
-    <div class="w-full p-4 bg-white rounded-lg flex flex-col gap-3 justify-center items-center">
-      <div class="flex items-center justify-center size-14 rounded-full bg-info-100">
-        <UIcon name="mdi-light:chart-bar" class="size-6 bg-info-500" />
-      </div>
-      <div class="flex flex-col items-center gap-1">
-        <span class="font-semibold text-2xl">
-          {{ sessionsData?.totalSessions ? sessionsData?.totalSessions : 'وجود ندارد' }}
-        </span>
-        <span class="font-medium text-sm">کل جلسات</span>
-      </div>
-    </div>
+    <WidgetCartsInformation
+      bgColorIcon="bg-turquoise-100"
+      nameIcon="material-symbols:person-check"
+      classIcon="size-7 sm:size-6 text-turquoise-500"
+      title="حضور"
+    >
+      {{ summaryData?.PRESENT ? summaryData?.PRESENT : 'وجود ندارد' }}
+    </WidgetCartsInformation>
+    <WidgetCartsInformation
+      bgColorIcon="bg-error-100"
+      nameIcon="material-symbols:person-cancel"
+      classIcon="size-7 sm:size-6 text-error-500"
+      title="غیبت ها"
+    >
+      {{ summaryData?.ABSENT ? summaryData?.ABSENT : 'وجود ندارد' }}
+    </WidgetCartsInformation>
+    <WidgetCartsInformation
+      bgColorIcon="bg-yellow-100"
+      nameIcon="material-symbols:alarm"
+      classIcon="size-7 sm:size-6 text-yellow-500"
+      title="تاخیرات"
+    >
+      {{ summaryData?.LATE ? summaryData?.LATE : 'وجود ندارد' }}
+    </WidgetCartsInformation>
+    <WidgetCartsInformation
+      bgColorIcon="bg-secondary-100"
+      nameIcon="material-symbols:alarm"
+      classIcon="size-7 sm:size-6 text-secondary-500"
+      title="موجه"
+    >
+      {{ summaryData?.EXCUSED ? summaryData?.EXCUSED : 'وجود ندارد' }}
+    </WidgetCartsInformation>
+    <WidgetCartsInformation
+      bgColorIcon="bg-info-100"
+      nameIcon="mdi-light:chart-bar"
+      classIcon="size-7 sm:size-6 bg-info-500"
+      title="کل جلسات"
+    >
+      {{ sessionsData?.totalSessions ? sessionsData?.totalSessions : 'وجود ندارد' }}
+    </WidgetCartsInformation>
   </div>
   <div class="w-full h-full p-3 sm:p-5 rounded-xl bg-white flex flex-col gap-5">
     <div class="flex flex-col gap-2">

@@ -3,45 +3,30 @@
     <div
       class="w-full grid grid-cols-1 md:grid-cols-3 justify-between items-center-safe gap-5 md:gap-10"
     >
-      <div
-        class="w-full rounded-xl p-4 bg-white shadow flex items-center-safe gap-3 overflow-hidden"
+      <WidgetCartsSmallData
+        bgColorIcon="bg-primary-400/10"
+        nameIcon="game-icons:confirmed"
+        classIcon="size-7 sm:size-9 text-primary-400/40"
+        title="تایید شده"
       >
-        <div class="size-16 rounded-full flex justify-center items-center bg-primary-400/10">
-          <UIcon name="game-icons:confirmed" class="size-9 text-primary-400/40" />
-        </div>
-        <div class="flex flex-col gap-2">
-          <h1 class="font-medium text-3xl">
-            {{ countData?.confirmedCount.toLocaleString('fa-IR') }}
-          </h1>
-          <span class="font-medium text-muted text-nowrap"> تایید شده </span>
-        </div>
-      </div>
-      <div
-        class="w-full rounded-xl p-4 bg-white shadow flex items-center-safe gap-3 overflow-hidden"
+        {{ useLocaleString(countData?.confirmedCount ?? 0) }}
+      </WidgetCartsSmallData>
+      <WidgetCartsSmallData
+        bgColorIcon="bg-warning-400/10"
+        nameIcon="codicon:vm-pending"
+        classIcon="size-7 sm:size-9 text-warning-400/40"
+        title="در انتظار تایید"
       >
-        <div class="size-16 rounded-full flex justify-center items-center bg-warning-400/10">
-          <UIcon name="codicon:vm-pending" class="size-9 text-warning-400/40" />
-        </div>
-        <div class="flex flex-col gap-2">
-          <h1 class="font-medium text-3xl">
-            {{ countData?.pendingCount.toLocaleString('fa-IR') }}
-          </h1>
-          <span class="font-medium text-muted text-nowrap"> در انتظار تایید </span>
-        </div>
-      </div>
-      <div
-        class="w-full rounded-xl p-4 bg-white shadow flex items-center-safe gap-3 overflow-hidden"
+        {{ useLocaleString(countData?.pendingCount ?? 0) }}
+      </WidgetCartsSmallData>
+      <WidgetCartsSmallData
+        bgColorIcon="bg-error-400/10"
+        nameIcon="si-glyph:button-error"
+        classIcon="size-7 sm:size-9 text-error-400/40"
+        title="رد شده"
       >
-        <div class="size-16 rounded-full flex justify-center items-center bg-error-400/10">
-          <UIcon name="si-glyph:button-error" class="size-9 text-error-400/40" />
-        </div>
-        <div class="flex flex-col gap-2">
-          <h1 class="font-medium text-3xl">
-            {{ countData?.rejectCount.toLocaleString('fa-IR') }}
-          </h1>
-          <span class="font-medium text-muted text-nowrap"> رد شده </span>
-        </div>
-      </div>
+        {{ useLocaleString(countData?.rejectCount ?? 0) }}
+      </WidgetCartsSmallData>
     </div>
     <div class="bg-white p-2 w-full h-full rounded-lg">
       <LazyChartsTransactions

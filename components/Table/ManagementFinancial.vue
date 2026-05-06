@@ -121,64 +121,40 @@
     </div>
   </div>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full h-full">
-    <div class="w-full p-4 bg-white rounded-lg flex flex-col gap-3 justify-center items-center">
-      <div class="flex items-center justify-center size-14 rounded-full bg-gray-200">
-        <UIcon
-          name="streamline:money-cash-dollar-coin-accounting-billing-payment-cash-coin-currency-money-finance"
-          class="size-6 bg-gray-500"
-        />
-      </div>
-      <div class="flex flex-col items-center gap-1">
-        <span class="font-semibold text-2xl">
-          {{
-            generalSum?.totalAmount ? generalSum?.totalAmount.toLocaleString('fa-IR') : 'وجود ندارد'
-          }}
-        </span>
-        <span class="font-medium text-sm">جمع کل درآمد</span>
-      </div>
-    </div>
-    <div class="w-full p-4 bg-white rounded-lg flex flex-col gap-3 justify-center items-center">
-      <div class="flex items-center justify-center size-14 rounded-full bg-turquoise-100">
-        <UIcon
-          name="streamline:interface-validation-check-check-form-validation-checkmark-success-add-addition"
-          class="size-6 bg-turquoise-500"
-        />
-      </div>
-      <div class="flex flex-col items-center gap-1">
-        <span class="font-semibold text-2xl">
-          {{ generalSum?.paidFees ? generalSum?.paidFees.toLocaleString('fa-IR') : 'وجود ندارد' }}
-        </span>
-        <span class="font-medium text-sm">کل شهریه‌های پرداخت شده</span>
-      </div>
-    </div>
-    <div class="w-full p-4 bg-white rounded-lg flex flex-col gap-3 justify-center items-center">
-      <div class="flex items-center justify-center size-14 rounded-full bg-error-100">
-        <UIcon name="mi:circle-error" class="size-6 bg-error-500" />
-      </div>
-      <div class="flex flex-col items-center gap-1">
-        <span class="font-semibold text-2xl">
-          {{
-            generalSum?.unpaidFees ? generalSum?.unpaidFees.toLocaleString('fa-IR') : 'وجود ندارد'
-          }}
-        </span>
-        <span class="font-medium text-sm">کل شهریه‌های پرداخت نشده</span>
-      </div>
-    </div>
-    <div class="w-full p-4 bg-white rounded-lg flex flex-col gap-3 justify-center items-center">
-      <div class="flex items-center justify-center size-14 rounded-full bg-yellow-100">
-        <UIcon name="material-symbols:shopping-cart" class="size-6 bg-yellow-500" />
-      </div>
-      <div class="flex flex-col items-center gap-1">
-        <span class="font-semibold text-2xl">
-          {{
-            generalSum?.equipmentIncome
-              ? generalSum?.equipmentIncome.toLocaleString('fa-IR')
-              : 'وجود ندارد'
-          }}
-        </span>
-        <span class="font-medium text-sm">کل درآمد تجهیزات</span>
-      </div>
-    </div>
+    <WidgetCartsInformation
+      bgColorIcon="bg-gray-200"
+      nameIcon="streamline:money-cash-dollar-coin-accounting-billing-payment-cash-coin-currency-money-finance"
+      classIcon="size-7 sm:size-6 text-gray-500"
+      title="جمع کل درآمد"
+    >
+      {{ generalSum?.totalAmount ? useLocaleString(generalSum?.totalAmount) : 'وجود ندارد' }}
+    </WidgetCartsInformation>
+    <WidgetCartsInformation
+      bgColorIcon="bg-turquoise-100"
+      nameIcon="streamline:interface-validation-check-check-form-validation-checkmark-success-add-addition"
+      classIcon="size-7 sm:size-6 text-turquoise-500"
+      title="کل شهریه‌های پرداخت شده"
+    >
+      {{ generalSum?.paidFees ? useLocaleString(generalSum?.paidFees) : 'وجود ندارد' }}
+    </WidgetCartsInformation>
+    <WidgetCartsInformation
+      bgColorIcon="bg-error-100"
+      nameIcon="mi:circle-error"
+      classIcon="size-7 sm:size-6 text-error-500"
+      title="کل شهریه‌های پرداخت نشده"
+    >
+      {{ generalSum?.unpaidFees ? useLocaleString(generalSum?.unpaidFees) : 'وجود ندارد' }}
+    </WidgetCartsInformation>
+    <WidgetCartsInformation
+      bgColorIcon="bg-yellow-100"
+      nameIcon="material-symbols:shopping-cart"
+      classIcon="size-7 sm:size-6 text-yellow-500"
+      title="کل درآمد تجهیزات"
+    >
+      {{
+        generalSum?.equipmentIncome ? useLocaleString(generalSum?.equipmentIncome) : 'وجود ندارد'
+      }}
+    </WidgetCartsInformation>
   </div>
   <div class="w-full h-full p-3 sm:p-5 rounded-xl bg-white flex flex-col gap-5">
     <div class="flex flex-col gap-2">
