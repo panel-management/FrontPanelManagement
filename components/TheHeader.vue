@@ -85,8 +85,8 @@
     u: () => navigateTo('/profile/student', { replace: true }),
     g: () => navigateTo('/setting/master', { replace: true }),
     a: () => navigateTo('/setting/admin', { replace: true }),
-    t: () => navigateTo('/supports', { replace: true }),
-    s: () => navigateTo('/supports/ticket', { replace: true }),
+    t: () => navigateTo('/support', { replace: true }),
+    s: () => navigateTo('/support/ticket', { replace: true }),
   })
 
   const dropDownMenu = computed<DropdownMenuItem[][]>(() => {
@@ -111,7 +111,7 @@
           label: 'تیکت ها',
           icon: 'bi:patch-question-fll',
           kbds: ['t'],
-          to: '/supports',
+          to: '/support',
         },
         {
           label: 'تنظیمات',
@@ -132,7 +132,7 @@
           label: 'پشتیبانی',
           icon: 'bi:patch-question-fll',
           kbds: ['s'],
-          to: '/supports/ticket',
+          to: '/support/ticket',
         },
         {
           label: 'تنظیمات',

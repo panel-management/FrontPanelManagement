@@ -25,7 +25,7 @@
       <NuxtLink
         v-for="data in formData"
         :key="data.id"
-        :to="`/supports/chat-${data.id}`"
+        :to="`/support/chat-${data.id}`"
         class="w-full p-4 rounded-xl bg-white flex justify-between"
       >
         <div class="flex flex-col gap-2">

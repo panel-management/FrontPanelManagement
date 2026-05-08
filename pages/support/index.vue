@@ -64,7 +64,7 @@
         <NuxtLink
           v-for="data in filterData"
           :key="data.id"
-          :to="`/supports/chat-${data.id}`"
+          :to="`/support/chat-${data.id}`"
           class="w-full p-4 rounded-xl bg-white border border-black/30 flex max-sm:flex-col gap-3 justify-between"
         >
           <div class="flex max-sm:flex-col sm:items-center gap-2">
