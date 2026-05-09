@@ -1,6 +1,7 @@
 <template>
   <div
     class="w-full h-full p-4 sm:p-5 bg-white rounded-lg flex sm:flex-col sm:justify-center items-center gap-4"
+    :class="props.baseClass"
   >
     <div
       class="size-16 sm:size-14 rounded-full flex justify-center items-center"
@@ -21,6 +22,7 @@
     bgColorIcon: string
     nameIcon: string
     classIcon: string
+    baseClass?: string
     title: string
   }>()
 </script>

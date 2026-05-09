@@ -238,59 +238,46 @@
           <div class="bg-white flex flex-col gap-5 rounded-lg p-4 w-full">
             <div class="flex items-center gap-2">
               <UIcon name="solar:dollar-bold" class="size-6 text-black/70" />
-              <span class="text-xl font-medium break-words">وضعیت فعلی شهریه</span>
+              <span class="text-xl font-medium break-words">وضعیت فعلی پرداخت</span>
             </div>
-            <div class="flex max-lg:flex-col items-center justify-between gap-10 w-full">
-              <div
-                class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white shadow-lg rounded-lg"
+            <div class="flex max-lg:flex-col items-center justify-between gap-4 lg:gap-8 w-full">
+              <WidgetCartsInformation
+                baseClass="border border-black/50"
+                :bgColorIcon="lastPayment?.status ? 'bg-primary-100' : 'bg-muted'"
+                :nameIcon="paymentIcon[lastPayment?.status] || 'bi:emoji-neutral-fill'"
+                :classIcon="
+                  `${paymentIconColor[lastPayment?.status]} size-7 sm:size-6` || 'text-gray-400'
+                "
+                title="وضعیت فعلی"
               >
-                <div class="bg-muted rounded-full size-12 flex justify-center items-center">
-                  <UIcon
-                    :name="paymentIcon[lastPayment?.status] || 'bi:emoji-neutral-fill'"
-                    class="size-7"
-                    :class="paymentIconColor[lastPayment?.status] || 'text-gray-400'"
-                  />
-                </div>
-                <span class="text-xl font-medium">
-                  {{
-                    lastPayment ? paymentStatusText[lastPayment?.status] : 'هیچ پرداختی موجود نیست'
-                  }}
-                </span>
-                <span class="text-sm">وضعیت فعلی</span>
-              </div>
-              <div
-                class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white shadow-lg rounded-lg"
+                {{
+                  lastPayment ? paymentStatusText[lastPayment?.status] : 'هیچ پرداختی موجود نیست'
+                }}
+              </WidgetCartsInformation>
+              <WidgetCartsInformation
+                baseClass="border border-black/50"
+                bgColorIcon="bg-black/20"
+                nameIcon="fluent:payment-32-filled"
+                classIcon="size-7 sm:size-6 text-black"
+                title="پرداخت ماهانه (تومان)"
               >
-                <div class="bg-muted rounded-full size-12 flex justify-center items-center">
-                  <UIcon name="fluent:payment-32-filled" class="size-6 text-black" />
-                </div>
-                <span class="text-xl font-medium">
-                  {{
-                    lastPayment
-                      ? Number(master.data.masterPlan.price).toLocaleString('fa-IR')
-                      : 'هیچ پرداختی موجود نیست'
-                  }}
-                </span>
-                <span class="text-sm">شهریه ماهانه (تومان)</span>
-              </div>
-              <div
-                class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white shadow-lg rounded-lg"
+                {{
+                  lastPayment
+                    ? useLocaleString(Number(master.data.masterPlan.price))
+                    : 'هیچ پرداختی موجود نیست'
+                }}
+              </WidgetCartsInformation>
+              <WidgetCartsInformation
+                baseClass="border border-black/50"
+                bgColorIcon="bg-yellow-100"
+                nameIcon="material-symbols:calendar-today-rounded"
+                classIcon="size-7 sm:size-6 text-yellow-400"
+                title="زمان پرداخت"
               >
-                <div class="bg-muted rounded-full size-12 flex justify-center items-center">
-                  <UIcon
-                    name="material-symbols:calendar-today-rounded"
-                    class="size-6 text-yellow-300"
-                  />
-                </div>
-                <span class="text-xl font-medium">
-                  {{
-                    lastPayment
-                      ? gregorianToJalali(lastPayment.createdAt)
-                      : 'هیچ پرداختی موجود نیست'
-                  }}
-                </span>
-                <span class="text-sm">زمان پرداخت</span>
-              </div>
+                {{
+                  lastPayment ? gregorianToJalali(lastPayment.createdAt) : 'هیچ پرداختی موجود نیست'
+                }}
+              </WidgetCartsInformation>
             </div>
           </div>
           <div
@@ -300,33 +287,16 @@
             <div
               class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 overflow-y-auto h-72 w-full"
             >
-              <div
-                class="flex items-center gap-4 bg-muted p-3 rounded-xl h-fit"
+              <WidgetCartsPayments
                 v-for="payment in master.data.subscriptionPayments"
                 :key="payment.id"
-              >
-                <div class="flex justify-center items-center">
-                  <UIcon
-                    :name="paymentIcon[payment.status] || 'bi:emoji-neutral-fill'"
-                    class="size-6"
-                    :class="paymentIconColor[payment.status] || 'text-gray-400'"
-                  />
-                </div>
-                <div class="w-full flex justify-between items-center">
-                  <div class="flex flex-col gap-1">
-                    <span class="font-semibold text-lg">
-                      {{ Number(payment.amount).toLocaleString('fa-IR') }} تومان
-                    </span>
-                    <span class="font-medium text-sm flex items-center gap-1">
-                      {{ gregorianToJalali(payment.paymentDate) }}
-                    </span>
-                  </div>
-                  <UBadge
-                    :label="paymentStatusText[payment.status]"
-                    :color="paymentIconBadge[payment.status]"
-                  />
-                </div>
-              </div>
+                :nameIcon="paymentIcon[payment.status] || 'bi:emoji-neutral-fill'"
+                :classIcon="paymentIconColor[payment.status] || 'text-gray-400'"
+                :title="useLocaleString(Number(payment.amount))"
+                :dateTime="gregorianToJalali(payment.paymentDate)"
+                :badgeLabel="paymentStatusText[payment.status]"
+                :badgeColor="paymentIconBadge[payment.status]"
+              />
             </div>
           </div>
         </div>

@@ -547,96 +547,65 @@
                     <UIcon name="solar:dollar-bold" class="size-6 text-black/70" />
                     <span class="text-xl font-medium break-words">وضعیت فعلی شهریه</span>
                   </div>
-                  <div class="flex max-lg:flex-col items-center justify-between gap-10 w-full">
-                    <div
-                      class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white shadow-lg rounded-lg"
+                  <div
+                    class="flex max-lg:flex-col items-center justify-between gap-4 lg:gap-8 w-full"
+                  >
+                    <WidgetCartsInformation
+                      baseClass="border border-black/50"
+                      :bgColorIcon="lastTransaction?.status ? 'bg-primary-100' : 'bg-muted'"
+                      :nameIcon="
+                        transactionIcon[lastTransaction?.status] || 'bi:emoji-neutral-fill'
+                      "
+                      :classIcon="
+                        `${transactionIconColor[lastTransaction?.status]} size-7 sm:size-6` ||
+                        'text-gray-400'
+                      "
+                      title="وضعیت فعلی"
                     >
-                      <div class="bg-muted rounded-full size-12 flex justify-center items-center">
-                        <UIcon
-                          :name="
-                            transactionIcon[lastTransaction?.status] || 'bi:emoji-neutral-fill'
-                          "
-                          class="size-7"
-                          :class="transactionIconColor[lastTransaction?.status] || 'text-gray-400'"
-                        />
-                      </div>
-                      <span class="text-xl font-medium">
-                        {{
-                          lastTransaction
-                            ? transactionStatusText[lastTransaction?.status]
-                            : 'هیچ پرداختی موجود نیست'
-                        }}
-                      </span>
-                      <span class="text-sm">وضعیت فعلی</span>
-                    </div>
-                    <div
-                      class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white shadow-lg rounded-lg"
+                      {{
+                        lastTransaction
+                          ? transactionStatusText[lastTransaction?.status]
+                          : 'هیچ پرداختی موجود نیست'
+                      }}
+                    </WidgetCartsInformation>
+                    <WidgetCartsInformation
+                      baseClass="border border-black/50"
+                      bgColorIcon="bg-black/20"
+                      nameIcon="fluent:payment-32-filled"
+                      classIcon="size-7 sm:size-6 text-black"
+                      title="شهریه ماهانه (تومان)"
                     >
-                      <div class="bg-muted rounded-full size-12 flex justify-center items-center">
-                        <UIcon name="fluent:payment-32-filled" class="size-6 text-black" />
-                      </div>
-                      <span class="text-xl font-medium">
-                        {{ Number(formData.studentTransactions[0].amount).toLocaleString('fa-IR') }}
-                      </span>
-                      <span class="text-sm">شهریه ماهانه (تومان)</span>
-                    </div>
-                    <div
-                      class="flex flex-col items-center justify-evenly gap-1 w-full h-[10rem] p-3 bg-white shadow-lg rounded-lg"
+                      {{ useLocaleString(Number(formData.studentTransactions[0].amount)) }}
+                    </WidgetCartsInformation>
+                    <WidgetCartsInformation
+                      baseClass="border border-black/50"
+                      bgColorIcon="bg-yellow-100"
+                      nameIcon="material-symbols:calendar-today-rounded"
+                      classIcon="size-7 sm:size-6 text-yellow-400"
+                      title="سر رسید بعدی"
                     >
-                      <div class="bg-muted rounded-full size-12 flex justify-center items-center">
-                        <UIcon
-                          name="material-symbols:calendar-today-rounded"
-                          class="size-6 text-teal-300"
-                        />
-                      </div>
-                      <span class="text-xl font-medium">
-                        {{
-                          lastTransaction
-                            ? gregorianToJalali(lastTransaction.dueDate)
-                            : 'هیچ پرداختی موجود نیست'
-                        }}
-                      </span>
-                      <span class="text-sm">سررسید بعدی</span>
-                    </div>
+                      {{
+                        lastTransaction
+                          ? gregorianToJalali(lastTransaction.dueDate)
+                          : 'هیچ پرداختی موجود نیست'
+                      }}
+                    </WidgetCartsInformation>
                   </div>
                 </div>
                 <div class="bg-white w-full h-72 p-4 rounded-lg overflow-hidden">
                   <div
                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 overflow-auto h-full w-full"
                   >
-                    <div
-                      class="flex items-center gap-4 bg-muted p-3 rounded-xl h-fit"
+                    <WidgetCartsPayments
                       v-for="transaction in formData.studentTransactions"
                       :key="transaction.id"
-                    >
-                      <div class="flex justify-center items-center">
-                        <UIcon
-                          :name="transactionIcon[transaction?.status] || 'bi:emoji-neutral-fill'"
-                          class="size-6"
-                          :class="transactionIconColor[transaction?.status] || 'text-gray-400'"
-                        />
-                      </div>
-                      <div
-                        class="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center"
-                      >
-                        <div class="flex flex-col gap-1">
-                          <span class="font-semibold text-lg">
-                            {{ Number(transaction.amount).toLocaleString('fa-IR') }}
-                            تومان
-                          </span>
-                          <span
-                            class="font-medium text-sm flex items-center gap-1"
-                            v-if="transaction.paymentDate"
-                          >
-                            {{ gregorianToJalali(transaction.paymentDate) }}
-                          </span>
-                        </div>
-                        <UBadge
-                          :label="transactionStatusText[transaction.status]"
-                          :color="transactionIconBadge[transaction.status]"
-                        />
-                      </div>
-                    </div>
+                      :nameIcon="transactionIcon[transaction?.status] || 'bi:emoji-neutral-fill'"
+                      :classIcon="transactionIconColor[transaction?.status] || 'text-gray-400'"
+                      :title="useLocaleString(Number(transaction.amount))"
+                      :dateTime="gregorianToJalali(transaction.paymentDate)"
+                      :badgeLabel="transactionStatusText[transaction.status]"
+                      :badgeColor="transactionIconBadge[transaction.status]"
+                    />
                   </div>
                 </div>
               </div>
