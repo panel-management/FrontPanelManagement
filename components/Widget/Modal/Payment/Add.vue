@@ -1,3 +1,64 @@
+<template>
+  <UModal
+    v-model:open="localOpen"
+    title="ثبت طرح جدید"
+    description="اطلاعات طرح را تکمیل کنید"
+    :ui="{ footer: 'justify-between' }"
+  >
+    <template #body>
+      <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
+        <div class="flex flex-col gap-5 w-full">
+          <BaseFormInput
+            v-model="state.name"
+            label="نام طرح"
+            name="name"
+            type="text"
+            placeholder="مثال: شهریه ویژه یا خرید تجهیزات ورزشی"
+            required
+            class="w-full"
+          />
+          <BaseFormInput
+            v-model="state.description"
+            label="توضیحات"
+            name="description"
+            type="text"
+            placeholder="توضیح کوتاه درباره طرح"
+            required
+            class="w-full"
+          />
+          <BaseFormInput
+            v-model="displayPrice"
+            label="قیمت (تومان)"
+            name="price"
+            type="text"
+            placeholder="2,500,000"
+            required
+            class="w-full"
+          />
+          <BaseFormInput
+            v-model="state.durationInDays"
+            label="مدت زمان"
+            name="durationInDays"
+            type="text"
+            placeholder="مدت زمان باید به روز باشد"
+            required
+            class="w-full"
+          />
+          <BaseFormCheckBox
+            v-model="state.isDefault"
+            label="لطف طرح اول خود را فعال کنید"
+            name="isDefault"
+            :required="false"
+          />
+          <div class="flex justify-between gap-2 pt-4">
+            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
+            <UButton label="افزودن طرح جدید" color="primary" type="submit" />
+          </div>
+        </div>
+      </UForm>
+    </template>
+  </UModal>
+</template>
 <script setup lang="ts">
   import * as v from 'valibot'
   import type { FormSubmitEvent } from '@nuxt/ui'
@@ -80,65 +141,3 @@
     state.isDefault = ''
   }
 </script>
-
-<template>
-  <UModal
-    v-model:open="localOpen"
-    title="ثبت طرح جدید"
-    description="اطلاعات طرح را تکمیل کنید"
-    :ui="{ footer: 'justify-between' }"
-  >
-    <template #body>
-      <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
-        <div class="flex flex-col gap-5 w-full">
-          <BaseFormInput
-            v-model="state.name"
-            label="نام طرح"
-            name="name"
-            type="text"
-            placeholder="مثال: شهریه ویژه یا خرید تجهیزات ورزشی"
-            required
-            class="w-full"
-          />
-          <BaseFormInput
-            v-model="state.description"
-            label="توضیحات"
-            name="description"
-            type="text"
-            placeholder="توضیح کوتاه درباره طرح"
-            required
-            class="w-full"
-          />
-          <BaseFormInput
-            v-model="displayPrice"
-            label="قیمت (تومان)"
-            name="price"
-            type="text"
-            placeholder="2,500,000"
-            required
-            class="w-full"
-          />
-          <BaseFormInput
-            v-model="state.durationInDays"
-            label="مدت زمان"
-            name="durationInDays"
-            type="text"
-            placeholder="مدت زمان باید به روز باشد"
-            required
-            class="w-full"
-          />
-          <BaseFormCheckBox
-            v-model="state.isDefault"
-            label="لطف طرح اول خود را فعال کنید"
-            name="isDefault"
-            :required="false"
-          />
-          <div class="flex justify-between gap-2 pt-4">
-            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
-            <UButton label="افزودن طرح جدید" color="primary" type="submit" />
-          </div>
-        </div>
-      </UForm>
-    </template>
-  </UModal>
-</template>

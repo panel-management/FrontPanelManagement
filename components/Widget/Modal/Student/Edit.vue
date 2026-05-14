@@ -1,264 +1,3 @@
-<script setup lang="ts">
-  import * as v from 'valibot'
-  import type { FormSubmitEvent } from '@nuxt/ui'
-  import type { TabsItem } from '@nuxt/ui'
-  import { getStudentByIdService, updateStudentService } from '~/services/student.service'
-  import type { StudentListData } from '~/models/users/student/StudentListData'
-  import type { UpdateStudent } from '~/models/users/student/UpdateStudent'
-  import type { TransactionStatus } from '~/models/transactions/TransactionStatus'
-  import type { StudentPlanData } from '~/models/plan/studentPlan/StudentPlanData'
-  import { getPlanMasterByStudentService } from '~/services/masterPlan.service'
-
-  const emit = defineEmits(['update:open', 'updated'])
-  const modalStore = useModalStore()
-  const toastStore = useToastStore()
-  const gettingVariousDataStore = useGettingVariousDataStore()
-  const { gregorianToJalali, gregorianToDate } = useDateConverter()
-  const formData = ref<StudentListData | null>(null)
-  const planData: Ref<StudentPlanData[]> = ref([])
-  const itemsSelectBelt = ref<{ label: string; value: string }[]>([])
-  const itemsSelectPlan = ref<{ label: string; value: string }[]>([])
-  const isShow: Ref<boolean> = ref(true)
-  const isLoading: Ref<boolean> = ref(false)
-
-  const hasSystemBelt = computed(() => gettingVariousDataStore.hasBeltSystem)
-  const userId = computed(() => modalStore.modals.studentEdit)
-
-  const props = defineProps({
-    open: {
-      type: [Boolean, Object, Number, String, null],
-      default: null,
-    },
-  })
-
-  const localOpen = computed({
-    get: () => !!props.open,
-    set: (val: boolean) => {
-      if (!val) emit('update:open', null)
-    },
-  })
-
-  const items = computed(() => {
-    return [
-      {
-        label: 'ویرایش اطلاعات',
-        slot: 'editData' as const,
-      },
-      ...(hasSystemBelt.value
-        ? [
-            {
-              label: 'تاریخچه کمربند',
-              slot: 'dateBelt' as const,
-            },
-          ]
-        : []),
-      {
-        label: 'وضعیت مالی',
-        slot: 'paymentStatus' as const,
-      },
-    ] satisfies TabsItem[]
-  })
-
-  const schema = v.object({
-    fullName: v.pipe(v.string(), v.trim(), v.nonEmpty('نام و نام خانوادگی هنرجو الزامی است')),
-    nationalCode: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('کد ملی الزامی است'),
-      v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
-      v.minLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
-      v.regex(/^\d+$/, 'کد ملی فقط می‌تواند شامل اعداد باشد')
-    ),
-    phoneNumber: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('شماره تلفن الزامی است'),
-      v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
-      v.maxLength(11, 'شماره تلفن نباید بیشتر از ۱۱ رقم باشد'),
-      v.regex(/^09\d{9,10}$/, 'شماره تلفن باید با 09 شروع شود')
-    ),
-    phoneNumberEmergency: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('شماره تلفن اضطراری الزامی است'),
-      v.minLength(11, 'شماره تلفن اضطراری باید حداقل ۱۱ رقم باشد'),
-      v.maxLength(11, 'شماره تلفن اضطراری نباید بیشتر از ۱۱ رقم باشد'),
-      v.regex(/^09\d{9,10}$/, 'شماره تلفن اضطراری باید با 09 شروع شود')
-    ),
-    address: v.pipe(v.string(), v.trim(), v.nonEmpty('ادرس محل زندگی هنرجو الزامی است')),
-    age: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('سن هنرجو الزامی است'),
-      v.minLength(1, 'سن نمی‌تواند خالی باشد'),
-      v.maxLength(2, 'سن باید حداکثر ۲ رقم باشد'),
-      v.regex(/^\d+$/, 'سن باید عدد باشد')
-    ),
-    birthDate: v.pipe(v.string(), v.trim(), v.nonEmpty('تاریخ تولد هنرجو الزامی است')),
-    beltIds: v.pipe(v.string(), v.trim()),
-    planId: v.pipe(v.string(), v.trim()),
-    underSupervisionDoctor: v.boolean(),
-    diseaseRecords: v.boolean(),
-  })
-
-  type Schema = v.InferOutput<typeof schema>
-
-  const state = reactive<UpdateStudent>({
-    fullName: '',
-    nationalCode: '',
-    phoneNumber: '',
-    phoneNumberEmergency: '',
-    address: '',
-    diseaseRecords: '',
-    underSupervisionDoctor: '',
-    birthDate: '',
-    age: '',
-    beltIds: '',
-    planId: '',
-  })
-
-  watch(formData, (data) => {
-    if (!data) {
-      state.fullName = ''
-      state.nationalCode = ''
-      state.phoneNumber = ''
-      state.phoneNumberEmergency = ''
-      state.address = ''
-      state.diseaseRecords = ''
-      state.underSupervisionDoctor = ''
-      state.birthDate = ''
-      state.age = ''
-      state.beltIds = ''
-      state.planId = ''
-      return
-    }
-    state.fullName = data.fullName ?? ''
-    state.nationalCode = data.nationalCode ?? ''
-    state.phoneNumber = data.phoneNumber ?? ''
-    state.phoneNumberEmergency = data.phoneNumberEmergency ?? ''
-    state.address = data.address ?? ''
-    state.diseaseRecords = data.diseaseRecords ?? ''
-    state.underSupervisionDoctor = data.underSupervisionDoctor ?? ''
-    state.birthDate = gregorianToDate(data.birthDate) ?? ''
-    state.age = data.age?.toString() ?? ''
-    state.beltIds = data.currentBelt?.id.toString() ?? ''
-    state.planId = data.assignedPlan?.id.toString() ?? ''
-  })
-
-  const transactionStatusText: Record<TransactionStatus, string> = {
-    PAID: 'پرداخت شده',
-    PENDING: 'در انتظار پرداخت',
-    UNPAID: 'پرداخت نشده',
-    UPCOMING: 'پرداخت در اینده',
-  }
-
-  const lastTransaction = computed(() => {
-    const arr = formData.value?.studentTransactions
-    return Array.isArray(arr) && arr.length > 0 ? arr[0] : null
-  })
-
-  const transactionIcon = {
-    PAID: 'clarity:success-standard-line',
-    PENDING: 'solar:shield-warning-bold',
-    UNPAID: 'codicon:error',
-    UPCOMING: 'bi:emoji-neutral-fill',
-  }
-
-  const transactionIconColor = {
-    PAID: 'text-success',
-    PENDING: 'text-warning',
-    UNPAID: 'text-error',
-    UPCOMING: 'text-gray-500',
-  }
-
-  const transactionIconBadge = {
-    PAID: 'primary',
-    PENDING: 'warning',
-    UNPAID: 'error',
-    UPCOMING: 'neutral',
-  }
-
-  async function loadStudent() {
-    try {
-      const result = await getStudentByIdService(userId.value)
-      if (result.statusCode === 200) {
-        formData.value = result.data as StudentListData
-      }
-    } catch (error: any) {
-      console.log(error.message || error)
-      formData.value = null
-    }
-  }
-
-  async function fetchPlanStudent() {
-    try {
-      const result = await getPlanMasterByStudentService()
-      if (result.statusCode === 200) {
-        planData.value = Array.isArray(result.data) ? result.data : []
-        itemsSelectPlan.value = planData.value.map((item) => ({
-          label: item.name,
-          value: String(item.id),
-        }))
-      }
-    } catch (error: any) {
-      console.log(error.message || error)
-    }
-  }
-
-  async function onSubmit(event: FormSubmitEvent<Schema>) {
-    isLoading.value = true
-    try {
-      const payload: UpdateStudent = {
-        ...event.data,
-        age: Number(event.data.age),
-        beltIds: Number(event.data.beltIds),
-        planId: Number(event.data.planId),
-      }
-      const result = await updateStudentService(userId.value, payload)
-      if (result.statusCode === 200) {
-        toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-        isShow.value = true
-        localOpen.value = false
-        emit('updated', result.data)
-      }
-    } catch (error: any) {
-      console.log(error.message || error)
-    } finally {
-      isLoading.value = false
-    }
-  }
-
-  function toggleInput() {
-    isShow.value = !isShow.value
-  }
-
-  watch(
-    () => gettingVariousDataStore.beltData,
-    (value) => {
-      if (!hasSystemBelt.value) return
-      itemsSelectBelt.value = value.map((item) => ({
-        label: item.color,
-        value: String(item.id),
-      }))
-    },
-    { immediate: true }
-  )
-
-  watch(userId, (id) => {
-    if (id) {
-      loadStudent()
-    } else {
-      formData.value = null
-    }
-  })
-
-  onMounted(() => {
-    fetchPlanStudent()
-    if (userId.value) {
-      nextTick(loadStudent)
-    }
-  })
-</script>
 <template>
   <UModal
     fullscreen
@@ -267,116 +6,50 @@
     description="اطلاعات کامل و تاریخچه هنرجو"
   >
     <template #body>
-      <div v-if="formData" class="flex flex-col gap-5 md:gap-10 h-full w-full">
-        <div class="bg-muted p-4 rounded-xl w-full flex flex-col lg:items-center gap-5">
-          <div class="flex items-center justify-between w-full">
-            <div class="flex gap-3">
-              <div
-                class="bg-black rounded-full size-16 flex justify-center items-center text-white"
-              >
-                {{ formData.fullName.slice(0, 1) }}
-              </div>
-              <div class="flex flex-col gap-2">
-                <span class="font-medium text-xl">{{ formData.fullName }}</span>
-                <div class="flex gap-3">
-                  <UBadge
-                    v-if="hasSystemBelt"
-                    color="info"
-                    variant="solid"
-                    :label="formData.currentBelt.color"
-                    class="font-medium"
-                  />
-                  <UBadge
-                    color="neutral"
-                    variant="soft"
-                    :label="formData.sport.name"
-                    class="font-semibold w-fit"
-                  />
-                  <UBadge
-                    :color="formData.isActive ? 'primary' : 'error'"
-                    variant="soft"
-                    :label="formData.isActive ? 'فعال' : 'غیر فعال'"
-                    class="font-semibold"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="flex gap-3 max-md:hidden">
-              <UButton
-                v-if="isShow"
-                @click="toggleInput"
-                color="tertiary"
-                variant="outline"
-                size="lg"
-                label="ویرایش"
-                trailing-icon="material-symbols:edit-square-outline-rounded"
-              />
-              <UButton
-                v-if="!isShow"
-                @click="toggleInput"
-                color="neutral"
-                variant="outline"
-                size="lg"
-                label="انصراف"
-                trailing-icon="material-symbols:close-rounded"
-              />
-            </div>
+      <div v-if="formData" class="flex flex-col gap-5 h-full w-full">
+        <WidgetProfilesDetail
+          customStyle="bg-muted"
+          v-model:toggle="isShow"
+          :fullName="formData.fullName"
+          :sportName="formData.sport.name"
+          :hasSystemBelt="hasSystemBelt"
+          :currentBeltLabel="formData.currentBelt?.color"
+          :isActiveColor="formData.isActive"
+          :isActiveLabel="formData.isActive"
+        >
+          <div class="flex items-center gap-1">
+            <UIcon name="iconoir:barcode" class="size-6 text-black" />
+            <span class="font-medium text-base mt-1">کدملی:</span>
+            <span class="font-medium text-base mt-1">{{ formData.nationalCode }}</span>
           </div>
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 w-full">
-            <div class="flex items-center gap-1">
-              <UIcon name="iconoir:barcode" class="size-6 text-black" />
-              <span class="font-medium text-base mt-1">کدملی:</span>
-              <span class="font-medium text-base mt-1">{{ formData.nationalCode }}</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <UIcon name="ic:baseline-call" class="size-6 text-black" />
-              <span class="font-medium text-base mt-1">شماره تلفن:</span>
-              <span class="font-medium text-base mt-1">{{ formData.phoneNumber }}</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <UIcon name="ic:baseline-call" class="size-6 text-black" />
-              <span class="font-medium text-base mt-1">شماره تلفن اضطرای:</span>
-              <span class="font-medium text-base mt-1">{{ formData.phoneNumberEmergency }}</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
-              <span class="font-medium text-base mt-1">عضویت:</span>
-              <span class="font-medium text-base mt-1">{{ useJDate(formData.createdAt) }}</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
-              <span class="font-medium text-base mt-1">تاریخ تولد:</span>
-              <span class="font-medium text-base mt-1">
-                {{ gregorianToJalali(formData.birthDate) }}
-              </span>
-            </div>
-            <div class="flex items-center gap-1">
-              <UIcon name="ic:round-person" class="size-6 text-black" />
-              <span class="font-medium text-base mt-1">سن:</span>
-              <span class="font-medium text-base mt-1">{{ formData.age }}</span>
-            </div>
+          <div class="flex items-center gap-1">
+            <UIcon name="ic:baseline-call" class="size-6 text-black" />
+            <span class="font-medium text-base mt-1">شماره تلفن:</span>
+            <span class="font-medium text-base mt-1">{{ formData.phoneNumber }}</span>
           </div>
-          <div class="flex gap-3 min-md:hidden">
-            <UButton
-              v-if="isShow"
-              @click="toggleInput"
-              color="tertiary"
-              variant="outline"
-              size="lg"
-              label="ویرایش"
-              trailing-icon="material-symbols:edit-square-outline-rounded"
-            />
-            <UButton
-              v-if="!isShow"
-              @click="toggleInput"
-              color="neutral"
-              variant="outline"
-              size="lg"
-              label="انصراف"
-              trailing-icon="material-symbols:close-rounded"
-            />
+          <div class="flex items-center gap-1">
+            <UIcon name="ic:baseline-call" class="size-6 text-black" />
+            <span class="font-medium text-base mt-1">شماره تلفن اضطرای:</span>
+            <span class="font-medium text-base mt-1">{{ formData.phoneNumberEmergency }}</span>
           </div>
-        </div>
+          <div class="flex items-center gap-1">
+            <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
+            <span class="font-medium text-base mt-1">عضویت:</span>
+            <span class="font-medium text-base mt-1">{{ useJDate(formData.createdAt) }}</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
+            <span class="font-medium text-base mt-1">تاریخ تولد:</span>
+            <span class="font-medium text-base mt-1">
+              {{ gregorianToJalali(formData.birthDate) }}
+            </span>
+          </div>
+          <div class="flex items-center gap-1">
+            <UIcon name="ic:round-person" class="size-6 text-black" />
+            <span class="font-medium text-base mt-1">سن:</span>
+            <span class="font-medium text-base mt-1">{{ formData.age }}</span>
+          </div>
+        </WidgetProfilesDetail>
         <div class="bg-muted p-4 rounded-xl w-full flex items-center gap-5">
           <BaseTabs :items="items" color="tertiary">
             <template #editData>
@@ -616,3 +289,260 @@
     </template>
   </UModal>
 </template>
+<script setup lang="ts">
+  import * as v from 'valibot'
+  import type { FormSubmitEvent } from '@nuxt/ui'
+  import type { TabsItem } from '@nuxt/ui'
+  import { getStudentByIdService, updateStudentService } from '~/services/student.service'
+  import type { StudentListData } from '~/models/users/student/StudentListData'
+  import type { UpdateStudent } from '~/models/users/student/UpdateStudent'
+  import type { TransactionStatus } from '~/models/transactions/TransactionStatus'
+  import type { StudentPlanData } from '~/models/plan/studentPlan/StudentPlanData'
+  import { getPlanMasterByStudentService } from '~/services/masterPlan.service'
+
+  const emit = defineEmits(['update:open', 'updated'])
+  const modalStore = useModalStore()
+  const toastStore = useToastStore()
+  const gettingVariousDataStore = useGettingVariousDataStore()
+  const { gregorianToJalali, gregorianToDate } = useDateConverter()
+  const formData = ref<StudentListData | null>(null)
+  const planData: Ref<StudentPlanData[]> = ref([])
+  const itemsSelectBelt = ref<{ label: string; value: string }[]>([])
+  const itemsSelectPlan = ref<{ label: string; value: string }[]>([])
+  const isShow: Ref<boolean> = ref(true)
+  const isLoading: Ref<boolean> = ref(false)
+
+  const hasSystemBelt = computed(() => gettingVariousDataStore.hasBeltSystem)
+  const userId = computed(() => modalStore.modals.studentEdit)
+
+  const props = defineProps({
+    open: {
+      type: [Boolean, Object, Number, String, null],
+      default: null,
+    },
+  })
+
+  const localOpen = computed({
+    get: () => !!props.open,
+    set: (val: boolean) => {
+      if (!val) emit('update:open', null)
+    },
+  })
+
+  const items = computed(() => {
+    return [
+      {
+        label: 'ویرایش اطلاعات',
+        slot: 'editData' as const,
+      },
+      ...(hasSystemBelt.value
+        ? [
+            {
+              label: 'تاریخچه کمربند',
+              slot: 'dateBelt' as const,
+            },
+          ]
+        : []),
+      {
+        label: 'وضعیت مالی',
+        slot: 'paymentStatus' as const,
+      },
+    ] satisfies TabsItem[]
+  })
+
+  const schema = v.object({
+    fullName: v.pipe(v.string(), v.trim(), v.nonEmpty('نام و نام خانوادگی هنرجو الزامی است')),
+    nationalCode: v.pipe(
+      v.string(),
+      v.trim(),
+      v.nonEmpty('کد ملی الزامی است'),
+      v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
+      v.minLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
+      v.regex(/^\d+$/, 'کد ملی فقط می‌تواند شامل اعداد باشد')
+    ),
+    phoneNumber: v.pipe(
+      v.string(),
+      v.trim(),
+      v.nonEmpty('شماره تلفن الزامی است'),
+      v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
+      v.maxLength(11, 'شماره تلفن نباید بیشتر از ۱۱ رقم باشد'),
+      v.regex(/^09\d{9,10}$/, 'شماره تلفن باید با 09 شروع شود')
+    ),
+    phoneNumberEmergency: v.pipe(
+      v.string(),
+      v.trim(),
+      v.nonEmpty('شماره تلفن اضطراری الزامی است'),
+      v.minLength(11, 'شماره تلفن اضطراری باید حداقل ۱۱ رقم باشد'),
+      v.maxLength(11, 'شماره تلفن اضطراری نباید بیشتر از ۱۱ رقم باشد'),
+      v.regex(/^09\d{9,10}$/, 'شماره تلفن اضطراری باید با 09 شروع شود')
+    ),
+    address: v.pipe(v.string(), v.trim(), v.nonEmpty('ادرس محل زندگی هنرجو الزامی است')),
+    age: v.pipe(
+      v.string(),
+      v.trim(),
+      v.nonEmpty('سن هنرجو الزامی است'),
+      v.minLength(1, 'سن نمی‌تواند خالی باشد'),
+      v.maxLength(2, 'سن باید حداکثر ۲ رقم باشد'),
+      v.regex(/^\d+$/, 'سن باید عدد باشد')
+    ),
+    birthDate: v.pipe(v.string(), v.trim(), v.nonEmpty('تاریخ تولد هنرجو الزامی است')),
+    beltIds: v.pipe(v.string(), v.trim()),
+    planId: v.pipe(v.string(), v.trim()),
+    underSupervisionDoctor: v.boolean(),
+    diseaseRecords: v.boolean(),
+  })
+
+  type Schema = v.InferOutput<typeof schema>
+
+  const state = reactive<UpdateStudent>({
+    fullName: '',
+    nationalCode: '',
+    phoneNumber: '',
+    phoneNumberEmergency: '',
+    address: '',
+    diseaseRecords: '',
+    underSupervisionDoctor: '',
+    birthDate: '',
+    age: '',
+    beltIds: '',
+    planId: '',
+  })
+
+  watch(formData, (data) => {
+    if (!data) {
+      state.fullName = ''
+      state.nationalCode = ''
+      state.phoneNumber = ''
+      state.phoneNumberEmergency = ''
+      state.address = ''
+      state.diseaseRecords = ''
+      state.underSupervisionDoctor = ''
+      state.birthDate = ''
+      state.age = ''
+      state.beltIds = ''
+      state.planId = ''
+      return
+    }
+    state.fullName = data.fullName ?? ''
+    state.nationalCode = data.nationalCode ?? ''
+    state.phoneNumber = data.phoneNumber ?? ''
+    state.phoneNumberEmergency = data.phoneNumberEmergency ?? ''
+    state.address = data.address ?? ''
+    state.diseaseRecords = data.diseaseRecords ?? ''
+    state.underSupervisionDoctor = data.underSupervisionDoctor ?? ''
+    state.birthDate = gregorianToDate(data.birthDate) ?? ''
+    state.age = data.age?.toString() ?? ''
+    state.beltIds = data.currentBelt?.id.toString() ?? ''
+    state.planId = data.assignedPlan?.id.toString() ?? ''
+  })
+
+  const transactionStatusText: Record<TransactionStatus, string> = {
+    PAID: 'پرداخت شده',
+    PENDING: 'در انتظار پرداخت',
+    UNPAID: 'پرداخت نشده',
+    UPCOMING: 'پرداخت در اینده',
+  }
+
+  const lastTransaction = computed(() => {
+    const arr = formData.value?.studentTransactions
+    return Array.isArray(arr) && arr.length > 0 ? arr[0] : null
+  })
+
+  const transactionIcon = {
+    PAID: 'clarity:success-standard-line',
+    PENDING: 'solar:shield-warning-bold',
+    UNPAID: 'codicon:error',
+    UPCOMING: 'bi:emoji-neutral-fill',
+  }
+
+  const transactionIconColor = {
+    PAID: 'text-success',
+    PENDING: 'text-warning',
+    UNPAID: 'text-error',
+    UPCOMING: 'text-gray-500',
+  }
+
+  const transactionIconBadge = {
+    PAID: 'primary',
+    PENDING: 'warning',
+    UNPAID: 'error',
+    UPCOMING: 'neutral',
+  }
+
+  async function loadStudent() {
+    try {
+      const result = await getStudentByIdService(userId.value)
+      if (result.statusCode === 200) {
+        formData.value = result.data as StudentListData
+      }
+    } catch (error: any) {
+      console.log(error.message || error)
+      formData.value = null
+    }
+  }
+
+  async function fetchPlanStudent() {
+    try {
+      const result = await getPlanMasterByStudentService()
+      if (result.statusCode === 200) {
+        planData.value = Array.isArray(result.data) ? result.data : []
+        itemsSelectPlan.value = planData.value.map((item) => ({
+          label: item.name,
+          value: String(item.id),
+        }))
+      }
+    } catch (error: any) {
+      console.log(error.message || error)
+    }
+  }
+
+  async function onSubmit(event: FormSubmitEvent<Schema>) {
+    isLoading.value = true
+    try {
+      const payload: UpdateStudent = {
+        ...event.data,
+        age: Number(event.data.age),
+        beltIds: Number(event.data.beltIds),
+        planId: Number(event.data.planId),
+      }
+      const result = await updateStudentService(userId.value, payload)
+      if (result.statusCode === 200) {
+        toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
+        isShow.value = true
+        localOpen.value = false
+        emit('updated', result.data)
+      }
+    } catch (error: any) {
+      console.log(error.message || error)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  watch(
+    () => gettingVariousDataStore.beltData,
+    (value) => {
+      if (!hasSystemBelt.value) return
+      itemsSelectBelt.value = value.map((item) => ({
+        label: item.color,
+        value: String(item.id),
+      }))
+    },
+    { immediate: true }
+  )
+
+  watch(userId, (id) => {
+    if (id) {
+      loadStudent()
+    } else {
+      formData.value = null
+    }
+  })
+
+  onMounted(() => {
+    fetchPlanStudent()
+    if (userId.value) {
+      nextTick(loadStudent)
+    }
+  })
+</script>

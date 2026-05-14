@@ -12,7 +12,7 @@
       <div
         class="flex flex-col items-center justify-center gap-3 w-full md:w-2/3 lg:w-1/2 xl:w-1/3"
       >
-        <ULink raw to="/auth" class="btn btn-outline">ورود یا ثبت نام</ULink>
+        <NuxtLink to="/auth" class="btn btn-outline">ورود یا ثبت نام</NuxtLink>
       </div>
     </div>
   </UApp>

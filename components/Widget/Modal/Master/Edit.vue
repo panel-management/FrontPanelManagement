@@ -1,202 +1,3 @@
-<script setup lang="ts">
-  import * as v from 'valibot'
-  import type { FormSubmitEvent } from '@nuxt/ui'
-  import type { TabsItem } from '@nuxt/ui'
-  import {
-    getMasterByIdForAdminService,
-    updateProfileMasterJustAdminService,
-  } from '~/services/master.service'
-  import type { MasterListData } from '~/models/users/master/MasterListData'
-  import type { UpdateMaster } from '~/models/users/master/UpdateMaster'
-  import { Role } from '~/models/Role'
-
-  const emit = defineEmits(['update:open', 'updated'])
-  const modalStore = useModalStore()
-  const toastStore = useToastStore()
-  const gettingVariousDataStore = useGettingVariousDataStore()
-  const { gregorianToDate, gregorianToJalali } = useDateConverter()
-  const formData = ref<MasterListData | null>(null)
-  const itemsSelect = ref<{ label: string; value: string }[]>([])
-  const isShow: Ref<boolean> = ref(true)
-  const isLoading: Ref<boolean> = ref(false)
-
-  const userId = computed(() => modalStore.modals.masterEdit)
-
-  const props = defineProps({
-    open: {
-      type: [Boolean, Object, Number, String, null],
-      default: null,
-    },
-  })
-
-  const localOpen = computed({
-    get: () => !!props.open,
-    set: (val: boolean) => {
-      if (!val) emit('update:open', null)
-    },
-  })
-
-  const items = [
-    {
-      label: 'ویرایش اطلاعات',
-      slot: 'editData' as const,
-    },
-    {
-      label: 'کاربران',
-      slot: 'users' as const,
-    },
-    {
-      label: 'وضعیت مالی',
-      slot: 'paymentStatus' as const,
-    },
-  ] satisfies TabsItem[]
-
-  const schema = v.object({
-    fullName: v.pipe(v.string(), v.trim(), v.nonEmpty('نام و نام خانوادگی الزامی است')),
-    nationalCode: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('کد ملی الزامی است.'),
-      v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
-      v.minLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
-      v.regex(/^\d+$/, 'کد ملی فقط می‌تواند شامل اعداد باشد')
-    ),
-    phoneNumber: v.pipe(
-      v.string(),
-      v.trim(),
-      v.nonEmpty('شماره تلفن الزامی است'),
-      v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
-      v.maxLength(11, 'شماره تلفن نباید بیشتر از ۱۱ رقم باشد'),
-      v.regex(/^09\d{9,10}$/, 'شماره تلفن باید با 09 شروع شود')
-    ),
-    birthDate: v.pipe(v.string(), v.trim()),
-    age: v.pipe(
-      v.string(),
-      v.trim(),
-      v.minLength(1, 'سن نمی‌تواند خالی باشد'),
-      v.maxLength(2, 'سن باید حداکثر ۲ رقم باشد'),
-      v.regex(/^\d+$/, 'سن باید عدد باشد')
-    ),
-    imageFile: v.optional(
-      v.pipe(
-        v.file(),
-        v.mimeType(
-          ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'],
-          'لطف عکس را با این فرمت‌ها اپلود کنید.'
-        ),
-        v.maxSize(1024 * 1024, 'عکس باید زیر 1 مگابایت باشد.')
-      )
-    ),
-    history: v.pipe(v.string(), v.trim()),
-    certificates: v.pipe(v.string(), v.trim()),
-    sportId: v.pipe(v.string(), v.trim()),
-  })
-
-  type Schema = v.InferOutput<typeof schema>
-
-  const state = reactive<UpdateMaster>({
-    fullName: '',
-    phoneNumber: '',
-    nationalCode: '',
-    age: '',
-    birthDate: '',
-    history: '',
-    certificates: '',
-    sportId: '',
-    imageFile: undefined,
-    imageUrl: undefined,
-  })
-
-  watch(formData, (data) => {
-    if (!data) {
-      state.fullName = ''
-      state.phoneNumber = ''
-      state.nationalCode = ''
-      state.age = ''
-      state.birthDate = ''
-      state.history = ''
-      state.sportId = ''
-      state.certificates = ''
-      state.imageFile = undefined
-      state.imageUrl = undefined
-      return
-    }
-    state.fullName = data.fullName ?? ''
-    state.phoneNumber = data.phoneNumber ?? ''
-    state.nationalCode = data.nationalCode ?? ''
-    state.age = data.age?.toString() ?? ''
-    state.birthDate = data.birthDate ? gregorianToDate(data.birthDate) : ''
-    state.history = data.history ?? ''
-    state.certificates = data.certificates ?? ''
-    state.sportId = data.sport.id.toString() ?? ''
-    state.imageUrl = data.image ?? ''
-  })
-
-  const lastPayment = computed(() => {
-    const arr = formData.value?.subscriptionPayments
-    return Array.isArray(arr) && arr.length > 0 ? arr[0] : null
-  })
-
-  async function loadMaster() {
-    try {
-      const result = await getMasterByIdForAdminService(userId.value)
-      if (result.statusCode === 200) {
-        formData.value = result.data as MasterListData
-      }
-    } catch (error: any) {
-      console.log(error.message || error)
-      formData.value = null
-    }
-  }
-
-  async function onSubmit(event: FormSubmitEvent<Schema>) {
-    isLoading.value = true
-    try {
-      const result = await updateProfileMasterJustAdminService(userId.value, event.data)
-      if (result.statusCode === 200) {
-        toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
-        isShow.value = true
-        localOpen.value = false
-        emit('updated', result.data)
-      }
-    } catch (error: any) {
-      console.log(error.message || error)
-    } finally {
-      isLoading.value = false
-    }
-  }
-
-  function toggleInput() {
-    isShow.value = !isShow.value
-  }
-
-  watch(
-    gettingVariousDataStore.sportData,
-    (value) => {
-      itemsSelect.value = value.map((item) => ({
-        label: item.name,
-        value: String(item.id),
-      }))
-    },
-    { immediate: true }
-  )
-
-  watch(userId, (id) => {
-    if (id) {
-      loadMaster()
-    } else {
-      formData.value = null
-    }
-  })
-
-  onMounted(() => {
-    if (userId.value) {
-      nextTick(loadMaster)
-      gettingVariousDataStore.fetchSports
-    }
-  })
-</script>
-
 <template>
   <UModal
     fullscreen
@@ -205,134 +6,62 @@
     description="اطلاعات کامل و تاریخچه استاد"
   >
     <template #body>
-      <div v-if="formData" class="flex flex-col gap-5 md:gap-10 h-full w-full">
-        <div class="bg-muted p-4 rounded-xl w-full flex flex-col lg:items-center gap-5">
-          <div class="flex items-center justify-between w-full">
-            <div class="flex gap-3">
-              <div
-                class="bg-black rounded-full size-16 flex justify-center items-center text-white"
-              >
-                {{ formData.fullName.slice(0, 1) }}
-              </div>
-              <div class="flex flex-col gap-2">
-                <span class="font-medium text-xl">{{ formData.fullName }}</span>
-                <div class="flex gap-2 sm:gap-3">
-                  <div class="flex max-sm:flex-col gap-2 sm:gap-3">
-                    <UBadge
-                      v-if="formData.type === Role.Master"
-                      color="secondary"
-                      variant="solid"
-                      label="استاد"
-                      class="font-medium"
-                    />
-                    <UBadge
-                      color="neutral"
-                      variant="soft"
-                      :label="formData.sport.name"
-                      class="font-semibold w-fit"
-                    />
-                  </div>
-                  <div class="flex max-sm:flex-col gap-2 sm:gap-3">
-                    <UBadge
-                      :color="formData.isActive ? 'primary' : 'error'"
-                      variant="soft"
-                      :label="formData.isActive ? 'فعال' : 'غیر فعال'"
-                      class="font-semibold"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="flex gap-3 max-md:hidden">
-              <UButton
-                v-if="isShow"
-                @click="toggleInput"
-                color="tertiary"
-                variant="outline"
-                size="lg"
-                label="ویرایش"
-                trailing-icon="material-symbols:edit-square-outline-rounded"
-              />
-              <UButton
-                v-if="!isShow"
-                @click="toggleInput"
-                color="neutral"
-                variant="outline"
-                size="lg"
-                label="انصراف"
-                trailing-icon="material-symbols:close-rounded"
-              />
-            </div>
+      <div v-if="formData" class="flex flex-col gap-5 h-full w-full">
+        <WidgetProfilesDetail
+          customStyle="bg-muted"
+          v-model:toggle="isShow"
+          :fullName="formData.fullName"
+          :sportName="formData.sport.name"
+          :isActiveColor="formData.isActive"
+          :isActiveLabel="formData.isActive"
+        >
+          <div class="flex items-center gap-1">
+            <UIcon name="ic:baseline-call" class="size-6 text-black" />
+            <span class="font-medium text-base mt-1">شماره تلفن:</span>
+            <span class="font-medium text-base mt-1">{{ formData.phoneNumber }}</span>
           </div>
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 w-full">
-            <div class="flex items-center gap-1">
-              <UIcon name="ic:baseline-call" class="size-6 text-black" />
-              <span class="font-medium text-base mt-1">شماره تلفن:</span>
-              <span class="font-medium text-base mt-1">{{ formData.phoneNumber }}</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <UIcon name="iconoir:barcode" class="size-6 text-black" />
-              <span class="font-medium text-base mt-1">کدملی:</span>
-              <span class="font-medium text-base mt-1">{{ formData.nationalCode }}</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
-              <span class="font-medium text-base mt-1">عضویت:</span>
-              <span class="font-medium text-base mt-1">{{ useJDate(formData.createdAt) }}</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <UIcon name="hugeicons:students" class="size-6 text-black" />
-              <span class="font-medium text-base mt-1">تعداد هنرجو و مربی:</span>
-              <span class="font-medium text-base mt-1">{{ formData.students.length }}</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <UIcon name="ion:university" class="size-6 text-black" />
-              <span class="font-medium text-base mt-1">سابقه:</span>
-              <span class="font-medium text-base mt-1">
-                {{ formData.history ? `${formData.history} سال ` : 'وجود ندارد' }}
-              </span>
-            </div>
-            <div class="flex items-center gap-1">
-              <UIcon name="solar:medal-ribbons-star-bold" class="size-6 text-black" />
-              <span class="font-medium text-base mt-1">تخصص:</span>
-              <span class="font-medium text-base mt-1">{{ formData.sport.name }}</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <UIcon name="bxs:certification" class="size-6 text-black" />
-              <span class="font-medium text-base mt-1">مدرک و گواهینامه ها:</span>
-              <span class="font-medium text-base mt-1">
-                {{ formData.certificates || 'وجود ندارد' }}
-              </span>
-            </div>
-            <div class="flex items-center gap-1">
-              <UIcon name="solar:planet-2-bold" class="size-6 text-black" />
-              <span class="font-medium text-base mt-1">پلن انتخاب شده:</span>
-              <span class="font-medium text-base mt-1">
-                {{ formData.masterPlan ? formData.masterPlan.name : 'پلن وجود ندارد' }}
-              </span>
-            </div>
+          <div class="flex items-center gap-1">
+            <UIcon name="iconoir:barcode" class="size-6 text-black" />
+            <span class="font-medium text-base mt-1">کدملی:</span>
+            <span class="font-medium text-base mt-1">{{ formData.nationalCode }}</span>
           </div>
-          <div class="flex gap-3 min-md:hidden">
-            <UButton
-              v-if="isShow"
-              @click="toggleInput"
-              color="tertiary"
-              variant="outline"
-              size="lg"
-              label="ویرایش"
-              trailing-icon="material-symbols:edit-square-outline-rounded"
-            />
-            <UButton
-              v-if="!isShow"
-              @click="toggleInput"
-              color="neutral"
-              variant="outline"
-              size="lg"
-              label="انصراف"
-              trailing-icon="material-symbols:close-rounded"
-            />
+          <div class="flex items-center gap-1">
+            <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
+            <span class="font-medium text-base mt-1">عضویت:</span>
+            <span class="font-medium text-base mt-1">{{ useJDate(formData.createdAt) }}</span>
           </div>
-        </div>
+          <div class="flex items-center gap-1">
+            <UIcon name="hugeicons:students" class="size-6 text-black" />
+            <span class="font-medium text-base mt-1">تعداد هنرجو و مربی:</span>
+            <span class="font-medium text-base mt-1">{{ formData.students.length }}</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <UIcon name="ion:university" class="size-6 text-black" />
+            <span class="font-medium text-base mt-1">سابقه:</span>
+            <span class="font-medium text-base mt-1">
+              {{ formData.history ? `${formData.history} سال ` : 'وجود ندارد' }}
+            </span>
+          </div>
+          <div class="flex items-center gap-1">
+            <UIcon name="solar:medal-ribbons-star-bold" class="size-6 text-black" />
+            <span class="font-medium text-base mt-1">تخصص:</span>
+            <span class="font-medium text-base mt-1">{{ formData.sport.name }}</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <UIcon name="bxs:certification" class="size-6 text-black" />
+            <span class="font-medium text-base mt-1">مدرک و گواهینامه ها:</span>
+            <span class="font-medium text-base mt-1">
+              {{ formData.certificates || 'وجود ندارد' }}
+            </span>
+          </div>
+          <div class="flex items-center gap-1">
+            <UIcon name="solar:planet-2-bold" class="size-6 text-black" />
+            <span class="font-medium text-base mt-1">پلن انتخاب شده:</span>
+            <span class="font-medium text-base mt-1">
+              {{ formData.masterPlan ? formData.masterPlan.name : 'پلن وجود ندارد' }}
+            </span>
+          </div>
+        </WidgetProfilesDetail>
         <div
           class="bg-muted p-4 rounded-xl w-full grid grid-cols-1 md:grid-cols-2 lg:items-center gap-5"
         >
@@ -611,3 +340,195 @@
     </template>
   </UModal>
 </template>
+<script setup lang="ts">
+  import * as v from 'valibot'
+  import type { FormSubmitEvent } from '@nuxt/ui'
+  import type { TabsItem } from '@nuxt/ui'
+  import {
+    getMasterByIdForAdminService,
+    updateProfileMasterJustAdminService,
+  } from '~/services/master.service'
+  import type { MasterListData } from '~/models/users/master/MasterListData'
+  import type { UpdateMaster } from '~/models/users/master/UpdateMaster'
+
+  const emit = defineEmits(['update:open', 'updated'])
+  const modalStore = useModalStore()
+  const toastStore = useToastStore()
+  const gettingVariousDataStore = useGettingVariousDataStore()
+  const { gregorianToDate, gregorianToJalali } = useDateConverter()
+  const formData = ref<MasterListData | null>(null)
+  const itemsSelect = ref<{ label: string; value: string }[]>([])
+  const isShow: Ref<boolean> = ref(true)
+  const isLoading: Ref<boolean> = ref(false)
+  const userId = computed(() => modalStore.modals.masterEdit)
+
+  const props = defineProps({
+    open: {
+      type: [Boolean, Object, Number, String, null],
+      default: null,
+    },
+  })
+
+  const localOpen = computed({
+    get: () => !!props.open,
+    set: (val: boolean) => {
+      if (!val) emit('update:open', null)
+    },
+  })
+
+  const items = [
+    {
+      label: 'ویرایش اطلاعات',
+      slot: 'editData' as const,
+    },
+    {
+      label: 'کاربران',
+      slot: 'users' as const,
+    },
+    {
+      label: 'وضعیت مالی',
+      slot: 'paymentStatus' as const,
+    },
+  ] satisfies TabsItem[]
+
+  const schema = v.object({
+    fullName: v.pipe(v.string(), v.trim(), v.nonEmpty('نام و نام خانوادگی الزامی است')),
+    nationalCode: v.pipe(
+      v.string(),
+      v.trim(),
+      v.nonEmpty('کد ملی الزامی است.'),
+      v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
+      v.minLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
+      v.regex(/^\d+$/, 'کد ملی فقط می‌تواند شامل اعداد باشد')
+    ),
+    phoneNumber: v.pipe(
+      v.string(),
+      v.trim(),
+      v.nonEmpty('شماره تلفن الزامی است'),
+      v.minLength(11, 'شماره تلفن باید حداقل ۱۱ رقم باشد'),
+      v.maxLength(11, 'شماره تلفن نباید بیشتر از ۱۱ رقم باشد'),
+      v.regex(/^09\d{9,10}$/, 'شماره تلفن باید با 09 شروع شود')
+    ),
+    birthDate: v.pipe(v.string(), v.trim()),
+    age: v.pipe(
+      v.string(),
+      v.trim(),
+      v.minLength(1, 'سن نمی‌تواند خالی باشد'),
+      v.maxLength(2, 'سن باید حداکثر ۲ رقم باشد'),
+      v.regex(/^\d+$/, 'سن باید عدد باشد')
+    ),
+    imageFile: v.optional(
+      v.pipe(
+        v.file(),
+        v.mimeType(
+          ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'],
+          'لطف عکس را با این فرمت‌ها اپلود کنید.'
+        ),
+        v.maxSize(1024 * 1024, 'عکس باید زیر 1 مگابایت باشد.')
+      )
+    ),
+    history: v.pipe(v.string(), v.trim()),
+    certificates: v.pipe(v.string(), v.trim()),
+    sportId: v.pipe(v.string(), v.trim()),
+  })
+
+  type Schema = v.InferOutput<typeof schema>
+
+  const state = reactive<UpdateMaster>({
+    fullName: '',
+    phoneNumber: '',
+    nationalCode: '',
+    age: '',
+    birthDate: '',
+    history: '',
+    certificates: '',
+    sportId: '',
+    imageFile: undefined,
+    imageUrl: undefined,
+  })
+
+  watch(formData, (data) => {
+    if (!data) {
+      state.fullName = ''
+      state.phoneNumber = ''
+      state.nationalCode = ''
+      state.age = ''
+      state.birthDate = ''
+      state.history = ''
+      state.sportId = ''
+      state.certificates = ''
+      state.imageFile = undefined
+      state.imageUrl = undefined
+      return
+    }
+    state.fullName = data.fullName ?? ''
+    state.phoneNumber = data.phoneNumber ?? ''
+    state.nationalCode = data.nationalCode ?? ''
+    state.age = data.age?.toString() ?? ''
+    state.birthDate = data.birthDate ? gregorianToDate(data.birthDate) : ''
+    state.history = data.history ?? ''
+    state.certificates = data.certificates ?? ''
+    state.sportId = data.sport.id.toString() ?? ''
+    state.imageUrl = data.image ?? ''
+  })
+
+  const lastPayment = computed(() => {
+    const arr = formData.value?.subscriptionPayments
+    return Array.isArray(arr) && arr.length > 0 ? arr[0] : null
+  })
+
+  async function loadMaster() {
+    try {
+      const result = await getMasterByIdForAdminService(userId.value)
+      if (result.statusCode === 200) {
+        formData.value = result.data as MasterListData
+      }
+    } catch (error: any) {
+      console.log(error.message || error)
+      formData.value = null
+    }
+  }
+
+  async function onSubmit(event: FormSubmitEvent<Schema>) {
+    isLoading.value = true
+    try {
+      const result = await updateProfileMasterJustAdminService(userId.value, event.data)
+      if (result.statusCode === 200) {
+        toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
+        isShow.value = true
+        localOpen.value = false
+        emit('updated', result.data)
+      }
+    } catch (error: any) {
+      console.log(error.message || error)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  watch(
+    gettingVariousDataStore.sportData,
+    (value) => {
+      itemsSelect.value = value.map((item) => ({
+        label: item.name,
+        value: String(item.id),
+      }))
+    },
+    { immediate: true }
+  )
+
+  watch(userId, (id) => {
+    if (id) {
+      loadMaster()
+    } else {
+      formData.value = null
+    }
+  })
+
+  onMounted(() => {
+    if (userId.value) {
+      nextTick(loadMaster)
+      gettingVariousDataStore.fetchSports
+    }
+  })
+</script>

@@ -1,3 +1,126 @@
+<template>
+  <UModal
+    v-model:open="localOpen"
+    title="ثبت هنرجوی جدید"
+    description="اطلاعات هنرجو را تکمیل کنید"
+    :ui="{ footer: 'justify-between' }"
+  >
+    <template #body>
+      <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
+        <div class="flex flex-col gap-5 w-full">
+          <USeparator label="اطلاعات شخصی" />
+          <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
+            <BaseFormInput
+              v-model="state.fullName"
+              label="نام و نام خانوادگی"
+              name="fullName"
+              type="text"
+              placeholder="نام کامل هنرجو"
+              required
+              class="w-full"
+            />
+            <BaseFormInput
+              v-model="state.nationalCode"
+              label="کد ملی"
+              name="nationalCode"
+              type="text"
+              placeholder="کد ملی هنرجو"
+              required
+              class="w-full"
+            />
+          </div>
+          <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
+            <BaseVueDatePicker
+              required
+              v-model="state.birthDate"
+              label="تاریخ تولد"
+              name="birthDate"
+              class="w-full"
+            />
+            <BaseFormInput
+              v-model="state.age"
+              label="سن"
+              name="age"
+              type="text"
+              placeholder="سن هنرجو"
+              required
+              class="w-full"
+            />
+          </div>
+          <USeparator label="اطلاعات تماس" />
+          <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
+            <BaseFormInput
+              v-model="state.phoneNumber"
+              label="شماره تلفن"
+              name="phoneNumber"
+              type="text"
+              placeholder="شماره تلفن هنرجو"
+              required
+              class="w-full"
+            />
+            <BaseFormInput
+              v-model="state.phoneNumberEmergency"
+              label="شماره تلفن اضطراری"
+              name="phoneNumberEmergency"
+              type="text"
+              placeholder="شماره تلفن اضطراری هنرجو"
+              required
+              class="w-full"
+            />
+          </div>
+          <div class="w-full">
+            <BaseFormTextArea
+              v-model="state.address"
+              label="آدرس محل سکونت"
+              name="address"
+              required
+              class="w-full"
+            />
+          </div>
+          <USeparator label="اطلاعات پزشکی" />
+          <div class="flex flex-col gap-4 w-full">
+            <BaseFormCheckBox
+              :required="false"
+              v-model="state.underSupervisionDoctor"
+              name="underSupervisionDoctor"
+              label="آیا تحت نظر پزشک هستید؟"
+            />
+            <BaseFormCheckBox
+              :required="false"
+              v-model="state.diseaseRecords"
+              name="diseaseRecords"
+              label="سوابق بیماری یا آسیب‌دیدگی؟"
+            />
+          </div>
+          <USeparator />
+          <div class="flex flex-col gap-4 w-full">
+            <BaseFormSelect
+              v-if="hasSystemBelt"
+              :required="hasSystemBelt"
+              v-model="state.beltIds"
+              :items="beltSelect"
+              name="beltIds"
+              placeholder="انتخاب کمربند"
+              label="انتخاب کمربند"
+            />
+            <BaseFormSelect
+              :required="true"
+              v-model="state.planId"
+              :items="planSelect"
+              name="planId"
+              placeholder="انتخاب طرح"
+              label="انتخاب طرح"
+            />
+          </div>
+          <div class="flex justify-between gap-2 pt-4">
+            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
+            <UButton :loading="isLoading" label="افزودن هنرجو" color="primary" type="submit" />
+          </div>
+        </div>
+      </UForm>
+    </template>
+  </UModal>
+</template>
 <script setup lang="ts">
   import * as v from 'valibot'
   import type { FormSubmitEvent } from '@nuxt/ui'
@@ -156,127 +279,3 @@
 
   onMounted(fetchPlanStudent)
 </script>
-
-<template>
-  <UModal
-    v-model:open="localOpen"
-    title="ثبت هنرجوی جدید"
-    description="اطلاعات هنرجو را تکمیل کنید"
-    :ui="{ footer: 'justify-between' }"
-  >
-    <template #body>
-      <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
-        <div class="flex flex-col gap-5 w-full">
-          <USeparator label="اطلاعات شخصی" />
-          <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-            <BaseFormInput
-              v-model="state.fullName"
-              label="نام و نام خانوادگی"
-              name="fullName"
-              type="text"
-              placeholder="نام کامل هنرجو"
-              required
-              class="w-full"
-            />
-            <BaseFormInput
-              v-model="state.nationalCode"
-              label="کد ملی"
-              name="nationalCode"
-              type="text"
-              placeholder="کد ملی هنرجو"
-              required
-              class="w-full"
-            />
-          </div>
-          <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-            <BaseVueDatePicker
-              required
-              v-model="state.birthDate"
-              label="تاریخ تولد"
-              name="birthDate"
-              class="w-full"
-            />
-            <BaseFormInput
-              v-model="state.age"
-              label="سن"
-              name="age"
-              type="text"
-              placeholder="سن هنرجو"
-              required
-              class="w-full"
-            />
-          </div>
-          <USeparator label="اطلاعات تماس" />
-          <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-            <BaseFormInput
-              v-model="state.phoneNumber"
-              label="شماره تلفن"
-              name="phoneNumber"
-              type="text"
-              placeholder="شماره تلفن هنرجو"
-              required
-              class="w-full"
-            />
-            <BaseFormInput
-              v-model="state.phoneNumberEmergency"
-              label="شماره تلفن اضطراری"
-              name="phoneNumberEmergency"
-              type="text"
-              placeholder="شماره تلفن اضطراری هنرجو"
-              required
-              class="w-full"
-            />
-          </div>
-          <div class="w-full">
-            <BaseFormTextArea
-              v-model="state.address"
-              label="آدرس محل سکونت"
-              name="address"
-              required
-              class="w-full"
-            />
-          </div>
-          <USeparator label="اطلاعات پزشکی" />
-          <div class="flex flex-col gap-4 w-full">
-            <BaseFormCheckBox
-              :required="false"
-              v-model="state.underSupervisionDoctor"
-              name="underSupervisionDoctor"
-              label="آیا تحت نظر پزشک هستید؟"
-            />
-            <BaseFormCheckBox
-              :required="false"
-              v-model="state.diseaseRecords"
-              name="diseaseRecords"
-              label="سوابق بیماری یا آسیب‌دیدگی؟"
-            />
-          </div>
-          <USeparator />
-          <div class="flex flex-col gap-4 w-full">
-            <BaseFormSelect
-              v-if="hasSystemBelt"
-              :required="hasSystemBelt"
-              v-model="state.beltIds"
-              :items="beltSelect"
-              name="beltIds"
-              placeholder="انتخاب کمربند"
-              label="انتخاب کمربند"
-            />
-            <BaseFormSelect
-              :required="true"
-              v-model="state.planId"
-              :items="planSelect"
-              name="planId"
-              placeholder="انتخاب طرح"
-              label="انتخاب طرح"
-            />
-          </div>
-          <div class="flex justify-between gap-2 pt-4">
-            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
-            <UButton :loading="isLoading" label="افزودن هنرجو" color="primary" type="submit" />
-          </div>
-        </div>
-      </UForm>
-    </template>
-  </UModal>
-</template>

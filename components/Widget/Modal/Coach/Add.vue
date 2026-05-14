@@ -1,3 +1,99 @@
+<template>
+  <UModal
+    v-model:open="localOpen"
+    title="ثبت مربی جدید"
+    description="اطلاعات مربی را تکمیل کنید"
+    :ui="{ footer: 'justify-between' }"
+  >
+    <template #body>
+      <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
+        <div class="flex flex-col gap-5 w-full">
+          <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
+            <BaseFormInput
+              v-model="state.fullName"
+              label="نام و نام خانوادگی"
+              name="fullName"
+              type="text"
+              placeholder="نام کامل مربی"
+              required
+              class="w-full"
+            />
+            <BaseFormInput
+              v-model="state.nationalCode"
+              label="کد ملی"
+              name="nationalCode"
+              type="text"
+              placeholder="کد ملی مربی"
+              required
+              class="w-full"
+            />
+          </div>
+          <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
+            <BaseVueDatePicker
+              required
+              v-model="state.birthDate"
+              label="تاریخ تولد"
+              name="birthDate"
+              class="w-full"
+            />
+            <BaseFormInput
+              required
+              v-model="state.age"
+              label="سن"
+              name="age"
+              type="text"
+              placeholder="سن"
+              class="w-full"
+            />
+          </div>
+          <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
+            <BaseFormInput
+              v-model="state.phoneNumber"
+              label="شماره تلفن"
+              name="phoneNumber"
+              type="text"
+              placeholder="شماره تلفن مربی"
+              required
+              class="w-full"
+            />
+            <BaseFormInput
+              v-model="state.history"
+              label="سابقه تدریس"
+              name="history"
+              type="text"
+              placeholder="سابقه تدریس مربی"
+              required
+              class="w-full"
+            />
+          </div>
+          <div class="flex flex-col gap-5 w-full">
+            <BaseFormInput
+              v-model="state.certificates"
+              label="مدرک و گواهینامه ها"
+              name="certificates"
+              type="text"
+              placeholder="مدرک و گواهینامه ها مربیگری"
+              required
+              class="w-full"
+            />
+            <BaseFormUploadFile
+              :required="false"
+              v-model="state.imageFile"
+              label="ارسال عکس گواهینامه"
+              name="imageFile"
+              description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا 2MB"
+              class="w-full"
+            />
+          </div>
+          <div class="flex justify-between gap-2 pt-4">
+            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
+            <UButton :loading="isLoading" label="افزودن مربی" color="primary" type="submit" />
+          </div>
+        </div>
+      </UForm>
+    </template>
+  </UModal>
+</template>
 <script setup lang="ts">
   import * as v from 'valibot'
   import type { FormSubmitEvent } from '@nuxt/ui'
@@ -108,100 +204,3 @@
     state.imageFile = ''
   }
 </script>
-
-<template>
-  <UModal
-    v-model:open="localOpen"
-    title="ثبت مربی جدید"
-    description="اطلاعات مربی را تکمیل کنید"
-    :ui="{ footer: 'justify-between' }"
-  >
-    <template #body>
-      <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
-        <div class="flex flex-col gap-5 w-full">
-          <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-            <BaseFormInput
-              v-model="state.fullName"
-              label="نام و نام خانوادگی"
-              name="fullName"
-              type="text"
-              placeholder="نام کامل مربی"
-              required
-              class="w-full"
-            />
-            <BaseFormInput
-              v-model="state.nationalCode"
-              label="کد ملی"
-              name="nationalCode"
-              type="text"
-              placeholder="کد ملی مربی"
-              required
-              class="w-full"
-            />
-          </div>
-          <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-            <BaseVueDatePicker
-              required
-              v-model="state.birthDate"
-              label="تاریخ تولد"
-              name="birthDate"
-              class="w-full"
-            />
-            <BaseFormInput
-              required
-              v-model="state.age"
-              label="سن"
-              name="age"
-              type="text"
-              placeholder="سن"
-              class="w-full"
-            />
-          </div>
-          <div class="flex max-sm:flex-col items-center gap-5 sm:gap-2 w-full">
-            <BaseFormInput
-              v-model="state.phoneNumber"
-              label="شماره تلفن"
-              name="phoneNumber"
-              type="text"
-              placeholder="شماره تلفن مربی"
-              required
-              class="w-full"
-            />
-            <BaseFormInput
-              v-model="state.history"
-              label="سابقه تدریس"
-              name="history"
-              type="text"
-              placeholder="سابقه تدریس مربی"
-              required
-              class="w-full"
-            />
-          </div>
-          <div class="flex flex-col gap-5 w-full">
-            <BaseFormInput
-              v-model="state.certificates"
-              label="مدرک و گواهینامه ها"
-              name="certificates"
-              type="text"
-              placeholder="مدرک و گواهینامه ها مربیگری"
-              required
-              class="w-full"
-            />
-            <BaseFormUploadFile
-              :required="false"
-              v-model="state.imageFile"
-              label="ارسال عکس گواهینامه"
-              name="imageFile"
-              description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا 2MB"
-              class="w-full"
-            />
-          </div>
-          <div class="flex justify-between gap-2 pt-4">
-            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
-            <UButton :loading="isLoading" label="افزودن مربی" color="primary" type="submit" />
-          </div>
-        </div>
-      </UForm>
-    </template>
-  </UModal>
-</template>

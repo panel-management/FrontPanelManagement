@@ -1,3 +1,59 @@
+<template>
+  <UModal
+    v-model:open="localOpen"
+    title="ثبت تیکت جدید"
+    description="مشکل یا درخواست خود را ثبت کنید"
+    :ui="{ footer: 'justify-between' }"
+  >
+    <template #body>
+      <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
+        <div class="flex flex-col gap-5 w-full">
+          <BaseFormInput
+            v-model="state.title"
+            label="عنوان تیکت"
+            name="title"
+            type="text"
+            placeholder="عنوان مشکل یا درخواست خود را بنویسید."
+            required
+            class="w-full"
+          />
+          <div class="flex max-sm:flex-col gap-5 sm:gap-3 w-full">
+            <BaseFormSelect
+              :required="true"
+              v-model="state.category"
+              :items="categorySelect"
+              name="category"
+              placeholder="دسته بندی را انتخاب کنید"
+              label="دسته بندی"
+              class="w-full"
+            />
+            <BaseFormSelect
+              :required="true"
+              v-model="state.priority"
+              :items="prioritySelect"
+              name="priority"
+              placeholder="اولویت را انتخاب کنید"
+              label="اولویت"
+              class="w-full"
+            />
+          </div>
+          <BaseFormTextArea
+            v-model="state.text"
+            label="توضیحات"
+            name="text"
+            placeholder="مشکل یا درخواست خود را شرح دهید."
+            required
+            class="w-full"
+          />
+          <div class="flex justify-between gap-2 pt-4">
+            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
+            <UButton label="ارسال تیکت" color="primary" type="submit" />
+          </div>
+        </div>
+      </UForm>
+    </template>
+  </UModal>
+</template>
 <script setup lang="ts">
   import * as v from 'valibot'
   import type { FormSubmitEvent } from '@nuxt/ui'
@@ -70,60 +126,3 @@
     state.priority = ''
   }
 </script>
-
-<template>
-  <UModal
-    v-model:open="localOpen"
-    title="ثبت تیکت جدید"
-    description="مشکل یا درخواست خود را ثبت کنید"
-    :ui="{ footer: 'justify-between' }"
-  >
-    <template #body>
-      <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
-        <div class="flex flex-col gap-5 w-full">
-          <BaseFormInput
-            v-model="state.title"
-            label="عنوان تیکت"
-            name="title"
-            type="text"
-            placeholder="عنوان مشکل یا درخواست خود را بنویسید."
-            required
-            class="w-full"
-          />
-          <div class="flex max-sm:flex-col gap-5 sm:gap-3 w-full">
-            <BaseFormSelect
-              :required="true"
-              v-model="state.category"
-              :items="categorySelect"
-              name="category"
-              placeholder="دسته بندی را انتخاب کنید"
-              label="دسته بندی"
-              class="w-full"
-            />
-            <BaseFormSelect
-              :required="true"
-              v-model="state.priority"
-              :items="prioritySelect"
-              name="priority"
-              placeholder="اولویت را انتخاب کنید"
-              label="اولویت"
-              class="w-full"
-            />
-          </div>
-          <BaseFormTextArea
-            v-model="state.text"
-            label="توضیحات"
-            name="text"
-            placeholder="مشکل یا درخواست خود را شرح دهید."
-            required
-            class="w-full"
-          />
-          <div class="flex justify-between gap-2 pt-4">
-            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
-            <UButton label="ارسال تیکت" color="primary" type="submit" />
-          </div>
-        </div>
-      </UForm>
-    </template>
-  </UModal>
-</template>

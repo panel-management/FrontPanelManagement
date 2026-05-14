@@ -1,112 +1,48 @@
 <template>
   <section class="h-full w-full rounded-sm p-2 sm:p-3 bg-muted flex flex-col gap-5 md:gap-10">
-    <div class="bg-white p-4 rounded-xl w-full flex flex-col lg:items-center gap-5">
-      <div class="flex items-center justify-between w-full">
-        <div class="flex gap-3">
-          <div class="bg-black rounded-full size-16 flex justify-center items-center text-white">
-            {{ student?.data.fullName.slice(0, 1) }}
-          </div>
-          <div class="flex flex-col gap-2">
-            <span class="font-medium text-xl">{{ student?.data.fullName }}</span>
-            <div class="flex gap-3">
-              <UBadge
-                color="tertiary"
-                variant="subtle"
-                :label="student?.data.sport.name"
-                class="font-medium"
-              />
-              <UBadge
-                v-if="hasSystemBelt"
-                color="info"
-                variant="solid"
-                :label="student?.data.currentBelt.color"
-                class="font-medium"
-              />
-              <UBadge
-                :color="student?.data.isActive ? 'primary' : 'error'"
-                variant="soft"
-                :label="student?.data.isActive ? 'فعال' : 'غیر فعال'"
-                class="font-semibold"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="flex gap-3 max-md:hidden">
-          <UButton
-            v-if="isShow"
-            @click="toggleInout"
-            color="tertiary"
-            variant="outline"
-            size="lg"
-            label="ویرایش"
-            trailing-icon="material-symbols:edit-square-outline-rounded"
-          />
-          <UButton
-            v-if="!isShow"
-            @click="toggleInout"
-            color="neutral"
-            variant="outline"
-            size="lg"
-            label="انصراف"
-            trailing-icon="material-symbols:close-rounded"
-          />
-        </div>
+    <WidgetProfilesDetail
+      customStyle="bg-white md:p-6"
+      v-model:toggle="isShow"
+      :fullName="student?.data.fullName!"
+      :sportName="student?.data.sport.name!"
+      :hasSystemBelt="hasSystemBelt"
+      :currentBeltLabel="student?.data.currentBelt?.color"
+      :isActiveColor="student?.data.isActive"
+      :isActiveLabel="student?.data.isActive"
+    >
+      <div class="flex items-center gap-1">
+        <UIcon name="iconoir:barcode" class="size-6 text-black" />
+        <span class="font-medium text-base mt-1">کدملی:</span>
+        <span class="font-medium text-base mt-1">{{ student?.data.nationalCode }}</span>
       </div>
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 w-full">
-        <div class="flex items-center gap-1">
-          <UIcon name="iconoir:barcode" class="size-6 text-black" />
-          <span class="font-medium text-base mt-1">کدملی:</span>
-          <span class="font-medium text-base mt-1">{{ student?.data.nationalCode }}</span>
-        </div>
-        <div class="flex items-center gap-1">
-          <UIcon name="ic:baseline-call" class="size-6 text-black" />
-          <span class="font-medium text-base mt-1">شماره تلفن:</span>
-          <span class="font-medium text-base mt-1">{{ student?.data.phoneNumber }}</span>
-        </div>
-        <div class="flex items-center gap-1">
-          <UIcon name="ic:baseline-call" class="size-6 text-black" />
-          <span class="font-medium text-base mt-1">شماره تلفن:</span>
-          <span class="font-medium text-base mt-1">{{ student?.data.phoneNumberEmergency }}</span>
-        </div>
-        <div class="flex items-center gap-1">
-          <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
-          <span class="font-medium text-base mt-1">عضویت:</span>
-          <span class="font-medium text-base mt-1">
-            {{ gregorianToJalali(student?.data.createdAt!) }}
-          </span>
-        </div>
-        <div class="flex items-center gap-1">
-          <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
-          <span class="font-medium text-base mt-1">تاریخ تولد:</span>
-          <span class="font-medium text-base mt-1">{{ useJDate(student?.data.birthDate) }}</span>
-        </div>
-        <div class="flex items-center gap-1">
-          <UIcon name="ic:round-person" class="size-6 text-black" />
-          <span class="font-medium text-base mt-1">سن:</span>
-          <span class="font-medium text-base mt-1">{{ student?.data.age }}</span>
-        </div>
+      <div class="flex items-center gap-1">
+        <UIcon name="ic:baseline-call" class="size-6 text-black" />
+        <span class="font-medium text-base mt-1">شماره تلفن:</span>
+        <span class="font-medium text-base mt-1">{{ student?.data.phoneNumber }}</span>
       </div>
-      <div class="flex gap-3 min-md:hidden">
-        <UButton
-          v-if="isShow"
-          @click="toggleInout"
-          color="tertiary"
-          variant="outline"
-          size="lg"
-          label="ویرایش"
-          trailing-icon="material-symbols:edit-square-outline-rounded"
-        />
-        <UButton
-          v-if="!isShow"
-          @click="toggleInout"
-          color="neutral"
-          variant="outline"
-          size="lg"
-          label="انصراف"
-          trailing-icon="material-symbols:close-rounded"
-        />
+      <div class="flex items-center gap-1">
+        <UIcon name="ic:baseline-call" class="size-6 text-black" />
+        <span class="font-medium text-base mt-1">شماره تلفن:</span>
+        <span class="font-medium text-base mt-1">{{ student?.data.phoneNumberEmergency }}</span>
       </div>
-    </div>
+      <div class="flex items-center gap-1">
+        <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
+        <span class="font-medium text-base mt-1">عضویت:</span>
+        <span class="font-medium text-base mt-1">
+          {{ gregorianToJalali(student?.data.createdAt!) }}
+        </span>
+      </div>
+      <div class="flex items-center gap-1">
+        <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
+        <span class="font-medium text-base mt-1">تاریخ تولد:</span>
+        <span class="font-medium text-base mt-1">{{ useJDate(student?.data.birthDate) }}</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <UIcon name="ic:round-person" class="size-6 text-black" />
+        <span class="font-medium text-base mt-1">سن:</span>
+        <span class="font-medium text-base mt-1">{{ student?.data.age }}</span>
+      </div>
+    </WidgetProfilesDetail>
     <BaseTabs :items="items" color="tertiary">
       <template #editData>
         <div class="w-full h-full bg-white rounded-lg p-4">
@@ -384,10 +320,6 @@
     } finally {
       isLoading.value = false
     }
-  }
-
-  function toggleInout() {
-    isShow.value = !isShow.value
   }
 
   definePageMeta({

@@ -1,122 +1,62 @@
 <template>
   <section class="h-full w-full rounded-sm p-2 sm:p-3 bg-muted flex flex-col gap-5">
-    <div class="bg-white p-4 md:p-6 rounded-xl w-full flex flex-col lg:items-center gap-5">
-      <div class="flex items-center justify-between w-full">
-        <div class="flex gap-3">
-          <div class="bg-black rounded-full size-16 flex justify-center items-center text-white">
-            {{ master?.data.fullName.slice(0, 1) }}
-          </div>
-          <div class="flex flex-col gap-2">
-            <span class="font-medium text-xl">{{ master?.data.fullName }}</span>
-            <div class="flex flex-wrap gap-2 sm:gap-3">
-              <UBadge
-                v-if="master?.data.type === Role.Master"
-                color="secondary"
-                variant="solid"
-                label="استاد"
-                class="font-medium"
-              />
-              <UBadge
-                :color="master?.data.isActive ? 'primary' : 'error'"
-                variant="soft"
-                :label="master?.data.isActive ? 'فعال' : 'غیر فعال'"
-                class="font-semibold"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="flex gap-3 max-md:hidden">
-          <UButton
-            v-if="isShow"
-            @click="toggleInout"
-            color="tertiary"
-            variant="outline"
-            size="lg"
-            label="ویرایش"
-            trailing-icon="material-symbols:edit-square-outline-rounded"
-          />
-          <UButton
-            v-if="!isShow"
-            @click="toggleInout"
-            color="neutral"
-            variant="outline"
-            size="lg"
-            label="انصراف"
-            trailing-icon="material-symbols:close-rounded"
-          />
-        </div>
+    <WidgetProfilesDetail
+      customStyle="bg-white md:p-6"
+      v-model:toggle="isShow"
+      :fullName="master?.data.fullName!"
+      :sportName="master?.data.sport.name!"
+      :isActiveColor="master?.data.isActive"
+      :isActiveLabel="master?.data.isActive"
+    >
+      <div class="flex items-center gap-1">
+        <UIcon name="ic:baseline-call" class="size-6 text-black" />
+        <span class="font-medium text-base mt-1">شماره تلفن:</span>
+        <span class="font-medium text-base mt-1">{{ master?.data.phoneNumber }}</span>
       </div>
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 w-full">
-        <div class="flex items-center gap-1">
-          <UIcon name="ic:baseline-call" class="size-6 text-black" />
-          <span class="font-medium text-base mt-1">شماره تلفن:</span>
-          <span class="font-medium text-base mt-1">{{ master?.data.phoneNumber }}</span>
-        </div>
-        <div class="flex items-center gap-1">
-          <UIcon name="iconoir:barcode" class="size-6 text-black" />
-          <span class="font-medium text-base mt-1">کدملی:</span>
-          <span class="font-medium text-base mt-1">{{ master?.data.nationalCode }}</span>
-        </div>
-        <div class="flex items-center gap-1">
-          <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
-          <span class="font-medium text-base mt-1">عضویت:</span>
-          <span class="font-medium text-base mt-1">{{ useJDate(master?.data.createdAt) }}</span>
-        </div>
-        <div class="flex items-center gap-1">
-          <UIcon name="hugeicons:students" class="size-6 text-black" />
-          <span class="font-medium text-base mt-1">تعداد هنرجو و مربی:</span>
-          <span class="font-medium text-base mt-1">
-            {{ master?.data.students.length ?? 'هنرجو وجود ندارد' }}
-          </span>
-        </div>
-        <div class="flex items-center gap-1">
-          <UIcon name="ion:university" class="size-6 text-black" />
-          <span class="font-medium text-base mt-1">سابقه:</span>
-          <span class="font-medium text-base mt-1">
-            {{ master?.data.history ? `سال ${master?.data.history}` : 'وجود ندارد' }}
-          </span>
-        </div>
-        <div class="flex items-center gap-1">
-          <UIcon name="solar:medal-ribbons-star-bold" class="size-6 text-black" />
-          <span class="font-medium text-base mt-1">تخصص:</span>
-          <span class="font-medium text-base mt-1">{{ master?.data.sport.name }}</span>
-        </div>
-        <div class="flex items-center gap-1">
-          <UIcon name="bxs:certification" class="size-6 text-black" />
-          <span class="font-medium text-base mt-1">مدرک و گواهینامه ها:</span>
-          <span class="font-medium text-base mt-1">
-            {{ master?.data.certificates ? master?.data.certificates : 'وجود ندارد' }}
-          </span>
-        </div>
-        <div class="flex items-center gap-1">
-          <UIcon name="solar:planet-2-bold" class="size-6 text-black" />
-          <span class="font-medium text-base mt-1">پلن انتخاب شده:</span>
-          <span class="font-medium text-base mt-1">
-            {{ master?.data.masterPlan.name ?? 'پلن وجود ندارد' }}
-          </span>
-        </div>
+      <div class="flex items-center gap-1">
+        <UIcon name="iconoir:barcode" class="size-6 text-black" />
+        <span class="font-medium text-base mt-1">کدملی:</span>
+        <span class="font-medium text-base mt-1">{{ master?.data.nationalCode }}</span>
       </div>
-      <div class="flex gap-3 min-md:hidden">
-        <UButton
-          v-if="isShow"
-          @click="toggleInout"
-          color="tertiary"
-          variant="outline"
-          size="lg"
-          label="ویرایش"
-          trailing-icon="material-symbols:edit-square-outline-rounded"
-        />
-        <UButton
-          v-if="!isShow"
-          @click="toggleInout"
-          color="neutral"
-          variant="outline"
-          size="lg"
-          label="انصراف"
-          trailing-icon="material-symbols:close-rounded"
-        />
+      <div class="flex items-center gap-1">
+        <UIcon name="material-symbols-light:calendar-today" class="size-6 text-black" />
+        <span class="font-medium text-base mt-1">عضویت:</span>
+        <span class="font-medium text-base mt-1">{{ useJDate(master?.data.createdAt) }}</span>
       </div>
-    </div>
+      <div class="flex items-center gap-1">
+        <UIcon name="hugeicons:students" class="size-6 text-black" />
+        <span class="font-medium text-base mt-1">تعداد هنرجو و مربی:</span>
+        <span class="font-medium text-base mt-1">
+          {{ master?.data.students.length ?? 'هنرجو وجود ندارد' }}
+        </span>
+      </div>
+      <div class="flex items-center gap-1">
+        <UIcon name="ion:university" class="size-6 text-black" />
+        <span class="font-medium text-base mt-1">سابقه:</span>
+        <span class="font-medium text-base mt-1">
+          {{ master?.data.history ? `سال ${master?.data.history}` : 'وجود ندارد' }}
+        </span>
+      </div>
+      <div class="flex items-center gap-1">
+        <UIcon name="solar:medal-ribbons-star-bold" class="size-6 text-black" />
+        <span class="font-medium text-base mt-1">تخصص:</span>
+        <span class="font-medium text-base mt-1">{{ master?.data.sport.name }}</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <UIcon name="bxs:certification" class="size-6 text-black" />
+        <span class="font-medium text-base mt-1">مدرک و گواهینامه ها:</span>
+        <span class="font-medium text-base mt-1">
+          {{ master?.data.certificates ? master?.data.certificates : 'وجود ندارد' }}
+        </span>
+      </div>
+      <div class="flex items-center gap-1">
+        <UIcon name="solar:planet-2-bold" class="size-6 text-black" />
+        <span class="font-medium text-base mt-1">پلن انتخاب شده:</span>
+        <span class="font-medium text-base mt-1">
+          {{ master?.data.masterPlan.name ?? 'پلن وجود ندارد' }}
+        </span>
+      </div>
+    </WidgetProfilesDetail>
     <BaseTabs :items="items" color="tertiary">
       <template #editData>
         <div class="w-full h-full bg-white rounded-lg p-4">
@@ -433,10 +373,6 @@
     } finally {
       isLoading.value = false
     }
-  }
-
-  function toggleInout() {
-    isShow.value = !isShow.value
   }
 
   definePageMeta({

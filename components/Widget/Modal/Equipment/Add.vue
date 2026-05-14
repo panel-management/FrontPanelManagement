@@ -1,3 +1,48 @@
+<template>
+  <UModal
+    v-model:open="localOpen"
+    title="ثبت محصول جدید"
+    description="اطلاعات محصول را تکمیل کنید"
+    :ui="{ footer: 'justify-between' }"
+  >
+    <template #body>
+      <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
+        <div class="flex flex-col gap-5 w-full">
+          <BaseFormSelect
+            :required="true"
+            v-model="state.studentId"
+            :items="itemsSelect"
+            name="studentId"
+            placeholder="انتخاب نام هنرجو"
+            label="انتخاب هنرجو"
+          />
+          <BaseFormInput
+            v-model="displayPrice"
+            label="مبلغ محصول(تومان)"
+            name="amount"
+            type="text"
+            placeholder="1,000,000"
+            required
+            class="w-full"
+          />
+          <BaseFormInput
+            v-model="state.description"
+            label="توضیح درباره محصول"
+            name="description"
+            type="text"
+            placeholder="مثال: خرید دستکش بوکس"
+            required
+            class="w-full"
+          />
+          <div class="flex justify-between gap-2 pt-4">
+            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
+            <UButton :loading="isLoading" label="ثبت محصول" color="primary" type="submit" />
+          </div>
+        </div>
+      </UForm>
+    </template>
+  </UModal>
+</template>
 <script setup lang="ts">
   import * as v from 'valibot'
   import type { FormSubmitEvent } from '@nuxt/ui'
@@ -78,49 +123,3 @@
 
   onMounted(getListStudent)
 </script>
-
-<template>
-  <UModal
-    v-model:open="localOpen"
-    title="ثبت محصول جدید"
-    description="اطلاعات محصول را تکمیل کنید"
-    :ui="{ footer: 'justify-between' }"
-  >
-    <template #body>
-      <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
-        <div class="flex flex-col gap-5 w-full">
-          <BaseFormSelect
-            :required="true"
-            v-model="state.studentId"
-            :items="itemsSelect"
-            name="studentId"
-            placeholder="انتخاب نام هنرجو"
-            label="انتخاب هنرجو"
-          />
-          <BaseFormInput
-            v-model="displayPrice"
-            label="مبلغ محصول(تومان)"
-            name="amount"
-            type="text"
-            placeholder="1,000,000"
-            required
-            class="w-full"
-          />
-          <BaseFormInput
-            v-model="state.description"
-            label="توضیح درباره محصول"
-            name="description"
-            type="text"
-            placeholder="مثال: خرید دستکش بوکس"
-            required
-            class="w-full"
-          />
-          <div class="flex justify-between gap-2 pt-4">
-            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
-            <UButton :loading="isLoading" label="ثبت محصول" color="primary" type="submit" />
-          </div>
-        </div>
-      </UForm>
-    </template>
-  </UModal>
-</template>

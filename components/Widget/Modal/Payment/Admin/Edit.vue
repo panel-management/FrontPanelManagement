@@ -1,3 +1,112 @@
+<template>
+  <UModal
+    v-model:open="localOpen"
+    title="ویرایش پلن"
+    description="ویرایش اطلاعات پلن"
+    :ui="{ footer: 'justify-between' }"
+  >
+    <template #body>
+      <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
+        <div class="flex flex-col gap-5 w-full">
+          <BaseFormInput
+            v-model="state.name"
+            label="نام پلن"
+            name="name"
+            type="text"
+            placeholder="مثال: پلن رایگان , پلن پولی"
+            required
+            class="w-full"
+          />
+          <BaseFormInput
+            v-model="state.description"
+            label="توضیحات"
+            name="description"
+            type="text"
+            placeholder="توضیحات درباره این پلن"
+            :required="false"
+            class="w-full"
+          />
+          <BaseFormInput
+            v-model="displayPrice"
+            label="قیمت(تومان)"
+            name="price"
+            type="text"
+            placeholder="1,500,000"
+            :required="false"
+            class="w-full"
+          />
+          <div class="w-full flex flex-col">
+            <div class="flex justify-between items-center">
+              <label
+                class="text-base font-medium after:text-red-500 after:content-['*'] after:text-sm after:pr-1"
+              >
+                ویژگی‌ها
+              </label>
+              <UButton
+                type="button"
+                color="neutral"
+                variant="solid"
+                size="sm"
+                label="افزودن ویژگی"
+                @click="addItem()"
+              />
+            </div>
+            <div
+              v-for="(item, index) in state.features"
+              :key="index"
+              class="flex items-center gap-2 pt-2"
+            >
+              <UFormField :name="`features.${index}`" class="w-full" :required="true">
+                <UInput
+                  v-model="state.features[index]"
+                  type="text"
+                  class="w-full"
+                  color="neutral"
+                  size="lg"
+                />
+              </UFormField>
+              <UButton
+                v-if="state.features.length > 1"
+                color="error"
+                variant="soft"
+                icon="material-symbols:delete-forever"
+                @click="removeItem(index)"
+              />
+            </div>
+          </div>
+          <BaseFormSelect
+            required
+            :disable="false"
+            v-model="state.type"
+            :items="itemsSelect"
+            name="type"
+            placeholder="پلن مورد نظر را انتخاب کنید"
+            label="انتخاب پلن"
+          />
+          <BaseFormInput
+            v-model="state.durationInDays"
+            label="مدت زمان"
+            name="durationInDays"
+            type="text"
+            placeholder="مدت زمان باید به روز باشد"
+            required
+            class="w-full"
+          />
+          <BaseFormCheckBox
+            v-model="state.isActive"
+            label="وضعیت پلن"
+            name="isActive"
+            :required="false"
+          />
+          <div class="flex justify-between gap-2 pt-4">
+            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
+            <UButton :loading="isLoading" label="ویرایش پلن" color="primary" type="submit" />
+          </div>
+        </div>
+      </UForm>
+    </template>
+  </UModal>
+</template>
 <script setup lang="ts">
   import * as v from 'valibot'
   import type { FormSubmitEvent } from '@nuxt/ui'
@@ -129,113 +238,3 @@
     }
   }
 </script>
-
-<template>
-  <UModal
-    v-model:open="localOpen"
-    title="ویرایش پلن"
-    description="ویرایش اطلاعات پلن"
-    :ui="{ footer: 'justify-between' }"
-  >
-    <template #body>
-      <UForm :schema="schema" :state="state" @submit.prevent="onSubmit">
-        <div class="flex flex-col gap-5 w-full">
-          <BaseFormInput
-            v-model="state.name"
-            label="نام پلن"
-            name="name"
-            type="text"
-            placeholder="مثال: پلن رایگان , پلن پولی"
-            required
-            class="w-full"
-          />
-          <BaseFormInput
-            v-model="state.description"
-            label="توضیحات"
-            name="description"
-            type="text"
-            placeholder="توضیحات درباره این پلن"
-            :required="false"
-            class="w-full"
-          />
-          <BaseFormInput
-            v-model="displayPrice"
-            label="قیمت(تومان)"
-            name="price"
-            type="text"
-            placeholder="1,500,000"
-            :required="false"
-            class="w-full"
-          />
-          <div class="w-full flex flex-col">
-            <div class="flex justify-between items-center">
-              <label
-                class="text-base font-medium after:text-red-500 after:content-['*'] after:text-sm after:pr-1"
-              >
-                ویژگی‌ها
-              </label>
-              <UButton
-                type="button"
-                color="neutral"
-                variant="solid"
-                size="sm"
-                label="افزودن ویژگی"
-                @click="addItem()"
-              />
-            </div>
-            <div
-              v-for="(item, index) in state.features"
-              :key="index"
-              class="flex items-center gap-2 pt-2"
-            >
-              <UFormField :name="`features.${index}`" class="w-full" :required="true">
-                <UInput
-                  v-model="state.features[index]"
-                  type="text"
-                  class="w-full"
-                  color="neutral"
-                  size="lg"
-                />
-              </UFormField>
-              <UButton
-                v-if="state.features.length > 1"
-                color="error"
-                variant="soft"
-                icon="material-symbols:delete-forever"
-                @click="removeItem(index)"
-              />
-            </div>
-          </div>
-          <BaseFormSelect
-            required
-            :disable="false"
-            v-model="state.type"
-            :items="itemsSelect"
-            name="type"
-            placeholder="پلن مورد نظر را انتخاب کنید"
-            label="انتخاب پلن"
-          />
-          <BaseFormInput
-            v-model="state.durationInDays"
-            label="مدت زمان"
-            name="durationInDays"
-            type="text"
-            placeholder="مدت زمان باید به روز باشد"
-            required
-            class="w-full"
-          />
-          <BaseFormCheckBox
-            v-model="state.isActive"
-            label="وضعیت پلن"
-            name="isActive"
-            :required="false"
-          />
-          <div class="flex justify-between gap-2 pt-4">
-            <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
-            <UButton :loading="isLoading" label="ویرایش پلن" color="primary" type="submit" />
-          </div>
-        </div>
-      </UForm>
-    </template>
-  </UModal>
-</template>
