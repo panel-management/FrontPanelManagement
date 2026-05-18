@@ -1,17 +1,9 @@
 <template>
-  <UApp :locale="ar" :toaster="{ position: 'top-right' }">
-    <div class="flex flex-col justify-center items-center gap-5 w-full h-dvh px-7">
-      <div class="flex flex-col items-center-safe gap-3">
-        <span class="font-medium text-xl md:text-4xl text-black leading-relaxed">
-          خوش آمدید به پنل هوشمند باشگاه
-        </span>
-        <span class="text-black/80 font-normal text-sm md:text-lg">
-          لطف جهت روند کار ورود یا ثبت نام کنید
-        </span>
-      </div>
-      <div
-        class="flex flex-col items-center justify-center gap-3 w-full md:w-2/3 lg:w-1/2 xl:w-1/3"
-      >
+  <UApp :locale="ar">
+    <div class="w-full h-dvh px-5 md:px-7 flex justify-center items-center">
+      <div class="max-md:w-full flex flex-col items-center-safe gap-3">
+        <h1 class="font-medium text-xl md:text-4xl text-black">خوش آمدید به پنل هوشمند باشگاه</h1>
+        <span class="font-normal text-sm md:text-lg"> لطف جهت روند کار ورود یا ثبت نام کنید </span>
         <NuxtLink to="/auth" class="btn btn-outline">ورود یا ثبت نام</NuxtLink>
       </div>
     </div>

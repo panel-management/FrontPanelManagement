@@ -1,18 +1,16 @@
 <template>
   <UApp :locale="ar" :toaster="{ position: 'top-right' }">
-    <div class="w-full h-dvh px-7 flex justify-center items-center">
+    <div class="w-full h-dvh px-5 md:px-7 flex justify-center items-center">
       <UForm
         v-if="step === 1"
         :schema="step1Schema"
         :state="stateStep1"
         @submit.prevent="onSubmitStep1"
-        class="w-full md:w-2/3 lg:w-1/2 xl:w-1/3 h-full flex flex-col items-center justify-center gap-5"
+        class="w-full md:w-[30rem] flex flex-col items-center justify-center gap-5"
       >
-        <div class="flex flex-col items-center-safe gap-1">
-          <span class="font-medium text-xl md:text-3xl text-black leading-relaxed">
-            ورود به سیستم
-          </span>
-          <span class="text-black/80 font-normal text-sm">لطفاً اطلاعات خود را وارد کنید</span>
+        <div class="flex flex-col items-center-safe gap-2">
+          <h1 class="font-medium text-xl md:text-3xl text-black">ورود به سیستم</h1>
+          <span class="font-normal text-sm md:text-base">لطفاً اطلاعات خود را وارد کنید</span>
         </div>
         <BaseFormInput
           v-model="stateStep1.phoneNumber"
@@ -35,13 +33,11 @@
         :schema="step2Schema"
         :state="stateStep2"
         @submit.prevent="onSubmitStep2"
-        class="w-full md:w-2/3 lg:w-1/2 xl:w-1/3 h-full flex flex-col items-center justify-center gap-5"
+        class="w-full md:w-[30rem] flex flex-col items-center justify-center gap-5"
       >
-        <div class="flex flex-col items-center-safe gap-1">
-          <span class="font-medium text-xl md:text-3xl text-black leading-relaxed">
-            ورود به سیستم
-          </span>
-          <span class="text-black/80 font-normal text-sm">
+        <div class="flex flex-col items-center-safe gap-2">
+          <h1 class="font-medium text-xl md:text-3xl text-black">ورود به سیستم</h1>
+          <span class="font-normal text-sm md:text-base">
             کد تایید ارسال شده به {{ stateStep1.phoneNumber }} را وارد کنید
           </span>
         </div>
@@ -65,11 +61,11 @@
         :schema="step3Schema"
         :state="stateStep3"
         @submit.prevent="onSubmitStep3"
-        class="w-full md:w-2/3 lg:w-1/2 xl:w-1/3 h-full flex flex-col items-center justify-center gap-5"
+        class="w-full md:w-[30rem] flex flex-col items-center justify-center gap-5"
       >
-        <div class="flex flex-col items-center-safe gap-1">
-          <span class="font-medium text-xl md:text-3xl text-black leading-relaxed">ثبت نام</span>
-          <span class="text-black/80 font-normal text-sm">ایجاد حساب کاربری جدید</span>
+        <div class="flex flex-col items-center-safe gap-2">
+          <h1 class="font-medium text-xl md:text-3xl text-black">ثبت نام</h1>
+          <span class="font-normal text-sm md:text-base">ایجاد حساب کاربری جدید</span>
         </div>
         <div class="w-full flex flex-col gap-5">
           <BaseFormInput
@@ -237,14 +233,12 @@
   async function onSubmitStep3(event: FormSubmitEvent<step3Schema>) {
     isLoading.value = true
     try {
-      const otpString = stateStep2.otpArray.join('')
-      const sport = Number(event.data.selectSport)
       const result = await registerUsersService(
         event.data.fullName,
         event.data.nationalCode,
         stateStep1.phoneNumber,
-        otpString,
-        sport
+        stateStep2.otpArray.join(''),
+        Number(event.data.selectSport)
       )
       if (result.statusCode === 201) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
