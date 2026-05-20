@@ -1,21 +1,22 @@
-FROM node:20-alpine AS build-stage
+# FROM node:lts-alpine AS build-stage
+FROM mirror-docker.runflare.com/library/node:lts-alpine AS build-stage
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json ./
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --ignore-scripts=false
 
 COPY . .
 
 RUN pnpm run generate
 
-FROM nginx:stable-alpine
+# FROM nginx:stable-alpine
+FROM mirror-docker.runflare.com/nginx:stable-alpine
 
-RUN rm -rf /etc/nginx/conf.d/*
-RUN rm -rf /usr/share/nginx/html/*
+RUN rm -rf /etc/nginx/conf.d/* && rm -rf /usr/share/nginx/html/*
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 

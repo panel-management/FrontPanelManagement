@@ -3,15 +3,14 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: {
-    enabled: import.meta.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
+    enabled: process.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
   },
   ssr: false,
   modules: ['@nuxt/ui', '@pinia/nuxt', '@vueuse/nuxt', '@vite-pwa/nuxt'],
   css: ['~/assets/css/main.css'],
   experimental: {
-    viteEnvironmentApi: import.meta.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
+    viteEnvironmentApi: process.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
     noVueServer: true,
-    // inlineRouteRules: true,
   },
   features: {
     inlineStyles: true,
@@ -23,11 +22,11 @@ export default defineNuxtConfig({
       cssMinify: true,
       terserOptions: {
         compress: {
-          drop_console: import.meta.env.APP_DEBUG?.toLocaleLowerCase() !== 'true',
+          drop_console: process.env.APP_DEBUG?.toLocaleLowerCase() !== 'true',
           drop_debugger: true,
         },
       },
-      sourcemap: import.meta.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
+      sourcemap: process.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
       rollupOptions: {
         output: {
           manualChunks: undefined,
@@ -38,12 +37,12 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
-      name: import.meta.env.APP_NAME,
+      name: process.env.APP_NAME || 'پنل هوشمند باشگاه',
+      short_name: process.env.APP_NAME || 'پنل هوشمند باشگاه',
+      description: 'panel of the sports club',
+      theme_color: '#ffffff',
       lang: 'fa',
       dir: 'rtl',
-      short_name: import.meta.env.APP_NAME,
-      description: 'smart panel of the sports club',
-      theme_color: '#ffffff',
       display: 'standalone',
       start_url: '/',
       icons: [
@@ -64,7 +63,7 @@ export default defineNuxtConfig({
       cleanupOutdatedCaches: true,
       runtimeCaching: [
         {
-          urlPattern: new RegExp(`${import.meta.env.API_URL}/api/v1/.*`),
+          urlPattern: new RegExp(`${process.env.API_URL}/api/v1/.*`),
           handler: 'NetworkFirst',
           options: {
             cacheName: 'api-cache',
@@ -77,7 +76,7 @@ export default defineNuxtConfig({
       ],
     },
     devOptions: {
-      enabled: import.meta.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
+      enabled: process.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
     },
   },
   app: {
@@ -127,13 +126,13 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      APP_NAME: import.meta.env.APP_NAME,
-      APP_ENV: import.meta.env.APP_ENV,
-      APP_URL: import.meta.env.APP_URL ?? 'http://localhost:3000',
-      API_URL: import.meta.env.API_URL,
-      PAYMENT_NAME: import.meta.env.NUXT_PAYMENT_NAME,
-      PAYMENT_CARD: import.meta.env.NUXT_PAYMENT_CARD,
-      PAYMENT_SHABA: import.meta.env.NUXT_PAYMENT_SHABA,
+      APP_NAME: process.env.APP_NAME,
+      APP_ENV: process.env.APP_ENV,
+      APP_URL: process.env.APP_URL ?? 'http://localhost:3000',
+      API_URL: process.env.API_URL,
+      PAYMENT_NAME: process.env.NUXT_PAYMENT_NAME,
+      PAYMENT_CARD: process.env.NUXT_PAYMENT_CARD,
+      PAYMENT_SHABA: process.env.NUXT_PAYMENT_SHABA,
     },
   },
 })
