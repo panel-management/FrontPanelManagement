@@ -37,11 +37,10 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
-      name: process.env.APP_NAME || 'پنل هوشمند باشگاه',
-      short_name: process.env.APP_NAME || 'پنل هوشمند باشگاه',
+      name: 'پنل هوشمند باشگاه',
+      short_name: 'پنل هوشمند باشگاه',
       description: 'panel of the sports club',
       theme_color: '#ffffff',
-      lang: 'fa',
       dir: 'rtl',
       display: 'standalone',
       start_url: '/',

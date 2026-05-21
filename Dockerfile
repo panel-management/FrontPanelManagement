@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY package.json ./
 
-RUN pnpm install --frozen-lockfile --ignore-scripts=false
+RUN pnpm install --ignore-scripts=false
 
 COPY . .
 
