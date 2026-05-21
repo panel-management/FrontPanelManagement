@@ -1,11 +1,11 @@
 <template>
   <div
-    class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center-safe gap-2 lg:pt-6 max-lg:px-2 lg:px-2"
+    class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-2 lg:pt-6"
   >
     <div
       v-for="data in activePlanDataMaster"
       :key="data.id"
-      class="relative w-full md:max-w-sm bg-white rounded-2xl p-8 text-center border-2 border-sky-200 flex flex-col gap-10 transition-all duration-300 md:hover:-translate-y-2 hover:shadow-xl"
+      class="flex flex-col gap-10 w-full md:max-w-sm bg-white/80 backdrop-blur-2xl rounded-2xl p-8 text-center border-2 border-sky-500 transition-all ease-in-out duration-300 md:hover:-translate-y-1 hover:shadow-lg"
     >
       <div class="flex flex-col gap-3">
         <h2 class="text-2xl font-bold text-black">{{ data.name }}</h2>
@@ -37,6 +37,7 @@
         :loading="isLoading[data.id]"
         @click="selectPlanMaster(data.id)"
         class="py-3 font-medium text-lg flex place-content-center"
+        :class="isLoading[data.id] ? 'cursor-not-allowed' : 'cursor-pointer'"
         color="tertiary"
         variant="solid"
         :label="data.type === TypePlan.TRIAL ? 'شروع دوره آزمایشی' : 'انتخاب'"

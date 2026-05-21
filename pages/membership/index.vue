@@ -127,13 +127,16 @@
         </div>
       </template>
       <template #memberShip>
-        <div class="w-full h-full flex flex-col gap-4 py-3 pt-5 text-center">
-          <span class="text-2xl md:text-4xl font-extrabold text-black">
-            پلن عضویت خود را انتخاب کنید
-          </span>
-          <p class="text-lg text-black font-light">
-            برای استفاده کامل از امکانات پنل، یکی از پلن های زیر را بر اساس نیاز خود انتخاب نمایید.
-          </p>
+        <div class="w-full flex flex-col justify-center items-center gap-5 pt-5 px-2">
+          <div class="flex flex-col items-center gap-2">
+            <span class="text-2xl lg:text-4xl font-bold text-black"
+              >پلن عضویت خود را انتخاب کنید</span
+            >
+            <p class="text-lg font-light text-center leading-relaxed">
+              برای استفاده کامل از امکانات پنل، یکی از پلن های زیر را بر اساس نیاز خود انتخاب
+              نمایید.
+            </p>
+          </div>
           <WidgetPlans />
         </div>
       </template>
@@ -157,7 +160,7 @@
     {
       slot: 'clubProfile' as const,
       title: 'اطلاعات باشگاه',
-      description: 'وارد کردن اطلاعات باشگاه خود',
+      description: 'وارد کردن اطلاعات باشگاه',
       icon: 'material-symbols:person-pin-circle-outline-rounded',
     },
     {
