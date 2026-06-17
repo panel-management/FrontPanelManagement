@@ -244,7 +244,7 @@
     phoneNumber: 'شماره تلفن',
     currentBelt: 'کمربند ها',
     studentTransactions: 'وضعیت شهریه',
-    active: 'وضعیت حساب ها',
+    isActive: 'وضعیت حساب ها',
     sport: 'رشته',
     createdAt: 'تاریخ ایجاد',
     updatedAt: 'تاریخ بروزرسانی',

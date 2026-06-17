@@ -160,7 +160,7 @@
   const columnLabels: Record<string, string> = {
     fullName: 'نام کامل',
     phoneNumber: 'شماره تلفن',
-    active: 'وضعیت',
+    isActive: 'وضعیت حساب ها',
     sport: 'رشته',
     history: 'سابقه تدریس',
     certificates: 'مدرک یا گواهینامه',
