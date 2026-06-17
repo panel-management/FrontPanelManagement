@@ -86,24 +86,6 @@
             :disable="false"
             class="w-full"
           />
-          <BaseFormInput
-            v-model="stateStep1.phoneNumber"
-            label="شماره تلفن"
-            name="phoneNumber"
-            type="text"
-            required
-            :disable="true"
-            class="w-full"
-          />
-          <BaseFormInput
-            v-model="otpValue"
-            label="کد تایید"
-            name="otpArray"
-            type="text"
-            required
-            :disable="true"
-            class="w-full"
-          />
           <BaseFormSelect
             required
             :disable="false"
@@ -164,8 +146,8 @@
       v.string(),
       v.trim(),
       v.nonEmpty('کد ملی الزامی است'),
-      v.maxLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
-      v.minLength(10, 'کد ملی دارای 10 رقم میباشد لطف مجدد وارد کنید'),
+      v.maxLength(11, 'کد ملی دارای 10 تا 11 رقم میباشد لطف مجدد وارد کنید'),
+      v.minLength(10, 'کد ملی دارای 10 تا 11 رقم میباشد لطف مجدد وارد کنید'),
       v.regex(/^\d+$/, 'کد ملی فقط می‌تواند شامل اعداد باشد')
     ),
     selectSport: v.pipe(v.string(), v.trim(), v.minLength(1, 'لطفا یک از موارد رشته انتخاب کنید')),
@@ -186,15 +168,7 @@
     nationalCode: '',
     selectSport: '' as string,
   })
-  const otpValue = computed({
-    get() {
-      return stateStep2.otpArray.join('')
-    },
-    set(value) {
-      stateStep2.otpArray = value.split('').map(Number)
-    },
-  })
-
+  
   async function onSubmitStep1(event: FormSubmitEvent<step1Schema>) {
     isLoading.value = true
     try {
@@ -274,6 +248,6 @@
 
   useHead({
     title: 'ورود / ثبت‌ نام',
-    meta: [{ name: 'description', content: 'ورود به حساب کاربری یا ایجاد حساب جدید.' }],
+    meta: [{ name: 'description', content: 'ورود به حساب کاربری یا ایجاد حساب جدید' }],
   })
 </script>
