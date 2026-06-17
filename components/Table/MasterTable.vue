@@ -232,7 +232,7 @@
     fullName: 'نام کامل',
     phoneNumber: 'شماره تلفن',
     paymentStatus: 'وضعیت پلن',
-    active: 'وضعیت',
+    isActive: 'وضعیت',
     sport: 'رشته',
     history: 'سابقه تدریس',
     studentCount: 'تعداد هنرجویان',
