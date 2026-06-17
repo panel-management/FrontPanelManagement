@@ -168,7 +168,7 @@
     nationalCode: '',
     selectSport: '' as string,
   })
-  
+
   async function onSubmitStep1(event: FormSubmitEvent<step1Schema>) {
     isLoading.value = true
     try {
