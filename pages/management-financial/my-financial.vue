@@ -83,15 +83,8 @@
       title="تاریخچه مالی وجود ندارد"
       description="پس از انجام اولین تراکنش، اطلاعات آن در این بخش نمایش داده می‌شود"
     />
-    <div class="w-full h-full flex justify-center items-center" v-if="formData.length > 1">
-      <UPagination
-        v-model:page="page"
-        :total="total"
-        :items-per-page="limit"
-        show-edges
-        :sibling-count="1"
-        size="xl"
-      />
+    <div class="flex justify-center items-center" v-if="formData.length > 1">
+      <BasePagination v-model:page="page" :total="total" :limit="limit" />
     </div>
     <div class="w-full h-full flex max-sm:flex-col gap-5 p-3 sm:p-4 rounded-lg bg-white">
       <div class="flex max-sm:items-center gap-2">

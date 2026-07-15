@@ -136,15 +136,8 @@
             </div>
           </div>
           <USeparator v-if="totalPage > 1" />
-          <div class="w-full flex justify-center items-center" v-if="totalPage > 1">
-            <UPagination
-              v-model:page="page"
-              :total="total"
-              :items-per-page="limit"
-              show-edges
-              :sibling-count="1"
-              size="xl"
-            />
+          <div class="flex justify-center items-center" v-if="totalPage > 1">
+            <BasePagination v-model:page="page" :total="total" :limit="limit" />
           </div>
         </div>
       </template>
