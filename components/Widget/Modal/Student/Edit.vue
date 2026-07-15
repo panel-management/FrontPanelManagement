@@ -221,7 +221,7 @@
                     <span class="text-xl font-medium break-words">وضعیت فعلی شهریه</span>
                   </div>
                   <div
-                    class="flex max-lg:flex-col items-center justify-between gap-4 lg:gap-8 w-full"
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-center gap-4 lg:gap-8 w-full"
                   >
                     <WidgetCartsInformation
                       baseClass="border border-black/50"
@@ -230,7 +230,7 @@
                         transactionIcon[lastTransaction?.status] || 'bi:emoji-neutral-fill'
                       "
                       :classIcon="
-                        `${transactionIconColor[lastTransaction?.status]} size-7 sm:size-6` ||
+                        `${transactionIconColor[lastTransaction?.status]} size-5 sm:size-6` ||
                         'text-gray-400'
                       "
                       title="وضعیت فعلی"
@@ -238,14 +238,14 @@
                       {{
                         lastTransaction
                           ? transactionStatusText[lastTransaction?.status]
-                          : 'هیچ پرداختی موجود نیست'
+                          : 'وجود ندارد'
                       }}
                     </WidgetCartsInformation>
                     <WidgetCartsInformation
                       baseClass="border border-black/50"
                       bgColorIcon="bg-black/20"
                       nameIcon="fluent:payment-32-filled"
-                      classIcon="size-7 sm:size-6 text-black"
+                      classIcon="size-5 sm:size-6 text-black"
                       title="شهریه ماهانه (تومان)"
                     >
                       {{ useLocaleString(Number(formData.studentTransactions[0].amount)) }}
@@ -254,13 +254,11 @@
                       baseClass="border border-black/50"
                       bgColorIcon="bg-yellow-100"
                       nameIcon="material-symbols:calendar-today-rounded"
-                      classIcon="size-7 sm:size-6 text-yellow-400"
+                      classIcon="size-5 sm:size-6 text-yellow-400"
                       title="سر رسید بعدی"
                     >
                       {{
-                        lastTransaction
-                          ? gregorianToJalali(lastTransaction.dueDate)
-                          : 'هیچ پرداختی موجود نیست'
+                        lastTransaction ? gregorianToJalali(lastTransaction.dueDate) : 'وجود ندارد'
                       }}
                     </WidgetCartsInformation>
                   </div>

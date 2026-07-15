@@ -90,7 +90,7 @@
     <WidgetCartsInformation
       bgColorIcon="bg-turquoise-100"
       nameIcon="material-symbols:person-check"
-      classIcon="size-7 sm:size-6 text-turquoise-500"
+      classIcon="size-5 sm:size-6 text-turquoise-500"
       title="حضور"
     >
       {{ summaryData?.PRESENT ? summaryData?.PRESENT : 'وجود ندارد' }}
@@ -98,7 +98,7 @@
     <WidgetCartsInformation
       bgColorIcon="bg-error-100"
       nameIcon="material-symbols:person-cancel"
-      classIcon="size-7 sm:size-6 text-error-500"
+      classIcon="size-5 sm:size-6 text-error-500"
       title="غیبت ها"
     >
       {{ summaryData?.ABSENT ? summaryData?.ABSENT : 'وجود ندارد' }}
@@ -106,7 +106,7 @@
     <WidgetCartsInformation
       bgColorIcon="bg-yellow-100"
       nameIcon="material-symbols:alarm"
-      classIcon="size-7 sm:size-6 text-yellow-500"
+      classIcon="size-5 sm:size-6 text-yellow-500"
       title="تاخیرات"
     >
       {{ summaryData?.LATE ? summaryData?.LATE : 'وجود ندارد' }}
@@ -114,7 +114,7 @@
     <WidgetCartsInformation
       bgColorIcon="bg-secondary-100"
       nameIcon="material-symbols:alarm"
-      classIcon="size-7 sm:size-6 text-secondary-500"
+      classIcon="size-5 sm:size-6 text-secondary-500"
       title="موجه"
     >
       {{ summaryData?.EXCUSED ? summaryData?.EXCUSED : 'وجود ندارد' }}
@@ -122,7 +122,7 @@
     <WidgetCartsInformation
       bgColorIcon="bg-info-100"
       nameIcon="mdi-light:chart-bar"
-      classIcon="size-7 sm:size-6 bg-info-500"
+      classIcon="size-5 sm:size-6 bg-info-500"
       title="کل جلسات"
     >
       {{ sessionsData?.totalSessions ? sessionsData?.totalSessions : 'وجود ندارد' }}

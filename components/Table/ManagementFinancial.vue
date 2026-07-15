@@ -124,7 +124,7 @@
     <WidgetCartsInformation
       bgColorIcon="bg-gray-200"
       nameIcon="streamline:money-cash-dollar-coin-accounting-billing-payment-cash-coin-currency-money-finance"
-      classIcon="size-7 sm:size-6 text-gray-500"
+      classIcon="size-5 sm:size-6 text-gray-500"
       title="جمع کل درآمد"
     >
       {{ generalSum?.totalAmount ? useLocaleString(generalSum?.totalAmount) : 'وجود ندارد' }}
@@ -132,7 +132,7 @@
     <WidgetCartsInformation
       bgColorIcon="bg-turquoise-100"
       nameIcon="streamline:interface-validation-check-check-form-validation-checkmark-success-add-addition"
-      classIcon="size-7 sm:size-6 text-turquoise-500"
+      classIcon="size-5 sm:size-6 text-turquoise-500"
       title="کل شهریه‌های پرداخت شده"
     >
       {{ generalSum?.paidFees ? useLocaleString(generalSum?.paidFees) : 'وجود ندارد' }}
@@ -140,7 +140,7 @@
     <WidgetCartsInformation
       bgColorIcon="bg-error-100"
       nameIcon="mi:circle-error"
-      classIcon="size-7 sm:size-6 text-error-500"
+      classIcon="size-5 sm:size-6 text-error-500"
       title="کل شهریه‌های پرداخت نشده"
     >
       {{ generalSum?.unpaidFees ? useLocaleString(generalSum?.unpaidFees) : 'وجود ندارد' }}
@@ -148,7 +148,7 @@
     <WidgetCartsInformation
       bgColorIcon="bg-yellow-100"
       nameIcon="material-symbols:shopping-cart"
-      classIcon="size-7 sm:size-6 text-yellow-500"
+      classIcon="size-5 sm:size-6 text-yellow-500"
       title="کل درآمد تجهیزات"
     >
       {{

@@ -8,7 +8,7 @@
       <WidgetCartsInformation
         bgColorIcon="bg-turquoise-100"
         nameIcon="streamline:interface-validation-check-circle-checkmark-addition-circle-success-check-validation-add-form"
-        classIcon="size-7 sm:size-6 text-turquoise-500"
+        classIcon="size-5 sm:size-6 text-turquoise-500"
         title="تیکت‌های باز"
       >
         {{ statsData?.open ?? 'وجود ندارد' }}
@@ -16,7 +16,7 @@
       <WidgetCartsInformation
         bgColorIcon="bg-yellow-100"
         nameIcon="ic:twotone-access-time-filled"
-        classIcon="size-7 sm:size-6 text-yellow-400"
+        classIcon="size-5 sm:size-6 text-yellow-400"
         title="در انتظار"
       >
         {{ statsData?.pending ?? 'وجود ندارد' }}
@@ -24,7 +24,7 @@
       <WidgetCartsInformation
         bgColorIcon="bg-error-100"
         nameIcon="proicons:question-circle"
-        classIcon="size-7 sm:size-6 text-error-400"
+        classIcon="size-5 sm:size-6 text-error-400"
         title="اولویت"
       >
         {{ statsData?.highPriority ?? 'وجود ندارد' }}
@@ -32,7 +32,7 @@
       <WidgetCartsInformation
         bgColorIcon="bg-info-100"
         nameIcon="material-symbols:android-chat"
-        classIcon="size-7 sm:size-6 text-info-400"
+        classIcon="size-5 sm:size-6 text-info-400"
         title="کل تیکت ها"
       >
         {{ statsData?.total ?? 'وجود ندارد' }}

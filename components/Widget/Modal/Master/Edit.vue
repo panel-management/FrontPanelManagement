@@ -63,12 +63,12 @@
           </div>
         </WidgetProfilesDetail>
         <div
-          class="bg-muted p-4 rounded-xl w-full grid grid-cols-1 md:grid-cols-2 lg:items-center gap-5"
+          class="bg-muted p-4 rounded-xl w-full grid grid-cols-1 sm:grid-cols-2 lg:items-center gap-5"
         >
           <WidgetCartsInformation
             bgColorIcon="bg-turquoise-100"
             nameIcon="material-symbols:calendar-today-outline-rounded"
-            classIcon="size-7 sm:size-6 text-turquoise-500"
+            classIcon="size-5 sm:size-6 text-turquoise-500"
             title="سابقه تدریس"
           >
             {{ formData.history ? `${formData.history} سال` : 'سابقه وجود ندارد' }}
@@ -76,7 +76,7 @@
           <WidgetCartsInformation
             bgColorIcon="bg-info-100"
             nameIcon="ph:users-three-bold"
-            classIcon="size-7 sm:size-6 text-info-500"
+            classIcon="size-5 sm:size-6 text-info-500"
             title="هنرجو و مربی"
           >
             {{ formData.students.length }}
@@ -260,49 +260,41 @@
                     <span class="text-xl font-medium break-words">وضعیت فعلی پرداخت</span>
                   </div>
                   <div
-                    class="flex max-lg:flex-col items-center justify-between gap-4 lg:gap-8 w-full"
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-center gap-4 lg:gap-8 w-full"
                   >
                     <WidgetCartsInformation
                       baseClass="border border-black/50"
                       :bgColorIcon="lastPayment?.status ? 'bg-primary-100' : 'bg-muted'"
                       :nameIcon="paymentIcon[lastPayment?.status] || 'bi:emoji-neutral-fill'"
                       :classIcon="
-                        `${paymentIconColor[lastPayment?.status]} size-7 sm:size-6` ||
+                        `${paymentIconColor[lastPayment?.status]} size-5 sm:size-6` ||
                         'text-gray-400'
                       "
                       title="وضعیت فعلی"
                     >
-                      {{
-                        lastPayment
-                          ? paymentStatusText[lastPayment?.status]
-                          : 'هیچ پرداختی موجود نیست'
-                      }}
+                      {{ lastPayment ? paymentStatusText[lastPayment?.status] : 'وجود ندارد' }}
                     </WidgetCartsInformation>
                     <WidgetCartsInformation
                       baseClass="border border-black/50"
                       bgColorIcon="bg-black/20"
                       nameIcon="fluent:payment-32-filled"
-                      classIcon="size-7 sm:size-6 text-black"
+                      classIcon="size-5 sm:size-6 text-black"
                       title="پرداخت ماهانه (تومان)"
                     >
                       {{
                         lastPayment
                           ? useLocaleString(Number(formData.masterPlan.price))
-                          : 'هیچ پرداختی موجود نیست'
+                          : 'وجود ندارد'
                       }}
                     </WidgetCartsInformation>
                     <WidgetCartsInformation
                       baseClass="border border-black/50"
                       bgColorIcon="bg-yellow-100"
                       nameIcon="material-symbols:calendar-today-rounded"
-                      classIcon="size-7 sm:size-6 text-yellow-400"
+                      classIcon="size-5 sm:size-6 text-yellow-400"
                       title="زمان پرداخت"
                     >
-                      {{
-                        lastPayment
-                          ? gregorianToJalali(lastPayment.createdAt)
-                          : 'هیچ پرداختی موجود نیست'
-                      }}
+                      {{ lastPayment ? gregorianToJalali(lastPayment.createdAt) : 'وجود ندارد' }}
                     </WidgetCartsInformation>
                   </div>
                 </div>
