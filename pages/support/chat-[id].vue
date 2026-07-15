@@ -8,21 +8,30 @@
         <span class="text-sm font-medium text-balance flex items-center gap-1">
           تیکت #{{ ticketData?.id.slice(0, 2) }} • ایجاد شده توسط {{ ticketData?.user?.fullName }}
         </span>
-        <div v-if="ticketData?.status !== TicketStatus.CLOSED" class="flex items-center gap-1">
+        <div class="flex items-center gap-1">
           <UButton
-            @click="closeTicket"
-            :loading="isLoading"
+            @click="$router.back"
             color="neutral"
-            variant="solid"
-            label="بستن تیکت"
+            variant="subtle"
+            icon="i-heroicons-arrow-right"
+            label="بازگشت"
           />
-          <UButton
-            @click="refresh()"
-            color="info"
-            variant="ghost"
-            icon="i-heroicons-arrow-path"
-            label="بروزرسانی"
-          />
+          <div v-if="ticketData?.status !== TicketStatus.CLOSED" class="flex gap-1">
+            <UButton
+              @click="closeTicket"
+              :loading="isLoading"
+              color="neutral"
+              variant="solid"
+              label="بستن تیکت"
+            />
+            <UButton
+              @click="refresh()"
+              color="info"
+              variant="soft"
+              icon="i-heroicons-arrow-path"
+              label="بروزرسانی"
+            />
+          </div>
         </div>
       </div>
       <div v-if="ticketData" class="flex flex-col items-end gap-2">
