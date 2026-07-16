@@ -9,7 +9,6 @@ export interface CoachData {
   age: number
   history: string
   certificates: string
-  image: string
   isActive: boolean
   type: number
   sport: Sport

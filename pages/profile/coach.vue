@@ -117,25 +117,6 @@
               class="w-full"
             />
           </div>
-          <div class="w-full flex flex-col justify-center items-center">
-            <BaseFormUploadFile
-              :required="false"
-              :disable="isShow"
-              v-model="state.imageFile"
-              label="ارسال عکس گواهینامه"
-              name="imageFile"
-              description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا MB 1"
-              class="w-full"
-            />
-            <img
-              v-if="state.imageUrl"
-              class="object-cover md:w-2/3 pt-10"
-              :src="state.imageUrl"
-              :alt="state.fullName"
-              draggable="false"
-              loading="lazy"
-            />
-          </div>
           <div class="flex justify-end gap-2 pt-4">
             <UButton
               v-if="!isShow"
@@ -202,16 +183,6 @@
       v.maxLength(2, 'سن باید حداکثر ۲ رقم باشد'),
       v.regex(/^\d+$/, 'سن باید عدد باشد')
     ),
-    imageFile: v.optional(
-      v.pipe(
-        v.file(),
-        v.mimeType(
-          ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'],
-          'لطف عکس را با این فرمت ها اپلود کنید. (jpeg, png, jpg, webp)'
-        ),
-        v.maxSize(1024 * 1024 * 2, 'عکس باید زیر ۲ مگابایت باشد.')
-      )
-    ),
   })
 
   type Schema = v.InferOutput<typeof schema>
@@ -237,8 +208,6 @@
     age: coach.value.data.age.toString() ?? '',
     certificates: coach.value.data.certificates ?? '',
     history: coach.value.data.history ?? '',
-    imageUrl: coach.value.data.image ?? undefined,
-    imageFile: undefined,
   })
 
   async function onSubmit(event: FormSubmitEvent<Schema>) {

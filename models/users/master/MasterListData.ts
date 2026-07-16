@@ -9,7 +9,6 @@ export interface MasterListData {
   fullName: string
   phoneNumber: string
   nationalCode: string
-  image: string
   isActive: boolean
   age: number
   birthDate: string

@@ -76,14 +76,6 @@
               required
               class="w-full"
             />
-            <BaseFormUploadFile
-              :required="false"
-              v-model="state.imageFile"
-              label="ارسال عکس گواهینامه"
-              name="imageFile"
-              description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا 2MB"
-              class="w-full"
-            />
           </div>
           <div class="flex justify-between gap-2 pt-4">
             <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
@@ -151,16 +143,6 @@
       v.maxLength(2, 'سن مربی باید حداکثر ۲ رقم باشد'),
       v.regex(/^\d+$/, 'سن باید عدد باشد')
     ),
-    imageFile: v.optional(
-      v.pipe(
-        v.file(),
-        v.mimeType(
-          ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'],
-          'لطف عکس را با این فرمت ها اپلود کنید. (jpeg, png, jpg, webp)'
-        ),
-        v.maxSize(1024 * 1024 * 2, 'عکس باید زیر ۲ مگابایت باشد.')
-      )
-    ),
   })
 
   type Schema = v.InferOutput<typeof schema>
@@ -173,7 +155,6 @@
     history: '',
     age: '',
     birthDate: '',
-    imageFile: undefined as File | undefined,
   })
 
   async function onSubmit(event: FormSubmitEvent<Schema>) {
@@ -201,6 +182,5 @@
     state.history = ''
     state.age = ''
     state.birthDate = ''
-    state.imageFile = ''
   }
 </script>

@@ -44,12 +44,6 @@
             required
             class="w-full"
           />
-          <BaseFormCheckBox
-            v-model="state.isDefault"
-            label="لطف طرح اول خود را فعال کنید"
-            name="isDefault"
-            :required="false"
-          />
           <div class="flex justify-between gap-2 pt-4">
             <UButton label="انصراف" color="neutral" variant="outline" @click="localOpen = false" />
             <UButton label="افزودن طرح جدید" color="primary" type="submit" />
@@ -96,7 +90,6 @@
       v.nonEmpty('مدت زمان طرح الزامی است'),
       v.regex(/^\d+$/, 'مدت زمان باید فقط شامل عدد باشد')
     ),
-    isDefault: v.boolean(),
   })
 
   type Schema = v.InferOutput<typeof schema>
@@ -106,7 +99,6 @@
     description: '',
     price: '',
     durationInDays: '',
-    isDefault: false,
   })
 
   const { displayPrice } = useFormattedPrice(toRef(state, 'price'))
@@ -138,6 +130,5 @@
     state.description = ''
     displayPrice.value = ''
     state.durationInDays = ''
-    state.isDefault = ''
   }
 </script>

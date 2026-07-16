@@ -138,25 +138,6 @@
                   class="w-full"
                 />
               </div>
-              <div class="w-full flex flex-col justify-center items-center pt-1">
-                <BaseFormUploadFile
-                  :required="false"
-                  :disable="isShow"
-                  v-model="state.imageFile"
-                  label="ارسال عکس گواهینامه"
-                  name="imageFile"
-                  description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا MB 1"
-                  class="w-full"
-                />
-                <img
-                  v-if="state.imageUrl"
-                  class="object-cover md:w-2/3 pt-10"
-                  :src="state.imageUrl"
-                  :alt="state.fullName"
-                  draggable="false"
-                  loading="lazy"
-                />
-              </div>
               <div class="flex justify-end gap-2 pt-4">
                 <UButton
                   v-if="!isShow"
@@ -296,16 +277,6 @@
       v.regex(/^\d{4}\/\d{2}\/\d{2}$/, 'فرمت تاریخ باید 1380/01/01 باشد')
     ),
     certificates: v.pipe(v.string(), v.trim()),
-    imageFile: v.optional(
-      v.pipe(
-        v.file(),
-        v.mimeType(
-          ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'],
-          'لطف عکس را با این فرمت ها اپلود کنید. (jpeg, png, jpg, webp)'
-        ),
-        v.maxSize(1024 * 1024 * 1, 'عکس باید زیر 1 مگابایت باشد.')
-      )
-    ),
   })
 
   const items = [
@@ -342,8 +313,6 @@
     birthDate: master.value.data.birthDate ? gregorianToJalali(master.value.data.birthDate) : '',
     history: master.value.data.history ?? '',
     certificates: master.value.data.certificates ?? '',
-    imageUrl: master.value.data.image ?? undefined,
-    imageFile: undefined,
   })
 
   const lastPayment = computed(() => {

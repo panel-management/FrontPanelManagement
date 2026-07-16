@@ -172,25 +172,6 @@
                         label="انتخاب رشته ورزشی"
                       />
                     </div>
-                    <div class="w-full flex flex-col justify-center items-center">
-                      <BaseFormUploadFile
-                        :required="false"
-                        :disable="isShow"
-                        v-model="state.imageFile"
-                        label="ارسال عکس گواهینامه"
-                        name="imageFile"
-                        description="اپلود عکس با فرمت (jepg, png, webp, jpg) و حداکثر تا MB 1"
-                        class="w-full"
-                      />
-                      <img
-                        v-if="state.imageUrl"
-                        class="object-cover md:w-2/3 pt-10"
-                        :src="state.imageUrl"
-                        :alt="formData.fullName"
-                        draggable="false"
-                        loading="lazy"
-                      />
-                    </div>
                     <div class="flex justify-end gap-2 pt-4">
                       <UButton
                         v-if="!isShow"
@@ -409,16 +390,6 @@
       v.maxLength(2, 'سن باید حداکثر ۲ رقم باشد'),
       v.regex(/^\d+$/, 'سن باید عدد باشد')
     ),
-    imageFile: v.optional(
-      v.pipe(
-        v.file(),
-        v.mimeType(
-          ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'],
-          'لطف عکس را با این فرمت‌ها اپلود کنید.'
-        ),
-        v.maxSize(1024 * 1024, 'عکس باید زیر 1 مگابایت باشد.')
-      )
-    ),
     history: v.pipe(v.string(), v.trim()),
     certificates: v.pipe(v.string(), v.trim()),
     sportId: v.pipe(v.string(), v.trim()),
@@ -435,8 +406,6 @@
     history: '',
     certificates: '',
     sportId: '',
-    imageFile: undefined,
-    imageUrl: undefined,
   })
 
   watch(formData, (data) => {
@@ -449,8 +418,6 @@
       state.history = ''
       state.sportId = ''
       state.certificates = ''
-      state.imageFile = undefined
-      state.imageUrl = undefined
       return
     }
     state.fullName = data.fullName ?? ''
@@ -461,7 +428,6 @@
     state.history = data.history ?? ''
     state.certificates = data.certificates ?? ''
     state.sportId = data.sport.id.toString() ?? ''
-    state.imageUrl = data.image ?? ''
   })
 
   const lastPayment = computed(() => {

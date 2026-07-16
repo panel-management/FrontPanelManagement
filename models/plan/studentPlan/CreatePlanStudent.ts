@@ -3,5 +3,4 @@ export interface CreatePlanStudent {
   description: string
   price: number
   durationInDays: number
-  isDefault: boolean
 }

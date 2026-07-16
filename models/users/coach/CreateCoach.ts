@@ -6,5 +6,4 @@ export interface CreateCoach {
   age: number
   history: string
   certificates: string
-  imageFile?: File
 }

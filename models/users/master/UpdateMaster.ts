@@ -7,5 +7,4 @@ export interface UpdateMaster {
   history: string
   certificates: string
   sportId: number
-  imageFile?: File
 }
