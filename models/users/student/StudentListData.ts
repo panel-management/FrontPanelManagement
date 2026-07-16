@@ -18,7 +18,7 @@ export interface StudentListData {
   achievedBelts: Belt
   currentBelt: Belt
   sport: Sport
-  studentTransactions: TransactionData[]
+  studentTransactions: TransactionData
   type: number
   masterId: number
   createdAt: string

@@ -19,7 +19,7 @@
     nameIcon: string
     classIcon: string
     title: string
-    dateTime: string
+    dateTime: string | null
     badgeLabel: string
     badgeColor: string
   }>()

@@ -192,10 +192,7 @@
   import * as v from 'valibot'
   import type { FormSubmitEvent } from '@nuxt/ui'
   import type { TabsItem } from '@nuxt/ui'
-  import {
-    getStudentJustStudentByIdService,
-    updateStudentJustStudentByIdService,
-  } from '~/services/student.service'
+  import { getProfileStudentService, updateStudentService } from '~/services/student.service'
   import type { UpdateStudent } from '~/models/users/student/UpdateStudent'
   import { Role } from '~/models/Role'
 
@@ -279,7 +276,7 @@
     data: student,
     error,
     refresh,
-  } = await useAsyncData('current-student-profile', () => getStudentJustStudentByIdService())
+  } = await useAsyncData('current-student-profile', () => getProfileStudentService())
   if (error.value || !student.value?.data) {
     throw createError({
       statusCode: student.value?.statusCode || 404,
@@ -309,7 +306,7 @@
         ...event.data,
         birthDate: jalaliToGregorian(event.data.birthDate),
       }
-      const result = await updateStudentJustStudentByIdService(payload)
+      const result = await updateStudentService(payload)
       if (result.statusCode === 200) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         refresh()

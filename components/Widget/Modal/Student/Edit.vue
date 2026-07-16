@@ -225,7 +225,9 @@
                   >
                     <WidgetCartsInformation
                       baseClass="border border-black/50"
-                      :bgColorIcon="lastTransaction?.status ? 'bg-primary-100' : 'bg-muted'"
+                      :bgColorIcon="
+                        lastTransaction?.status === 'PAID' ? 'bg-primary-100' : 'bg-muted'
+                      "
                       :nameIcon="
                         transactionIcon[lastTransaction?.status] || 'bi:emoji-neutral-fill'
                       "
@@ -263,7 +265,7 @@
                     </WidgetCartsInformation>
                   </div>
                 </div>
-                <div class="bg-white w-full h-72 p-4 rounded-lg overflow-hidden">
+                <div class="bg-white w-full max-md:h-72 lg:h-48 p-4 rounded-lg overflow-hidden">
                   <div
                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 overflow-auto h-full w-full"
                   >
@@ -273,7 +275,9 @@
                       :nameIcon="transactionIcon[transaction?.status] || 'bi:emoji-neutral-fill'"
                       :classIcon="transactionIconColor[transaction?.status] || 'text-gray-400'"
                       :title="useLocaleString(Number(transaction.amount))"
-                      :dateTime="gregorianToJalali(transaction.paymentDate)"
+                      :dateTime="
+                        transaction.paymentDate ? gregorianToJalali(transaction.paymentDate) : null
+                      "
                       :badgeLabel="transactionStatusText[transaction.status]"
                       :badgeColor="transactionIconBadge[transaction.status]"
                     />
@@ -291,7 +295,7 @@
   import * as v from 'valibot'
   import type { FormSubmitEvent } from '@nuxt/ui'
   import type { TabsItem } from '@nuxt/ui'
-  import { getStudentByIdService, updateStudentService } from '~/services/student.service'
+  import { getStudentByIdService, updateStudentByMasterService } from '~/services/student.service'
   import type { StudentListData } from '~/models/users/student/StudentListData'
   import type { UpdateStudent } from '~/models/users/student/UpdateStudent'
   import type { TransactionStatus } from '~/models/transactions/TransactionStatus'
@@ -441,7 +445,7 @@
     UPCOMING: 'پرداخت در اینده',
   }
 
-  const lastTransaction = computed(() => {
+  const lastTransaction: Ref<StudentListData['studentTransactions'][0] | null> = computed(() => {
     const arr = formData.value?.studentTransactions
     return Array.isArray(arr) && arr.length > 0 ? arr[0] : null
   })
@@ -503,7 +507,7 @@
         beltIds: Number(event.data.beltIds),
         planId: Number(event.data.planId),
       }
-      const result = await updateStudentService(userId.value, payload)
+      const result = await updateStudentByMasterService(userId.value, payload)
       if (result.statusCode === 200) {
         toastStore.setAlert(result.message, '', 'success', 'ep:success-filled')
         isShow.value = true

@@ -5,7 +5,7 @@ export interface FetchConfig {
   headers?: HeadersInit
   integrity?: string
   keepalive?: boolean
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE'
+  method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
   mode?: RequestMode
   priority?: RequestPriority
   redirect?: RequestRedirect

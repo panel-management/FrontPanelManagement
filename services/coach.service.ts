@@ -11,7 +11,7 @@ export const getCoachProfileService = () => {
 }
 
 export const getCoachByIdService = (id: number) => {
-  return FetchApi(`/coach/${id}`)
+  return FetchApi(`/coach/profile/${id}`)
 }
 
 export const createCoachService = (data: CreateCoach) => {
@@ -23,14 +23,14 @@ export const createCoachService = (data: CreateCoach) => {
 
 export const updateCoachProfileService = (data: UpdateCoach) => {
   return FetchApi('/coach/update/profile', {
-    method: 'PUT',
+    method: 'PATCH',
     body: data,
   })
 }
 
 export const updateCoachService = (id: number, data: UpdateCoach) => {
-  return FetchApi(`/coach/${id}`, {
-    method: 'PUT',
+  return FetchApi(`/coach/update/${id}`, {
+    method: 'PATCH',
     body: data,
   })
 }

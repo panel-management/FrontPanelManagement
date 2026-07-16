@@ -11,12 +11,12 @@ export const getStudentForEquipmentService = () => {
   return FetchApi('/student')
 }
 
-export const getStudentJustStudentByIdService = () => {
-  return FetchApi<StudentListData>('/student/details')
+export const getProfileStudentService = () => {
+  return FetchApi<StudentListData>('/student/profile')
 }
 
 export const getStudentByIdService = (id: number) => {
-  return FetchApi(`/student/${id}`)
+  return FetchApi(`/student/profile/${id}`)
 }
 
 export const createStudentService = (data: CreateStudent) => {
@@ -26,16 +26,16 @@ export const createStudentService = (data: CreateStudent) => {
   })
 }
 
-export const updateStudentJustStudentByIdService = (data: UpdateStudent) => {
-  return FetchApi(`/student/update/details`, {
-    method: 'PUT',
+export const updateStudentService = (data: UpdateStudent) => {
+  return FetchApi(`/student/update/profile`, {
+    method: 'PATCH',
     body: data,
   })
 }
 
-export const updateStudentService = (id: number, data: UpdateStudent) => {
-  return FetchApi(`/student/${id}`, {
-    method: 'PUT',
+export const updateStudentByMasterService = (id: number, data: UpdateStudent) => {
+  return FetchApi(`/student/update/${id}`, {
+    method: 'PATCH',
     body: data,
   })
 }
