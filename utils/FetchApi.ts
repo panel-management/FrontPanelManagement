@@ -21,7 +21,7 @@ export function FetchApi<TData>(
       : {}),
   }
   const showError = (data: ApiResponse<any>) => {
-    if (import.meta.client) {
+    if (process.client) {
       if (data.statusCode === 404) {
         toastStore.setAlert(data.message, '', 'warning', 'material-symbols-light:warning-rounded')
       } else {
