@@ -27,7 +27,7 @@
         <UIcon name="hugeicons:students" class="size-6 text-black" />
         <span class="font-medium text-base mt-1">تعداد هنرجو و مربی:</span>
         <span class="font-medium text-base mt-1">
-          {{ master?.data.students.length ?? 'هنرجو وجود ندارد' }}
+          {{ master?.data._count.students ?? 'هنرجو وجود ندارد' }}
         </span>
       </div>
       <div class="flex items-center gap-1">
@@ -210,7 +210,7 @@
                 :nameIcon="paymentIcon[payment.status] || 'bi:emoji-neutral-fill'"
                 :classIcon="paymentIconColor[payment.status] || 'text-gray-400'"
                 :title="useLocaleString(Number(payment.amount))"
-                :dateTime="gregorianToJalali(payment.paymentDate)"
+                :dateTime="payment.paymentDate ? gregorianToJalali(payment.paymentDate) : null"
                 :badgeLabel="paymentStatusText[payment.status]"
                 :badgeColor="paymentIconBadge[payment.status]"
               />
