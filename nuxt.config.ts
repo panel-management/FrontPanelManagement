@@ -1,15 +1,15 @@
 import tailwindcss from '@tailwindcss/vite'
 
+const isDevelopment = process.env.NODE_ENV === 'development' ? true : false
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
-  devtools: {
-    enabled: process.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
-  },
+  devtools: { enabled: isDevelopment },
   ssr: false,
   modules: ['@nuxt/ui', '@pinia/nuxt', '@vueuse/nuxt', '@vite-pwa/nuxt'],
   css: ['~/assets/css/main.css'],
   experimental: {
-    viteEnvironmentApi: process.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
+    viteEnvironmentApi: isDevelopment,
     noVueServer: true,
   },
   features: {
@@ -22,11 +22,11 @@ export default defineNuxtConfig({
       cssMinify: true,
       terserOptions: {
         compress: {
-          drop_console: process.env.APP_DEBUG?.toLocaleLowerCase() !== 'true',
+          drop_console: !isDevelopment,
           drop_debugger: true,
         },
       },
-      sourcemap: process.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
+      sourcemap: isDevelopment,
       rollupOptions: {
         output: {
           manualChunks: undefined,
@@ -62,7 +62,7 @@ export default defineNuxtConfig({
       cleanupOutdatedCaches: true,
       runtimeCaching: [
         {
-          urlPattern: new RegExp(`${process.env.API_URL}/api/v1/.*`),
+          urlPattern: new RegExp(`${process.env.NUXT_API_URL}/api/v1/.*`),
           handler: 'NetworkFirst',
           options: {
             cacheName: 'api-cache',
@@ -74,9 +74,7 @@ export default defineNuxtConfig({
         },
       ],
     },
-    devOptions: {
-      enabled: process.env.APP_DEBUG?.toLocaleLowerCase() === 'true',
-    },
+    devOptions: { enabled: isDevelopment },
   },
   app: {
     baseURL: '/',
@@ -126,8 +124,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      APP_URL: process.env.APP_URL ?? 'http://localhost:3000',
-      API_URL: process.env.API_URL,
+      APP_URL: process.env.NUXT_APP_URL,
+      API_URL: process.env.NUXT_API_URL,
       PAYMENT_NAME: process.env.NUXT_PAYMENT_NAME,
       PAYMENT_CARD: process.env.NUXT_PAYMENT_CARD,
       PAYMENT_SHABA: process.env.NUXT_PAYMENT_SHABA,
