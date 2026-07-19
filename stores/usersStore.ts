@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import type { Role } from '~/models/Role'
 import { getStatusPlanService } from '~/services/users.service'
 
 export type PlanStatus = {
@@ -8,7 +9,7 @@ export type PlanStatus = {
   isExpired: boolean
   noPlan: boolean
   needsPayment: boolean
-  userType: 'ADMIN' | 'MASTER' | 'COACH' | 'STUDENT'
+  userType: Role
   message: string
   statusCode: number
 }
@@ -29,7 +30,6 @@ export const useUsersStore = defineStore('users', {
         this.planStatusLoaded = true
         return result
       } catch (error: any) {
-        console.log(error.message || error)
         this.planStatusLoaded = true
         return null
       }

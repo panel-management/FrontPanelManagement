@@ -16,14 +16,14 @@
             </p>
           </div>
           <UButton
-            v-if="planStatus?.userType === 'MASTER' && !planStatus?.isPending"
+            v-if="planStatus?.userType === Role.Master && !planStatus?.isPending"
             :to="targetLink"
             size="xl"
             block
             color="primary"
             :label="buttonLabel"
           />
-          <p v-if="planStatus?.userType === 'STUDENT'" class="text-sm italic">
+          <p v-if="planStatus?.userType === Role.Student" class="text-sm italic">
             لطفاً برای تمدید دسترسی با مدیر مجموعه تماس بگیرید.
           </p>
         </div>
@@ -32,18 +32,20 @@
   </Teleport>
 </template>
 <script setup lang="ts">
+  import { Role } from '~/models/Role'
+
   const route = useRoute()
   const userStore = useUsersStore()
   const { planStatus, planStatusLoaded } = storeToRefs(userStore)
-  const isLocked = useScrollLock(process.client ? document.body : null)
+  const isLocked = useScrollLock(document.body)
 
   const shouldShow = computed(() => {
-    if (!planStatusLoaded.value) return false
-    return !planStatus.value?.isActive && !['/membership/plans', '/payment'].includes(route.path)
+    if (!planStatusLoaded.value || !planStatus.value) return false
+    return !planStatus.value.isActive && !['/membership/plans', '/payment'].includes(route.path)
   })
 
   const displayMessage = computed(() => {
-    if (planStatus.value?.userType === 'STUDENT') {
+    if (planStatus.value?.userType === Role.Student) {
       return 'حساب کاربری شما غیرفعال شده است. احتمالاً اعتبار پلن شما به پایان رسیده است.'
     }
     return planStatus.value?.message || 'برای دسترسی نیاز به پلن فعال دارید.'
