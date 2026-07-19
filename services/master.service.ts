@@ -21,18 +21,18 @@ export const selectPlanYourSelfMasterService = (planId: number) => {
 
 // get master by id just admin
 export const getMasterByIdForAdminService = (id: number) => {
-  return FetchApi(`/master/${id}`)
+  return FetchApi(`/master/profile/${id}`)
 }
 
 // get data yourself just master
 export const getMasterByIdService = () => {
-  return FetchApi<MasterListData>('/master/details')
+  return FetchApi<MasterListData>('/master/profile')
 }
 
 // update profile just yourself master
 export const updateProfileMasterService = (data: UpdateMaster) => {
-  return FetchApi<UpdateMaster>('/master/update/details', {
-    method: 'PUT',
+  return FetchApi<UpdateMaster>('/master/update/profile', {
+    method: 'PATCH',
     body: data,
   })
 }
@@ -40,7 +40,7 @@ export const updateProfileMasterService = (data: UpdateMaster) => {
 // update profile master just yourself admin
 export const updateProfileMasterJustAdminService = (id: number, data: UpdateMaster) => {
   return FetchApi<UpdateMaster>(`/master/update/${id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     body: data,
   })
 }

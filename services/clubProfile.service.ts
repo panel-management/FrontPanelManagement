@@ -13,7 +13,7 @@ export const createClubProfileService = (data: ClubProfileData) => {
 
 export const updateClubProfileService = (data: ClubProfileData) => {
   return FetchApi('/club-profile/update-profile-club', {
-    method: 'POST',
+    method: 'PATCH',
     body: data,
   })
 }

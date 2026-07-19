@@ -1,5 +1,3 @@
-import type { AuthData } from '~/models/auth/AuthData'
-
 export const requestOtpService = (phoneNumber: string) => {
   return FetchApi('/auth/send-otp', {
     method: 'POST',
@@ -10,7 +8,7 @@ export const requestOtpService = (phoneNumber: string) => {
 }
 
 export const otpCodeService = (phoneNumber: string, code: string) => {
-  return FetchApi<AuthData>('/auth/verify-otp', {
+  return FetchApi<string>('/auth/verify-otp', {
     method: 'POST',
     body: {
       phoneNumber,
@@ -26,7 +24,7 @@ export const registerUsersService = (
   code: string,
   sportId: number
 ) => {
-  return FetchApi<AuthData>('/auth/registration', {
+  return FetchApi<string>('/auth/registration', {
     method: 'POST',
     body: {
       fullName,

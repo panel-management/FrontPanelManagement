@@ -26,15 +26,15 @@ export const createPlanMasterByStudentService = (data: CreatePlanStudent) => {
 }
 
 export const updatePlanMasterByStudentService = (id: number, data: UpdatePlanStudent) => {
-  return FetchApi(`/financials/plans/${id}`, {
-    method: 'PUT',
+  return FetchApi(`/financials/plans/update/${id}`, {
+    method: 'PATCH',
     body: data,
   })
 }
 
 export const updateMasterPlanService = (id: number, master: UpdateMasterPlanData) => {
-  return FetchApi(`/financials/master-plans/${id}`, {
-    method: 'PUT',
+  return FetchApi(`/financials/master-plans/update/${id}`, {
+    method: 'PATCH',
     body: master,
   })
 }
