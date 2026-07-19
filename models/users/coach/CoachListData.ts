@@ -1,17 +1,3 @@
-import type { Sport } from '~/models/sportAndBelt/sport'
+import type { CoachData } from './CoachData'
 
-export interface CoachListData {
-  user_id: number
-  fullName: string
-  nationalCode: string
-  phoneNumber: string
-  birthDate: string
-  age: number
-  history: string
-  certificates: string
-  isActive: boolean
-  type: number
-  sport: Sport
-  createdAt: string
-  updatedAt: string
-}
+export interface CoachListData extends CoachData {}
