@@ -29,7 +29,7 @@
   }>()
 
   onMounted(async () => {
-    if (import.meta.client) {
+    if (process.client) {
       await import('@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css')
       await import('@majidh1/jalalidatepicker/dist/jalalidatepicker')
 
@@ -47,7 +47,7 @@
   })
 
   onBeforeUnmount(() => {
-    if (import.meta.client) {
+    if (process.client) {
       // @ts-ignore
       jalaliDatepicker.hide()
     }

@@ -33,7 +33,7 @@
           <div class="flex items-center gap-1">
             <UIcon name="hugeicons:students" class="size-6 text-black" />
             <span class="font-medium text-base mt-1">تعداد هنرجو و مربی:</span>
-            <span class="font-medium text-base mt-1">{{ formData.students.length }}</span>
+            <span class="font-medium text-base mt-1">{{ formData._count.students }}</span>
           </div>
           <div class="flex items-center gap-1">
             <UIcon name="ion:university" class="size-6 text-black" />
@@ -79,7 +79,7 @@
             classIcon="size-5 sm:size-6 text-info-500"
             title="هنرجو و مربی"
           >
-            {{ formData.students.length }}
+            {{ formData._count.students }}
           </WidgetCartsInformation>
         </div>
         <div class="bg-muted p-4 rounded-xl w-full flex items-center gap-5">
@@ -185,54 +185,6 @@
                 </UForm>
               </div>
             </template>
-            <template #users>
-              <div class="flex flex-col gap-6 p-4 bg-white rounded-lg w-full h-full">
-                <div class="flex flex-col gap-2">
-                  <div class="flex items-center gap-2">
-                    <UIcon name="ph:users-three-bold" class="size-6 text-black/70" />
-                    <span class="font-medium text-lg md:text-2xl">
-                      کاربران تحت نظر ({{ formData.students.length }} نفر)
-                    </span>
-                  </div>
-                  <p class="break-words font-medium text-sm md:text-base">
-                    لیست کاربران که تحت نظر این استاد هستند
-                  </p>
-                </div>
-                <div class="w-full h-80 overflow-hidden">
-                  <div
-                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 w-full h-full overflow-y-auto"
-                  >
-                    <div
-                      class="w-full rounded-lg bg-muted p-4 h-fit"
-                      v-for="data in formData.students"
-                      :key="data.user_id"
-                    >
-                      <div class="flex flex-col items-center gap-3 w-full">
-                        <div
-                          class="rounded-full bg-white size-14 flex items-center justify-center text-lg font-bold"
-                        >
-                          {{ data.fullName.slice(0, 1) }}
-                        </div>
-                        <div class="flex justify-between gap-4 w-full">
-                          <span class="font-medium text-lg">{{ data.fullName }}</span>
-                          <span
-                            class="text-sm"
-                            v-if="data.currentBelt"
-                            :class="[getBeltClass(data.currentBelt.color)]"
-                          >
-                            کمربند {{ data.currentBelt.color }}
-                          </span>
-                        </div>
-                        <div class="flex items-center justify-between gap-4 w-full">
-                          <span class="font-medium">عضویت </span>
-                          <span class="font-medium">{{ gregorianToJalali(data.createdAt) }}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </template>
             <template #paymentStatus>
               <div class="flex flex-col gap-6 w-full h-full">
                 <div class="bg-white flex flex-col gap-5 rounded-lg p-4 w-full">
@@ -280,7 +232,7 @@
                   </div>
                 </div>
                 <div
-                  class="bg-white w-full h-72 p-4 rounded-lg overflow-hidden"
+                  class="bg-white w-full max-md:h-72 lg:h-48 p-4 rounded-lg overflow-hidden"
                   :class="!formData.subscriptionPayments.length ? ' place-content-center' : ''"
                 >
                   <div
@@ -293,7 +245,9 @@
                       :nameIcon="paymentIcon[payment.status] || 'bi:emoji-neutral-fill'"
                       :classIcon="paymentIconColor[payment.status] || 'text-gray-400'"
                       :title="useLocaleString(Number(payment.amount))"
-                      :dateTime="gregorianToJalali(payment.paymentDate)"
+                      :dateTime="
+                        payment.paymentDate ? gregorianToJalali(payment.paymentDate) : null
+                      "
                       :badgeLabel="paymentStatusText[payment.status]"
                       :badgeColor="paymentIconBadge[payment.status]"
                     />
@@ -353,10 +307,6 @@
     {
       label: 'ویرایش اطلاعات',
       slot: 'editData' as const,
-    },
-    {
-      label: 'کاربران',
-      slot: 'users' as const,
     },
     {
       label: 'وضعیت مالی',
@@ -430,7 +380,7 @@
     state.sportId = data.sport.id.toString() ?? ''
   })
 
-  const lastPayment = computed(() => {
+  const lastPayment: Ref<MasterListData['subscriptionPayments'][0] | null> = computed(() => {
     const arr = formData.value?.subscriptionPayments
     return Array.isArray(arr) && arr.length > 0 ? arr[0] : null
   })

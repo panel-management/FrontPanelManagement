@@ -35,7 +35,7 @@
   const route = useRoute()
   const userStore = useUsersStore()
   const { planStatus, planStatusLoaded } = storeToRefs(userStore)
-  const isLocked = useScrollLock(import.meta.client ? document.body : null)
+  const isLocked = useScrollLock(process.client ? document.body : null)
 
   const shouldShow = computed(() => {
     if (!planStatusLoaded.value) return false
