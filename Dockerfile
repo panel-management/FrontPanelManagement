@@ -1,5 +1,5 @@
-# FROM node:lts-alpine AS build-stage
-FROM mirror-docker.runflare.com/library/node:lts-alpine AS build-stage
+FROM node:lts-alpine AS build-stage
+# FROM mirror-docker.runflare.com/library/node:lts-alpine AS build-stage
 
 RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
 
@@ -13,8 +13,8 @@ COPY . .
 
 RUN pnpm run generate
 
-# FROM nginx:stable-alpine
-FROM mirror-docker.runflare.com/nginx:stable-alpine
+FROM nginx:stable-alpine
+# FROM mirror-docker.runflare.com/nginx:stable-alpine
 
 RUN rm -rf /etc/nginx/conf.d/* && rm -rf /usr/share/nginx/html/*
 

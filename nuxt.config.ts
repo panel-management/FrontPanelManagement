@@ -35,31 +35,38 @@ export default defineNuxtConfig({
     },
   },
   pwa: {
+    strategies: 'generateSW',
     registerType: 'autoUpdate',
+    client: { installPrompt: true },
     manifest: {
       name: 'پنل هوشمند باشگاه',
-      short_name: 'پنل هوشمند باشگاه',
-      description: 'panel of the sports club',
+      short_name: 'پنل باشگاه',
       theme_color: '#ffffff',
-      dir: 'rtl',
-      display: 'standalone',
+      background_color: '#ffffff',
       start_url: '/',
+      display: 'standalone',
+      orientation: 'portrait',
+      dir: 'rtl',
+      lang: 'fa',
       icons: [
         {
-          src: 'icons/icon-192x192.png',
+          src: '/icons/icon-192x192.png',
           sizes: '192x192',
           type: 'image/png',
+          purpose: 'any',
         },
         {
-          src: 'icons/icon-512x512.png',
+          src: '/icons/icon-512x512.png',
           sizes: '512x512',
           type: 'image/png',
+          purpose: 'any',
         },
       ],
     },
     workbox: {
-      navigateFallback: '/',
       cleanupOutdatedCaches: true,
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
       runtimeCaching: [
         {
           urlPattern: new RegExp(`${process.env.NUXT_API_URL}/api/v1/.*`),
@@ -74,7 +81,7 @@ export default defineNuxtConfig({
         },
       ],
     },
-    devOptions: { enabled: isDevelopment },
+    devOptions: { enabled: isDevelopment, type: 'module' },
   },
   app: {
     baseURL: '/',
@@ -124,8 +131,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      APP_URL: process.env.NUXT_APP_URL,
-      API_URL: process.env.NUXT_API_URL,
+      API_URL: process.env.NUXT_API_URL ?? 'http://api.e4f.ir',
       PAYMENT_NAME: process.env.NUXT_PAYMENT_NAME,
       PAYMENT_CARD: process.env.NUXT_PAYMENT_CARD,
       PAYMENT_SHABA: process.env.NUXT_PAYMENT_SHABA,
