@@ -32,18 +32,15 @@
   import type { DropdownMenuItem } from '@nuxt/ui'
   import { useJDate } from '../composables/useJdate'
   import { Role } from '~/models/Role'
-  import type { BeforeInstallPromptEvent } from '@vite-pwa/nuxt/dist/runtime/plugins/types.js'
 
   const router = useRouter()
   const accountStore = useAccountStore()
   const roleStore = useRolesStore()
-  const toastStore = useToastStore()
   const { isFullscreen, toggle } = useFullscreen()
+  const { shouldShowInstall, isInstalled, handleInstall } = usePwa()
   const now = useNow({ interval: 1000 })
   const isOpen: Ref<boolean> = ref(false)
   const isMounted: Ref<boolean> = ref(false)
-  const deferredPrompt = ref<BeforeInstallPromptEvent | null>(null)
-  const isInstalled = ref(false)
 
   const jDate = computed(() => useJDate(now.value))
   const currentTime = computed(() => {
@@ -55,27 +52,8 @@
     })
   })
 
-  function pwaApplicationEvent() {
-    const standalone =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as any).standalone === true
-
-    isInstalled.value = standalone
-
-    window.addEventListener('beforeinstallprompt', (e: Event) => {
-      e.preventDefault()
-      deferredPrompt.value = e as BeforeInstallPromptEvent
-    })
-
-    window.addEventListener('appinstalled', () => {
-      isInstalled.value = true
-      deferredPrompt.value = null
-    })
-  }
-
   onMounted(() => {
     isMounted.value = true
-    pwaApplicationEvent()
   })
 
   defineShortcuts({
@@ -157,23 +135,14 @@
       })
     }
 
-    if (!isInstalled.value) {
+    if (shouldShowInstall.value) {
       sectionActions.push({
         label: 'دانلود اپلیکیشن',
         icon: 'carbon:application-web',
         color: 'info',
         disabled: isInstalled.value,
         onSelect() {
-          if (!deferredPrompt.value) return
-          deferredPrompt.value.prompt()
-          deferredPrompt.value.userChoice.then((choiceResult: any) => {
-            if (choiceResult.outcome === 'accepted') {
-              toastStore.setAlert('اپلیکیشن با موفقیت نصب شد', '', 'success', 'ep:success-filled')
-            } else {
-              toastStore.setAlert('خطا اپلیکیشن نصب نشد', '', 'error', 'bx:bxs-error')
-            }
-            deferredPrompt.value = null
-          })
+          handleInstall()
         },
       })
     }

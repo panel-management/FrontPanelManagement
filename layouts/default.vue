@@ -1,5 +1,6 @@
 <template>
   <UApp :locale="ar" :toaster="{ position: 'top-right' }">
+    <WidgetShowAlert />
     <header class="w-full h-full shadow-xs shadow-black p-4 px-5">
       <TheHeader />
     </header>
